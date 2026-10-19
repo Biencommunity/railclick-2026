@@ -1,0 +1,1264 @@
+<title>RailClick · One platform, all trains</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Lato:wght@400;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: editorial B2B en blanco y gris pizarra · bandas alternas blancas, gris claro y gris #414A52; el turquesa del logo solo para cifras y acciones */
+:root{
+color-scheme:light;
+--paper:#ffffff; --mist:#f3f4f5; --fog:#e7e9eb; --line:#d9dcdf;
+--slate:#414A52;  --slate-2:#2f363c; --slate-3:#5b646c; --muted:#7c858d;
+--teal:#0DA3AE;   --teal-ink:#0a7f88; --teal-soft:#e2f4f5;
+--f-disp:"Sora", "Segoe UI", system-ui, sans-serif;
+--f-text:"Lato", "Helvetica Neue", Arial, sans-serif;
+--f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--slate);font-family:var(--f-text);font-size:17px;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--f-disp);margin:0;text-wrap:balance;color:var(--slate-2);letter-spacing:-.015em}
+p{margin:0}
+a{color:inherit}
+button,select{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1200px;margin-inline:auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-ink)}
+.num{font-variant-numeric:tabular-nums}
+section{scroll-margin-top:64px}
+.sec{padding-block:96px}
+.band-mist{background:var(--mist)}
+.band-slate{background:var(--slate);color:#e9ecee}
+.band-slate h2,.band-slate h3{color:#fff}
+.band-slate .eyebrow{color:#7fd6dc}
+.sec-head{display:flex;flex-direction:column;gap:14px;max-width:760px;margin-bottom:40px}
+.sec-head h2{font-size:clamp(30px,4.4vw,52px);line-height:1.05}
+.sec-head p{font-size:18px;color:var(--slate-3);max-width:62ch}
+.band-slate .sec-head p{color:#c9d0d5}
+.note{font-size:12.5px;color:var(--muted)}
+.chip{border:1px solid var(--line);background:var(--paper);color:var(--slate-3);padding:8px 14px;border-radius:999px;font-size:14px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.chip:hover{border-color:var(--slate-3);color:var(--slate-2)}
+.chip.on{background:var(--slate);border-color:var(--slate);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.btn{display:inline-flex;align-items:center;gap:10px;border:none;cursor:pointer;background:var(--teal);color:#fff;font-weight:700;font-size:16px;padding:13px 22px;border-radius:999px;text-decoration:none;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-2px);background:var(--teal-ink)}
+.btn.ghost{background:transparent;color:var(--slate-2);border:1.5px solid var(--slate)}
+.btn.ghost:hover{background:var(--slate);color:#fff}
+.btn svg{width:18px;height:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;padding-top:env(safe-area-inset-top,0px);background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s}
+.nav.scrolled{border-color:var(--line)}
+.nav-in{max-width:1200px;margin-inline:auto;padding-block:12px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;align-items:center;gap:16px}
+.nav-logo{height:26px;width:auto;flex:none}
+.nav-links{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{font-size:14px;color:var(--slate-3);text-decoration:none;padding:7px 11px;border-radius:999px;white-space:nowrap}
+.nav-links a:hover,.nav-links a.on{color:var(--slate-2);background:var(--fog)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
+.lang button{border:none;background:transparent;padding:6px 11px;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;cursor:pointer;color:var(--slate-3)}
+.lang button.on{background:var(--slate);color:#fff}
+@media (max-width:860px){.nav-links{display:none}.nav-in{justify-content:space-between}}
+/* HERO */
+.hero{position:relative;overflow:hidden;min-height:clamp(700px,100vh,1000px);display:flex;align-items:center;background:linear-gradient(180deg,#fff 0%,#f3f4f5 100%)}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-in{position:relative;z-index:2;width:100%;padding-block:120px 250px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero-in > *{min-width:0}
+.hero h1{font-size:clamp(44px,7vw,96px);line-height:.98;letter-spacing:-.035em;font-weight:800}
+.hero h1 span:not(.w){color:var(--teal)}
+.hero .lead{margin-top:22px;font-size:19px;max-width:48ch;color:var(--slate-3)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.hero-photo{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:4/5;max-width:100%;box-shadow:0 40px 80px -30px rgba(47,54,60,.45)}
+.hero-photo img{width:100%;height:100%;object-fit:cover}
+.hero-badge{position:absolute;left:18px;bottom:18px;right:18px;background:rgba(255,255,255,.94);border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hero-badge div b{display:block;font-family:var(--f-disp);font-size:22px;color:var(--slate-2)}
+.hero-badge div span{font-size:12px;color:var(--muted)}
+@media (max-width:900px){.hero-in{grid-template-columns:1fr}.hero-photo{aspect-ratio:16/11}}
+/* RETO */
+.chal{display:grid;grid-template-columns:1fr 1.25fr;gap:40px;align-items:center}
+.chal > *{min-width:0}
+.chal-list{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.chal-list div{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--line);font-weight:700;color:var(--slate-2);transition:opacity .4s,transform .4s}
+.chal-list i{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;font-style:normal;font-family:var(--f-mono);font-size:12px;background:var(--fog);color:var(--slate)}
+.solved .chal-list div{opacity:.45}
+.solved .chal-list div i{background:var(--teal-soft);color:var(--teal-ink)}
+.chal-box{border-radius:22px;background:var(--paper);border:1px solid var(--line);padding:16px}
+#chalSvg{width:100%;height:auto;display:block}
+.chal-toggle{display:flex;gap:6px;margin-bottom:10px}
+/* QUIÉNES */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.trio .card{padding:26px;display:flex;flex-direction:column;gap:10px}
+.trio b{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;color:var(--teal-ink)}
+.trio h3{font-size:22px}
+.trio p{color:var(--slate-3);font-size:15.5px}
+.needs{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;margin-top:56px}
+.needs > *{min-width:0}
+.needs ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.needs li{display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:14px;background:var(--mist);font-size:15.5px;color:var(--slate-2)}
+.needs li::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--teal);margin-top:7px;flex:none}
+.needs img{border-radius:22px;aspect-ratio:3/2;object-fit:cover;width:100%}
+@media (max-width:900px){.trio,.needs{grid-template-columns:1fr}.needs ul{grid-template-columns:1fr}}
+/* POR QUÉ TREN */
+.why{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.why .card{overflow:hidden;display:flex;flex-direction:column}
+.why img{aspect-ratio:4/3;object-fit:cover;width:100%;filter:grayscale(.35)}
+.why .card div{padding:18px}
+.why h3{font-size:18px;margin-bottom:6px}
+.why p{font-size:14.5px;color:var(--slate-3)}
+@media (max-width:900px){.why{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.why{grid-template-columns:1fr}}
+/* DESTINOS */
+.dest{display:grid;grid-template-columns:1.5fr 1fr;gap:28px;align-items:start}
+.dest > *{min-width:0}
+.dest-map{border-radius:22px;background:var(--paper);border:1px solid var(--line);padding:12px;overflow:hidden}
+#worldSvg{width:100%;height:auto;display:block}
+#worldSvg path{fill:#e3e6e9;stroke:#fff;stroke-width:.5;transition:fill .4s}
+#worldSvg path.on{fill:var(--slate)}
+#worldSvg path.req{fill:#9aa3ab}
+#worldSvg path.hl{fill:var(--teal)}
+#worldSvg path.on,#worldSvg path.req{cursor:pointer}
+.dest-side{display:flex;flex-direction:column;gap:14px}
+.ops{display:flex;flex-direction:column;gap:6px;max-height:380px;overflow:auto;padding-right:4px}
+.ops button{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:14.5px}
+.ops button b{color:var(--slate-2)}
+.ops button span{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.ops button:hover,.ops button.on{border-color:var(--teal);background:var(--teal-soft)}
+.req-box{border-radius:14px;padding:14px 16px;background:var(--mist);font-size:14.5px;color:var(--slate-3)}
+.req-box b{color:var(--slate-2)}
+.pass{position:relative;margin-top:60px;border-radius:24px;overflow:hidden;min-height:340px;display:flex;align-items:flex-end}
+.pass img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.6) brightness(.75)}
+.pass::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(47,54,60,.9),rgba(47,54,60,.2))}
+.pass-in{position:relative;z-index:2;padding:34px;color:#fff;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:end;width:100%}
+.pass-in > *{min-width:0}
+.pass h3{color:#fff;font-size:clamp(26px,3.4vw,40px)}
+.pass p{color:#dfe4e7;max-width:52ch;margin-top:8px}
+.pass-stats{display:flex;gap:26px}
+.pass-stats b{display:block;font-family:var(--f-disp);font-size:clamp(28px,3.6vw,44px);color:#fff;line-height:1}
+.pass-stats span{font-size:13px;color:#cfd6da}
+@media (max-width:900px){.dest{grid-template-columns:1fr}.pass-in{grid-template-columns:1fr}}
+/* SOLUCIONES */
+.sol-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.sol-tab{text-align:left;padding:18px;border-radius:18px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,background .2s,transform .2s}
+.sol-tab:hover{transform:translateY(-2px)}
+.sol-tab b{font-family:var(--f-disp);font-size:20px;color:var(--slate-2)}
+.sol-tab span{font-size:14px;color:var(--slate-3)}
+.sol-tab em{font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--teal-ink)}
+.sol-tab.on{border-color:var(--slate);background:var(--slate)}
+.sol-tab.on b{color:#fff}.sol-tab.on span{color:#d5dbdf}.sol-tab.on em{color:#7fd6dc}
+.sol-body{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;border-radius:22px;background:var(--paper);border:1px solid var(--line);padding:28px}
+.sol-body > *{min-width:0}
+.sol-body h3{font-size:26px;margin-bottom:8px}
+.sol-body .for{font-size:14.5px;color:var(--slate-3);margin-top:12px;padding:12px 14px;border-left:3px solid var(--teal);background:var(--mist);border-radius:0 10px 10px 0}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.feat div{display:flex;gap:9px;align-items:flex-start;font-size:14.5px;color:var(--slate-2)}
+.feat div::before{content:"✓";font-family:var(--f-mono);color:var(--teal);font-weight:600}
+.timeline{margin-top:20px}
+.tl-bar{position:relative;height:10px;border-radius:5px;background:var(--fog);overflow:hidden}
+.tl-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--teal);border-radius:5px;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.tl-lbl{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:6px}
+.sol-vis{position:relative;border-radius:16px;overflow:hidden;background:var(--mist);aspect-ratio:4/3}
+.sol-vis img{width:100%;height:100%;object-fit:cover}
+.wl-grid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+.wl-grid img{border-radius:8px;box-shadow:0 10px 24px -12px rgba(0,0,0,.4);height:100%;object-fit:cover;object-position:top}
+.steps4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:18px}
+.steps4 div{padding:12px;border-radius:12px;background:var(--mist);font-size:13.5px;color:var(--slate-2);display:flex;flex-direction:column;gap:6px}
+.steps4 div b{font-family:var(--f-mono);font-size:12px;color:var(--teal-ink)}
+.fit{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:15px;color:var(--slate-3)}
+@media (max-width:900px){.sol-tabs{grid-template-columns:1fr}.sol-body{grid-template-columns:1fr}.steps4{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.feat{grid-template-columns:1fr}}
+/* CLIENTES + GRUPOS */
+.users{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
+.users > *{min-width:0}
+.ulist{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ulist div{padding:16px;border-radius:14px;background:var(--paper);border:1px solid var(--line)}
+.ulist b{display:block;font-family:var(--f-disp);font-size:17px;color:var(--slate-2)}
+.ulist span{font-size:13px;color:var(--muted)}
+.group{border-radius:22px;background:var(--slate);color:#e7ebee;padding:28px;display:flex;flex-direction:column;gap:14px}
+.group h3{color:#fff;font-size:24px}
+.pax{display:flex;flex-wrap:wrap;gap:4px;min-height:44px}
+.pax i{width:22px;height:30px;border-radius:11px 11px 4px 4px;background:#7f8a93;transition:background .3s}
+.pax i.in{background:#fff}
+.pax i.grp{background:var(--teal)}
+.group input[type=range]{width:100%;accent-color:var(--teal)}
+.group-out{font-size:16px;color:#fff;min-height:52px}
+.group-out b{color:#7fd6dc}
+.mail{display:inline-flex;gap:8px;align-items:center;font-family:var(--f-mono);font-size:14px;background:rgba(255,255,255,.1);padding:8px 12px;border-radius:10px;color:#fff;user-select:all}
+@media (max-width:900px){.users{grid-template-columns:1fr}}
+/* PARTNER BANDS */
+.partner-head{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:end;margin-bottom:36px}
+.partner-head > *{min-width:0}
+.partner-head h2{font-size:clamp(32px,4.6vw,56px);line-height:1.02}
+.partner-head img{max-height:200px;width:100%;object-fit:contain;object-position:right bottom}
+@media (max-width:860px){.partner-head{grid-template-columns:1fr}.partner-head img{object-position:left}}
+.map-row{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:start}
+.map-row > *{min-width:0}
+.mapbox{border-radius:22px;background:var(--paper);border:1px solid var(--line);overflow:hidden;position:relative}
+.band-slate .mapbox{background:#3a4249;border-color:#56606a}
+.mapbox svg{display:block;width:100%;height:auto}
+.land{fill:#e6e8eb;stroke:#fff;stroke-width:calc(.8px * var(--k,1))}
+.band-slate .chip{background:transparent;color:#d5dbdf;border-color:#6b757e}
+.band-slate .chip:hover{color:#fff;border-color:#c9d0d5}
+.band-slate .chip.on{background:#fff;color:var(--slate-2);border-color:#fff}
+.band-slate .land{fill:#4b545c;stroke:#3a4249}
+.rt{fill:none;stroke-width:calc(3px * var(--k,1));stroke-linecap:round;cursor:pointer;transition:stroke-width .2s,opacity .3s}
+.rt.sel,.rt:hover{stroke-width:calc(5.5px * var(--k,1))}
+.rt.dash{stroke-dasharray:calc(6px * var(--k,1)) calc(7px * var(--k,1))}
+.rt-hit{fill:none;stroke:transparent;stroke-width:calc(16px * var(--k,1));cursor:pointer}
+.city circle{fill:#fff;stroke:var(--slate);stroke-width:calc(2px * var(--k,1));r:calc(4.5px * var(--k,1))}
+.band-slate .city circle{stroke:#fff;fill:var(--slate)}
+.city text{font-family:var(--f-mono);font-size:calc(12px * var(--k,1));fill:var(--slate-2);paint-order:stroke;stroke:#fff;stroke-width:calc(4px * var(--k,1))}
+.band-slate .city text{fill:#fff;stroke:#3a4249}
+.rlist{display:flex;flex-direction:column;gap:6px}
+.rbtn{display:grid;grid-template-columns:1fr 70px;gap:10px;align-items:center;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:14.5px;color:var(--slate-2)}
+.band-slate .rbtn{background:#4a535b;border-color:#5d6770;color:#fff}
+.rbtn b{font-family:var(--f-mono);text-align:right;color:var(--teal-ink)}
+.band-slate .rbtn b{color:#7fd6dc}
+.rbtn .bar{grid-column:1/-1;height:4px;border-radius:2px;background:var(--fog);overflow:hidden}
+.band-slate .rbtn .bar{background:#5d6770}
+.rbtn .bar i{display:block;height:100%;background:var(--teal);transition:width .8s}
+.rbtn.on,.rbtn:hover{border-color:var(--teal)}
+.rbtn small{font-size:12px;color:var(--muted)}
+.band-slate .rbtn small{color:#c3cbd0}
+.vs-air{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:40px}
+.vs-air div{border-radius:18px;padding:20px;background:#4a535b;border:1px solid #5d6770}
+.vs-air b{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;color:#7fd6dc}
+.vs-air h3{font-size:18px;margin:8px 0}
+.vs-air ul{margin:0;padding-left:18px;font-size:14px;color:#d5dbdf}
+.vs-air li+li{margin-top:4px}
+.es-extra{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.es-extra > *{min-width:0}
+.es-extra img{border-radius:18px;width:100%;height:100%;object-fit:cover;aspect-ratio:16/10}
+.es-new{border-radius:18px;padding:22px;background:#4a535b;border:1px solid #5d6770}
+.es-new h3{font-size:20px;margin-bottom:10px}
+.es-new p{font-size:14.5px;color:#d5dbdf}
+.es-new .nr{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;font-size:14.5px;margin-top:10px;color:#fff}
+.es-new .nr span{font-family:var(--f-mono);font-size:12px;padding:4px 8px;border-radius:999px;background:var(--teal);color:#fff;text-align:center}
+@media (max-width:900px){.es-extra img{height:auto}.map-row,.es-extra{grid-template-columns:1fr}.vs-air{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.vs-air{grid-template-columns:1fr}}
+/* ITALIA */
+.it-hl{display:flex;flex-wrap:wrap;gap:24px;margin-bottom:26px}
+.it-hl div b{display:block;font-family:var(--f-disp);font-size:clamp(28px,3.4vw,40px);color:var(--slate-2);line-height:1}
+.it-hl div span{font-size:13px;color:var(--muted)}
+#itSvg .it{fill:#e6e8eb;stroke:#fff}
+#itSvg .itc{fill:#f3f4f5;stroke:none}
+.leg-card{border-radius:18px;background:var(--paper);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:10px}
+.leg-card .big{font-family:var(--f-disp);font-size:44px;font-weight:800;color:var(--teal);line-height:1}
+.leg-card img{border-radius:12px;aspect-ratio:16/10;object-fit:cover;width:100%}
+.classes{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;margin-top:60px;align-items:start}
+.classes > *{min-width:0}
+.cl-gal{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:8px;aspect-ratio:16/11;max-width:100%}
+.cl-gal img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.cl-gal img:first-child{grid-row:1/3}
+.matrix{width:100%;border-collapse:collapse;font-size:14px}
+.mx-wrap{overflow-x:auto;margin-top:16px;border-radius:14px;border:1px solid var(--line)}
+.matrix th,.matrix td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--line)}
+.matrix th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--mist)}
+.matrix td:first-child,.matrix th:first-child{text-align:left}
+.matrix td.y{color:var(--teal-ink);font-weight:900}
+.matrix td.n{color:#c3c8cc}
+.matrix .colon{background:var(--teal-soft)}
+.cl-txt h3{font-size:28px}
+.cl-txt p{color:var(--slate-3);margin-top:8px}
+.svc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:40px}
+.svc-grid .card{overflow:hidden}
+.svc-grid img{aspect-ratio:16/10;object-fit:cover;width:100%}
+.svc-grid .card div{padding:18px}
+.svc-grid h3{font-size:18px;margin-bottom:6px}
+.svc-grid p{font-size:14.5px;color:var(--slate-3)}
+@media (max-width:900px){.classes{grid-template-columns:1fr}.svc-grid{grid-template-columns:1fr}}
+.intl{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.intl > *{min-width:0}
+.intl .card{padding:22px}
+.intl h3{font-size:22px;margin-bottom:6px}
+.intl p{font-size:14.5px;color:var(--slate-3)}
+.fare-list{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.fare-list div{display:flex;justify-content:space-between;font-size:14.5px;padding:8px 10px;border-radius:10px;background:var(--mist)}
+.fare-list b{font-family:var(--f-mono);color:var(--teal-ink)}
+@media (max-width:900px){.intl{grid-template-columns:1fr}}
+.pompei{margin-top:40px;border-radius:22px;overflow:hidden;position:relative;background:var(--slate);color:#fff;display:grid;grid-template-columns:1fr 1fr}
+.pompei > *{min-width:0}
+.pompei-txt{padding:28px;display:flex;flex-direction:column;gap:12px}
+.pompei-txt h3{color:#fff;font-size:24px}
+.pompei-txt p{color:#d5dbdf;font-size:15px}
+.tt{display:flex;flex-direction:column;gap:8px}
+.tt div{display:grid;grid-template-columns:56px 1fr 56px;gap:10px;align-items:center;background:rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;font-family:var(--f-mono);font-size:13px}
+.tt div span:nth-child(2){position:relative;height:2px;background:#7f8a93}
+.tt div span:nth-child(2)::after{content:"";position:absolute;left:0;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--teal);animation:ride 3s linear infinite}
+@keyframes ride{to{left:calc(100% - 8px)}}
+.pompei img{width:100%;height:100%;object-fit:cover;min-height:260px}
+@media (max-width:860px){.pompei{grid-template-columns:1fr}}
+/* REGIONAL */
+.fleet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.fleet .card{padding:22px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.fleet h3{font-size:22px}
+.fleet p{font-size:14.5px;color:var(--slate-3)}
+.fleet .kp{display:flex;gap:18px;flex-wrap:wrap}
+.fleet .kp b{display:block;font-family:var(--f-disp);font-size:26px;color:var(--slate-2)}
+.fleet .kp span{font-size:12px;color:var(--muted)}
+.fleet img.cut{height:120px;width:auto;object-fit:contain;align-self:flex-end;margin-top:auto}
+.fleet ul{margin:0;padding-left:18px;font-size:14px;color:var(--slate-3)}
+.fleet li+li{margin-top:3px}
+.seatcmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seatcmp div{border-radius:12px;background:var(--mist);padding:10px}
+.seatcmp b{display:block;font-size:13px;color:var(--slate-2)}
+.seatcmp span{font-family:var(--f-mono);font-size:12px;color:var(--slate-3)}
+@media (max-width:900px){.fleet{grid-template-columns:1fr}}
+/* CROSS BORDER */
+.xb-tabs{margin-bottom:20px}
+.xb{display:grid;grid-template-columns:1.2fr 1fr;gap:26px;align-items:start}
+.xb > *{min-width:0}
+.xb-info{display:flex;flex-direction:column;gap:12px}
+.xb-info h3{font-size:28px;color:#fff}
+.xb-info p{color:#d5dbdf}
+.xb-kp{display:flex;gap:22px;flex-wrap:wrap}
+.xb-kp b{display:block;font-family:var(--f-disp);font-size:30px;color:#fff;line-height:1.05}
+.xb-kp span{font-size:12.5px;color:#c3cbd0}
+.xb-img{height:150px;width:auto;object-fit:contain;align-self:flex-start}
+.acc{display:flex;flex-direction:column;gap:6px}
+.acc button{text-align:left;border-radius:12px;border:1px solid #5d6770;background:#4a535b;color:#fff;padding:12px 14px;cursor:pointer}
+.acc button b{display:block;font-family:var(--f-disp)}
+.acc button span{font-size:13.5px;color:#c9d0d5;display:none}
+.acc button.on{border-color:var(--teal)}
+.acc button.on span{display:block;margin-top:4px}
+.timetable{display:flex;flex-direction:column;gap:8px}
+.timetable div{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:#4a535b;border-radius:12px;padding:10px 12px;font-family:var(--f-mono);font-size:13px;color:#fff}
+.timetable em{font-style:normal;color:#7fd6dc}
+.rjpics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rjpics img{border-radius:10px;aspect-ratio:16/10;object-fit:cover;width:100%}
+@media (max-width:900px){.xb{grid-template-columns:1fr}}
+/* TURÍSTICOS */
+.tour{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.tour .card{overflow:hidden;display:flex;flex-direction:column}
+.tour img{aspect-ratio:3/2;object-fit:cover;width:100%}
+.tour .card > div{padding:18px;display:flex;flex-direction:column;gap:8px}
+.tour h3{font-size:20px}
+.tour p{font-size:14.5px;color:var(--slate-3)}
+.tour ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--slate-2)}
+@media (max-width:900px){.tour{grid-template-columns:1fr}}
+/* TARIFAS */
+.fares{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.fare{border-radius:18px;border:1.5px solid var(--line);background:var(--paper);padding:18px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .2s,transform .2s}
+.fare:hover{transform:translateY(-2px)}
+.fare.on{border-color:var(--slate);box-shadow:0 16px 30px -18px rgba(47,54,60,.5)}
+.fare h3{font-size:20px}
+.fare .row{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;color:var(--slate-2)}
+.fare .row i{font-style:normal;font-family:var(--f-mono);font-weight:600;width:16px;flex:none}
+.fare .row.y i{color:var(--teal)}
+.fare .row.n{color:#9aa1a8}
+.fare .row.n i{color:#b8bec3}
+.flex-meter{height:8px;border-radius:4px;background:var(--fog);overflow:hidden;margin-top:auto}
+.flex-meter i{display:block;height:100%;background:var(--slate)}
+.need{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px;font-size:15px;color:var(--slate-3)}
+.top{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:26px;border-radius:22px;background:var(--teal-soft);padding:28px;align-items:center}
+.top > *{min-width:0}
+.top h3{font-size:28px}
+.top p{color:var(--slate-3);margin-top:8px}
+.top ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.top li{background:#fff;border-radius:12px;padding:12px 14px;font-size:14.5px;display:flex;gap:10px}
+.top li b{font-family:var(--f-mono);color:var(--teal-ink)}
+@media (max-width:900px){.fares{grid-template-columns:1fr 1fr}.top{grid-template-columns:1fr}}
+@media (max-width:520px){.fares{grid-template-columns:1fr}}
+/* CIERRE */
+.close-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.close-grid > *{min-width:0}
+.close-grid h2{font-size:clamp(34px,5vw,64px);line-height:1}
+.close-grid h2 span:not(.w){color:var(--teal)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.pills span{padding:9px 14px;border-radius:999px;background:var(--mist);font-weight:700;font-size:14.5px;color:var(--slate-2)}
+.contact{border-radius:24px;overflow:hidden;background:var(--slate);color:#fff;display:flex;flex-direction:column}
+.contact img.ph{width:100%;aspect-ratio:16/8;object-fit:cover}
+.contact-in{padding:24px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.contact-in img{width:110px;height:110px;border-radius:10px;background:#fff;padding:6px}
+.contact-in p{color:#d5dbdf;font-size:14.5px}
+.contact-in b{display:block;color:#fff;font-family:var(--f-disp);font-size:18px}
+.dl{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+footer{border-top:1px solid var(--line);padding-block:26px 46px;font-size:13px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;align-items:center}
+footer img{height:22px;width:auto}
+@media (max-width:900px){.close-grid{grid-template-columns:1fr}}
+.reveal{transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .8s}
+.js .reveal.pre{transform:translateY(26px);opacity:.001}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .reveal.pre{transform:none;opacity:1}.tt div span:nth-child(2)::after{animation:none}}
+/* ===== FX: encadenado al hacer scroll ===== */
+html,body{overflow-x:clip}
+.js .hero .eyebrow,.js .hero .lead,.js .hero-cta{opacity:0;transform:translateY(18px);transition:opacity .9s,transform .9s cubic-bezier(.2,.7,.2,1)}
+.js .hero.go .eyebrow{opacity:1;transform:none;transition-delay:.05s}
+.js .hero.go .lead{opacity:1;transform:none;transition-delay:.75s}
+.js .hero.go .hero-cta{opacity:1;transform:none;transition-delay:.95s}
+.hero-in{will-change:transform}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.w>i{display:inline-block;font-style:normal;transform:translateY(105%);transition:transform .9s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*55ms + var(--d,0ms))}
+.lit .w>i,.w.lit>i{transform:none}
+.hero h1 .w>i{--d:150ms}
+.sec .eyebrow{display:inline-block;position:relative;padding-bottom:8px}
+.sec .eyebrow::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:46px;background:var(--teal);transform:scaleX(0);transform-origin:left;transition:transform 1s cubic-bezier(.2,.8,.2,1) .25s}
+.sec.lit .eyebrow::after{transform:scaleX(1)}
+.band-slate .eyebrow::after{background:#7fd6dc}
+.js img.reveal,.js .reveal>img{transition:clip-path 1.2s cubic-bezier(.7,0,.2,1),transform 1.6s cubic-bezier(.2,.7,.2,1),opacity .8s}
+.js img.reveal.pre{transform:translateY(26px) scale(.97);opacity:.001}
+.js .reveal.pre>img{clip-path:inset(0 0 100% 0);transform:scale(1.1)}
+.card.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 0 rgba(13,163,174,0)}25%{box-shadow:0 0 0 2px rgba(13,163,174,.75),0 22px 44px -20px rgba(13,163,174,.55);border-color:var(--teal)}100%{box-shadow:0 0 0 0 rgba(13,163,174,0)}}
+.num.pop,.pop{animation:pop .9s ease-out}
+@keyframes pop{0%{color:inherit}35%{color:var(--teal);transform:scale(1.08)}100%{transform:none}}
+.band-slate{position:relative;overflow-x:clip}
+.band-slate::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#0DA3AE 45%,#7fd6dc 55%,transparent);transform:translateX(-100%);opacity:0}
+.band-slate.lit::before{animation:sweep 2.2s cubic-bezier(.6,0,.3,1) .2s}
+@keyframes sweep{0%{transform:translateX(-100%);opacity:1}100%{transform:translateX(100%);opacity:1}}
+[data-par]{will-change:transform}
+/* recorrido lateral */
+.trip{position:fixed;right:22px;top:50%;transform:translateY(-50%);height:min(62vh,560px);width:14px;z-index:50;opacity:0;transition:opacity .5s}
+.trip.on{opacity:1}
+.trip .rail{position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--line);border-radius:2px}
+.trip .done{position:absolute;left:6px;top:0;width:2px;background:var(--teal);border-radius:2px;height:0}
+.trip a{position:absolute;left:2px;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#fff;border:2px solid var(--line);transition:border-color .3s,background .3s,transform .3s}
+.trip a.past{border-color:var(--teal);background:var(--teal)}
+.trip a.cur{transform:scale(1.5);box-shadow:0 0 0 5px rgba(13,163,174,.18)}
+.trip a span{position:absolute;right:20px;top:50%;transform:translate(8px,-50%);white-space:nowrap;font:600 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--slate-2);padding:6px 9px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
+.trip a:hover span,.trip a.say span{opacity:1;transform:translate(0,-50%)}
+.trip .loco{position:absolute;left:1px;width:12px;height:26px;margin-top:-13px;border-radius:6px 6px 3px 3px;background:var(--teal);box-shadow:0 4px 12px rgba(13,163,174,.45);top:0}
+.trip .loco::after{content:"";position:absolute;left:3px;right:3px;top:5px;height:5px;border-radius:2px;background:#fff}
+.tbar{position:fixed;left:0;top:0;height:3px;width:100%;z-index:61;pointer-events:none}
+.tbar i{position:absolute;left:0;top:0;bottom:0;background:var(--teal);width:0}
+@media (min-width:1100px){.tbar{display:none}}
+@media (max-width:1099px){.trip{display:none}}
+@media (prefers-reduced-motion:reduce){.w>i{transform:none!important;transition:none}.js .hero .eyebrow,.js .hero .lead,.js .hero-cta{opacity:1;transform:none}.js img.reveal.pre,.js .reveal.pre>img{clip-path:none;transform:none}}
+/* ===== Viaje: billetes, postales, iconos ===== */
+.hero-vis{position:relative;min-width:0}
+.tk{--tk:#fff;position:relative;display:grid;grid-template-columns:1fr 64px;background:transparent;filter:drop-shadow(0 18px 28px rgba(47,54,60,.18));font-family:var(--f-mono)}
+.tk-main,.tk-stub{background:var(--tk)}
+.tk-main{border-radius:14px 0 0 14px;padding:14px 16px 12px;-webkit-mask:radial-gradient(circle 8px at 100% 0,#0000 98%,#000) top right/100% 51% no-repeat,radial-gradient(circle 8px at 100% 100%,#0000 98%,#000) bottom right/100% 51% no-repeat;mask:radial-gradient(circle 8px at 100% 0,#0000 98%,#000) top right/100% 51% no-repeat,radial-gradient(circle 8px at 100% 100%,#0000 98%,#000) bottom right/100% 51% no-repeat}
+.tk-stub{border-radius:0 14px 14px 0;border-left:2px dashed var(--line);display:flex;align-items:center;justify-content:center;-webkit-mask:radial-gradient(circle 8px at 0 0,#0000 98%,#000) top left/100% 51% no-repeat,radial-gradient(circle 8px at 0 100%,#0000 98%,#000) bottom left/100% 51% no-repeat;mask:radial-gradient(circle 8px at 0 0,#0000 98%,#000) top left/100% 51% no-repeat,radial-gradient(circle 8px at 0 100%,#0000 98%,#000) bottom left/100% 51% no-repeat}
+.tk-stub .bc{width:26px;height:70%;background:repeating-linear-gradient(0deg,var(--slate-2) 0 2px,transparent 2px 4px,var(--slate-2) 4px 5px,transparent 5px 8px,var(--slate-2) 8px 11px,transparent 11px 13px)}
+.tk-top{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:.12em;color:var(--muted)}
+.tk-top img{height:15px;width:auto}
+.tk-route{display:flex;align-items:center;gap:10px;margin:10px 0 8px}
+.tk-route b{display:block;font-family:var(--f-disp);font-size:26px;line-height:1;color:var(--slate-2);letter-spacing:-.01em}
+.tk-route small{display:block;font-size:10px;color:var(--muted);margin-top:3px;white-space:nowrap}
+.tk-route>div:last-child{text-align:right}
+.tk-line{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--teal) 0 6px,transparent 6px 10px);position:relative;min-width:30px}
+.tk-line::after{content:"";position:absolute;right:-2px;top:-5px;width:12px;height:12px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(13,163,174,.18)}
+.tk-meta{display:flex;gap:16px;font-size:13px;font-weight:600;color:var(--slate-2)}
+.tk-meta em{display:block;font-style:normal;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.stamp{position:absolute;left:34%;top:46%;transform:translateY(-50%) rotate(-14deg) scale(2.2);opacity:0;border:2.5px solid var(--teal);color:var(--teal-ink);border-radius:10px;padding:5px 9px;font:700 10px/1.25 var(--f-mono);letter-spacing:.1em;text-align:center;background:rgba(255,255,255,.75);pointer-events:none}
+.stamped .stamp{animation:stamp .45s cubic-bezier(.3,1.6,.5,1) forwards}
+@keyframes stamp{0%{opacity:0;transform:translateY(-50%) rotate(-24deg) scale(2.2)}100%{opacity:1;transform:translateY(-50%) rotate(-12deg) scale(1)}}
+.tk-hero .stamp{left:20%}.tk-hero{position:absolute;z-index:3;width:300px;left:-44px;top:-30px;transform:rotate(-6deg)}
+.js .tk-hero{opacity:0;translate:0 -24px;transition:opacity .7s 1.2s,translate .9s cubic-bezier(.2,.8,.2,1) 1.2s}
+.hero.go .tk-hero{opacity:1;translate:0 0}
+@media (max-width:900px){.tk-hero{left:-4px;top:-22px;width:260px}}
+/* sección ganas de viajar */
+.wander{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff,var(--mist))}
+.wander .lead{margin-top:14px;max-width:62ch;color:var(--slate-3);font-size:18px}
+.wander-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;margin-top:44px;align-items:center}
+.wander-grid>*{min-width:0}
+.collage{position:relative;height:600px}
+.pc{position:absolute;margin:0;background:#fff;padding:10px 10px 0;border-radius:6px;box-shadow:0 22px 40px -18px rgba(47,54,60,.45);width:42%;transform:rotate(var(--r));transition:transform 1s cubic-bezier(.2,.8,.2,1),opacity .8s;transition-delay:var(--dl)}
+.pc img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:3px;display:block}
+.pc figcaption{padding:9px 4px 11px;display:flex;flex-direction:column;gap:2px}
+.pc figcaption b{font-family:var(--f-disp);font-size:17px;color:var(--slate-2)}
+.pc figcaption span{font:500 11px var(--f-mono);color:var(--teal-ink)}
+.pc .pm{position:absolute;right:-14px;top:-14px;width:58px;height:58px;border-radius:50%;border:2px dashed rgba(13,163,174,.65);background:radial-gradient(circle,rgba(255,255,255,.85) 52%,transparent 54%);opacity:0;transform:scale(1.8) rotate(-30deg);transition:opacity .4s,transform .5s cubic-bezier(.3,1.6,.5,1);transition-delay:calc(var(--dl) + .7s)}
+.pc .pm::after{content:"RAIL\A CLICK";white-space:pre;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font:700 9px/1.1 var(--f-mono);color:var(--teal-ink);letter-spacing:.1em}
+.pc{width:36%}.p1{--r:-7deg;left:0;top:10px;--dl:0s}.p2{--r:5deg;left:29%;top:60px;--dl:.15s;z-index:2}.p3{--r:-3deg;right:0;top:0;--dl:.3s}.p4{--r:6deg;left:8%;top:300px;--dl:.45s;z-index:3}.p5{--r:-5deg;left:50%;top:290px;--dl:.6s;z-index:4}
+.js .collage:not(.go) .pc{transform:translateY(-60px) rotate(calc(var(--r) * -2.5));opacity:0}
+.collage.go .pc .pm{opacity:1;transform:none}
+.tag{position:absolute;right:2%;bottom:6px;z-index:5;background:var(--teal);color:#fff;border-radius:8px 8px 8px 22px;padding:12px 16px 12px 30px;font-family:var(--f-mono);transform:rotate(9deg);transform-origin:top right;box-shadow:0 14px 28px -12px rgba(13,163,174,.6);animation:swing 3.2s ease-in-out infinite}
+.tag i{position:absolute;left:10px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#fff}
+.tag b{display:block;font-size:10px;letter-spacing:.14em;opacity:.85}
+.tag span{font-size:18px;font-weight:600}
+@keyframes swing{0%,100%{transform:rotate(9deg)}50%{transform:rotate(3deg)}}
+.tickets{display:flex;flex-direction:column;gap:12px}
+.tk-head{display:flex;justify-content:space-between;margin-bottom:4px}
+.ey2{font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tk-count b{color:var(--teal-ink)}
+.tk-card{transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .6s}
+.tk-card:nth-child(odd){--tr:-1.2deg}.tk-card:nth-child(even){--tr:1deg}
+.tk-card{transform:rotate(var(--tr))}
+.js .tickets:not(.go) .tk-card{transform:translateX(70px) rotate(6deg);opacity:0}
+.tk-card .tk-route b{font-size:22px}
+.reg-stage{margin-top:auto;border-radius:12px;background:linear-gradient(180deg,#f3f4f5 0%,#e7e9eb 100%);aspect-ratio:16/10;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.reg-stage::before{content:"";position:absolute;left:0;right:0;bottom:16%;height:3px;background:repeating-linear-gradient(90deg,#b9c0c6 0 10px,transparent 10px 16px)}
+.reg-train{position:relative;width:96%;max-width:none;margin:0 0 9% 2%;transition:transform 1.6s cubic-bezier(.2,.8,.2,1) .3s;filter:drop-shadow(0 10px 12px rgba(0,0,0,.18))}
+.js .reveal.pre .reg-train{transform:translateX(70%)}
+.fl{position:absolute;width:86px;height:86px;fill:none;stroke:var(--slate);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.16;pointer-events:none}
+.fl-1{left:3%;top:90px}.fl-2{right:5%;top:60px;stroke:var(--teal);opacity:.4}.fl-3{left:46%;bottom:40px;width:70px;height:70px}.fl-4{right:3%;bottom:90px;stroke:var(--teal);opacity:.35}
+@media (max-width:900px){.wander-grid{grid-template-columns:1fr;gap:34px}.collage{height:auto;display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;padding-bottom:70px}.collage .pc{position:relative;width:auto;left:auto;right:auto;top:auto;padding:6px 6px 0}.pc figcaption b{font-size:15px}.pc figcaption span{font-size:9.5px}.pc .pm{width:44px;height:44px;right:-8px;top:-8px}.p5{grid-column:1/-1;width:62%!important;justify-self:center}.fl{width:56px;height:56px}.tk-route b{font-size:20px}}
+@media (prefers-reduced-motion:reduce){.js .collage:not(.go) .pc,.js .tickets:not(.go) .tk-card{transform:rotate(var(--r,0));opacity:1}.stamp,.pc .pm{opacity:1;transform:translateY(-50%) rotate(-12deg)}.pc .pm{transform:none}.tag{animation:none}.js .tk-hero{opacity:1;translate:none}}
+</style>
+<nav class="nav" id="nav" aria-label="Sections">
+<div class="nav-in">
+<img class="nav-logo" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt="RailClick">
+<div class="nav-links">
+<a href="#platform" data-es="Plataforma">Platform</a>
+<a href="#destinations" data-es="Destinos">Destinations</a>
+<a href="#solutions" data-es="Soluciones">Solutions</a>
+<a href="#eurostar">Eurostar</a>
+<a href="#trenitalia">Trenitalia</a>
+<a href="#fares" data-es="Tarifas">Fares</a>
+<a href="#contact" data-es="Contacto">Contact</a>
+</div>
+<div class="lang" role="group" aria-label="Language"><button type="button" id="lgEN" class="on">EN</button><button type="button" id="lgES">ES</button></div>
+</div>
+</nav>
+<!-- HERO -->
+<section class="hero" id="top">
+<canvas id="heroCanvas" aria-hidden="true"></canvas>
+<div class="wrap hero-in">
+<div>
+<div class="eyebrow" data-es="Distribución ferroviaria B2B · 2026">B2B rail distribution · 2026</div>
+<h1 style="margin-top:18px" data-es="Una plataforma. <span>Todos los trenes.</span>">One platform. <span>All trains.</span></h1>
+<p class="lead" data-es="RailClick conecta a agencias de viajes, turoperadores y plataformas digitales con los principales operadores ferroviarios del mundo, con un solo contrato y un único punto de acceso.">RailClick connects travel agencies, tour operators and digital platforms with the world's leading rail operators through a single contract and a single access point.</p>
+<div class="hero-cta">
+<a class="btn" href="#solutions" data-es="Ver soluciones">See the solutions</a>
+<a class="btn ghost" href="#contact" data-es="Descargar presentación">Download the deck</a>
+</div>
+</div>
+<div class="hero-vis">
+<div class="tk tk-hero" aria-hidden="true">
+<div class="tk-main"><div class="tk-top"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt=""><span>E-TICKET</span></div>
+<div class="tk-route"><div><b>LON</b><small>London</small></div><i class="tk-line"></i><div><b>PAR</b><small>Paris</small></div></div>
+<div class="tk-meta"><span><em data-es="Duración">Time</em>2h17</span><span><em data-es="Coche">Coach</em>07</span><span><em data-es="Asiento">Seat</em>42A</span></div></div>
+<div class="tk-stub"><div class="bc"></div></div>
+<div class="stamp" data-es="RESERVADO<br>CON RAILCLICK">BOOKED<br>WITH RAILCLICK</div>
+</div>
+<div class="hero-photo reveal">
+<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/hero.webp" alt="" loading="eager">
+<div class="hero-badge">
+<div><b class="num" data-count="2001">2001</b><span data-es="Distribuyendo tren desde">Selling rail since</span></div>
+<div><b class="num">33</b><span data-es="Países con Interrail">Interrail countries</span></div>
+<div><b class="num">24 h</b><span data-es="Para empezar a vender">To start selling</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- RETO -->
+<section class="sec band-mist" id="platform">
+<div class="wrap chal" id="chal">
+<div class="reveal">
+<div class="eyebrow" data-es="El reto">The challenge</div>
+<h2 style="font-size:clamp(30px,4.2vw,50px);line-height:1.05;margin-top:12px" data-es="Vender tren no debería ser complicado">Selling rail shouldn't be complicated</h2>
+<p style="margin-top:14px;color:var(--slate-3);font-size:18px" data-es="Las agencias de viajes y los turoperadores suelen enfrentarse a:">Travel agencies and tour operators often face:</p>
+<div class="chal-list">
+<div><i>1</i><span data-es="Múltiples operadores ferroviarios">Multiple railway operators</span></div>
+<div><i>2</i><span data-es="Distintos sistemas de reserva">Different booking systems</span></div>
+<div><i>3</i><span data-es="Acuerdos comerciales separados">Separate commercial agreements</span></div>
+<div><i>4</i><span data-es="Gestión operativa fragmentada">Fragmented operational management</span></div>
+<div><i>5</i><span data-es="Procesos de integración complejos">Complex integration processes</span></div>
+</div>
+</div>
+<div class="chal-box reveal">
+<div class="chal-toggle chips"><button class="chip on" type="button" data-m="0" data-es="Sin RailClick">Without RailClick</button><button class="chip" type="button" data-m="1" data-es="Con RailClick">With RailClick</button></div>
+<svg id="chalSvg" viewBox="0 0 640 420" role="img" aria-label="Agency connections diagram"></svg>
+<p class="note" id="chalNote"></p>
+</div>
+</div>
+</section>
+<!-- QUIÉNES -->
+<section class="sec">
+<div class="wrap">
+<div class="trio">
+<div class="card reveal"><b data-es="SOMOS">WE ARE</b><h3 data-es="Parte de Global GSA">Part of Global GSA</h3><p data-es="RailClick forma parte de Global GSA, empresa especializada en la representación y distribución de productos ferroviarios internacionales desde 2001.">RailClick is part of Global GSA, a company specialised in the representation and distribution of international rail products since 2001.</p></div>
+<div class="card reveal"><b data-es="HACEMOS">WE DO</b><h3 data-es="Tecnología para vender tren">Technology to sell rail</h3><p data-es="Desarrollamos soluciones tecnológicas para que agencias, turoperadores y plataformas digitales vendan billetes de tren de forma sencilla, eficiente y rentable.">We develop technology solutions that enable travel agencies, tour operators and digital platforms to sell train tickets in a simple, efficient and profitable way.</p></div>
+<div class="card reveal"><b data-es="MISIÓN">MISSION</b><h3 data-es="Distribución global">Global distribution</h3><p data-es="Facilitar la distribución global de productos ferroviarios con tecnología escalable y fácil de implantar.">To facilitate the global distribution of rail products through scalable, easy-to-implement technology.</p></div>
+</div>
+<div class="needs">
+<div class="reveal">
+<div class="eyebrow" data-es="Todo lo que necesitas">Everything you need</div>
+<h2 style="font-size:clamp(28px,3.8vw,44px);line-height:1.08;margin:12px 0 22px" data-es="Todo lo necesario para vender tren">Everything you need to sell rail</h2>
+<ul>
+<li data-es="Un único acceso a múltiples operadores ferroviarios">A single access point to multiple railway operators</li>
+<li data-es="Implantación rápida">Fast implementation</li>
+<li data-es="Portal web, marca blanca o API">Web Portal, White Label or API</li>
+<li data-es="Cobertura internacional">International coverage</li>
+<li data-es="Soporte experto dedicado">Dedicated expert support</li>
+<li data-es="Soluciones escalables para cualquier negocio">Scalable solutions for any type of business</li>
+</ul>
+</div>
+<img class="reveal" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/iryo.webp" alt="" loading="lazy">
+</div>
+</div>
+</section>
+<!-- POR QUÉ TREN -->
+<section class="sec band-mist">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="¿Por qué en tren?">Why travel by train?</div>
+<h2 data-es="El producto que tus clientes ya están pidiendo">The product your customers are already asking for</h2>
+</div>
+<div class="why">
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/country.webp" alt="" loading="lazy"><div><h3 data-es="Alternativa sostenible al avión">A sustainable alternative to air travel</h3><p data-es="Menos emisiones por viajero en los trayectos de media distancia.">Lower emissions per traveller on medium-distance journeys.</p></div></div>
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/seats.webp" alt="" loading="lazy"><div><h3 data-es="Comodidad">Comfort and convenience</h3><p data-es="Asientos amplios, wifi y libertad para moverse durante el viaje.">Spacious seats, wifi and freedom to move around on board.</p></div></div>
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/train1.webp" alt="" loading="lazy"><div><h3 data-es="Menos tiempo de viaje">Reduced travel times</h3><p data-es="De centro a centro, sin traslados al aeropuerto ni largas esperas.">City centre to city centre, with no airport transfers or long waits.</p></div></div>
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/brussels.webp" alt="" loading="lazy"><div><h3 data-es="Ideal para viajes multidestino">Ideal for multi-destination journeys</h3><p data-es="Encadena ciudades y países en un mismo itinerario.">Chain cities and countries into a single itinerary.</p></div></div>
+</div>
+</div>
+</section>
+<!-- GANAS DE VIAJAR -->
+<section class="sec wander" id="inspire">
+<svg class="fl fl-1" data-float=".18" viewBox="0 0 64 64" aria-hidden="true"><rect x="12" y="20" width="40" height="34" rx="6"/><path d="M24 20v-6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v6M12 32h40M24 54v4M40 54v4"/></svg>
+<svg class="fl fl-2" data-float="-.12" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 58s18-18 18-32a18 18 0 0 0-36 0c0 14 18 32 18 32z"/><circle cx="32" cy="26" r="7"/></svg>
+<svg class="fl fl-3" data-float=".1" viewBox="0 0 64 64" aria-hidden="true"><rect x="16" y="8" width="32" height="48" rx="4"/><circle cx="32" cy="28" r="8"/><path d="M24 44h16M32 20v16M24 28h16"/></svg>
+<svg class="fl fl-4" data-float="-.16" viewBox="0 0 64 64" aria-hidden="true"><path d="M6 22h52v8a4 4 0 0 0 0 8v8H6v-8a4 4 0 0 0 0-8z"/><path d="M42 22v24" stroke-dasharray="3 4"/></svg>
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="Despierta las ganas de viajar">Spark the wanderlust</div>
+<h2 data-es="¿A dónde viajarán tus clientes esta temporada?">Where will your customers travel this season?</h2>
+<p class="lead" data-es="Cada billete es una historia: un café en Roma, un atardecer en Barcelona, un fin de semana en Bruselas. Tú la vendes en minutos; nosotros ponemos los trenes.">Every ticket is a story: a coffee in Rome, a sunset in Barcelona, a weekend in Brussels. You sell it in minutes; we bring the trains.</p>
+</div>
+<div class="wander-grid">
+<div class="collage">
+<figure class="pc p1"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/rome.webp" alt="" loading="lazy"><figcaption><b>Roma</b><span data-es="Nápoles → Roma · 1h02">Naples → Rome · 1h02</span></figcaption><i class="pm"></i></figure>
+<figure class="pc p2"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/barcelona.webp" alt="" loading="lazy"><figcaption><b>Barcelona</b><span data-es="Madrid → Barcelona · 2h30">Madrid → Barcelona · 2h30</span></figcaption><i class="pm"></i></figure>
+<figure class="pc p3"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/brussels.webp" alt="" loading="lazy"><figcaption><b>Bruxelles</b><span data-es="Londres → Bruselas · 2h01">London → Brussels · 2h01</span></figcaption><i class="pm"></i></figure>
+<figure class="pc p4"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/budapest.webp" alt="" loading="lazy"><figcaption><b>Budapest</b><span data-es="Interrail · 33 países">Interrail · 33 countries</span></figcaption><i class="pm"></i></figure>
+<figure class="pc p5"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/florence.webp" alt="" loading="lazy"><figcaption><b>Firenze</b><span data-es="Bolonia → Florencia · 38′">Bologna → Florence · 38′</span></figcaption><i class="pm"></i></figure>
+<div class="tag"><i></i><b data-es="EQUIPAJE">LUGGAGE</b><span>MIL → VCE</span></div>
+</div>
+<div class="tickets">
+<div class="tk-head"><span class="ey2" data-es="Imprimiendo billetes…">Printing tickets…</span><span class="ey2 tk-count"><b>0</b>/5</span></div>
+<div class="tk tk-card"><div class="tk-main"><div class="tk-top"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt=""><span>EUROSTAR</span></div><div class="tk-route"><div><b>LON</b><small>London</small></div><i class="tk-line"></i><div><b>PAR</b><small>Paris</small></div></div><div class="tk-meta"><span><em data-es="Duración">Time</em>2h17</span><span><em data-es="Coche">Coach</em>07</span><span><em data-es="Asiento">Seat</em>42A</span></div></div><div class="tk-stub"><div class="bc"></div></div><div class="stamp" data-es="RESERVADO">BOOKED</div></div>
+<div class="tk tk-card"><div class="tk-main"><div class="tk-top"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt=""><span>FRECCIAROSSA</span></div><div class="tk-route"><div><b>MIL</b><small>Milano</small></div><i class="tk-line"></i><div><b>VCE</b><small>Venezia</small></div></div><div class="tk-meta"><span><em data-es="Duración">Time</em>2h27</span><span><em data-es="Coche">Coach</em>05</span><span><em data-es="Asiento">Seat</em>11D</span></div></div><div class="tk-stub"><div class="bc"></div></div><div class="stamp" data-es="RESERVADO">BOOKED</div></div>
+<div class="tk tk-card"><div class="tk-main"><div class="tk-top"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt=""><span>IRYO</span></div><div class="tk-route"><div><b>MAD</b><small>Madrid</small></div><i class="tk-line"></i><div><b>BCN</b><small>Barcelona</small></div></div><div class="tk-meta"><span><em data-es="Duración">Time</em>2h30</span><span><em data-es="Coche">Coach</em>03</span><span><em data-es="Asiento">Seat</em>08C</span></div></div><div class="tk-stub"><div class="bc"></div></div><div class="stamp" data-es="RESERVADO">BOOKED</div></div>
+<div class="tk tk-card"><div class="tk-main"><div class="tk-top"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt=""><span>EUROCITY 150</span></div><div class="tk-route"><div><b>MIL</b><small>Milano 11:10</small></div><i class="tk-line"></i><div><b>FRA</b><small>Frankfurt 18:44</small></div></div><div class="tk-meta"><span><em data-es="Duración">Time</em>7h34</span><span><em data-es="Coche">Coach</em>09</span><span><em data-es="Asiento">Seat</em>64B</span></div></div><div class="tk-stub"><div class="bc"></div></div><div class="stamp" data-es="RESERVADO">BOOKED</div></div>
+<div class="tk tk-card"><div class="tk-main"><div class="tk-top"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt=""><span>EUROSTAR</span></div><div class="tk-route"><div><b>PAR</b><small>Paris</small></div><i class="tk-line"></i><div><b>AMS</b><small>Amsterdam</small></div></div><div class="tk-meta"><span><em data-es="Duración">Time</em>3h20</span><span><em data-es="Coche">Coach</em>12</span><span><em data-es="Asiento">Seat</em>27F</span></div></div><div class="tk-stub"><div class="bc"></div></div><div class="stamp" data-es="RESERVADO">BOOKED</div></div>
+</div>
+</div>
+</div>
+</section>
+<!-- DESTINOS -->
+<section class="sec" id="destinations">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="¿Qué destinos puedes vender?">What destinations can you sell?</div>
+<h2 data-es="Nuestro inventario también es tuyo">Our inventory is yours too</h2>
+<p data-es="Elige una región y toca un país para ver sus operadores. En gris claro, los destinos disponibles bajo petición.">Choose a region and tap a country to see its operators. Lighter grey marks destinations available on request.</p>
+</div>
+<div class="dest">
+<div class="dest-map reveal"><svg id="worldSvg" role="img" aria-label="World map of available rail destinations"></svg></div>
+<div class="dest-side reveal">
+<div class="chips" id="regTabs"></div>
+<div class="ops" id="opsList"></div>
+<div class="req-box" id="reqBox"></div>
+</div>
+</div>
+<div class="pass reveal">
+<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/interrail.webp" alt="" loading="lazy">
+<div class="pass-in">
+<div><h3 data-es="Descubre Europa en tren">Explore Europe by train</h3><p data-es="Los pases Eurail e Interrail permiten recorrer hasta 33 países europeos con un solo pase: una solución flexible y rentable para itinerarios multidestino.">Eurail and Interrail Passes let travellers explore up to 33 European countries with a single pass, a flexible and cost-effective solution for multi-destination itineraries.</p></div>
+<div class="pass-stats">
+<div><b class="num" data-count="33">33</b><span data-es="Países">Countries</span></div>
+<div><b class="num" data-count="40000">40.000</b><span data-es="Destinos">Destinations</span></div>
+<div><b>∞</b><span data-es="Viajes ilimitados">Unlimited travel</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SOLUCIONES -->
+<section class="sec band-mist" id="solutions">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="Tres formas de vender">Three ways to sell</div>
+<h2 data-es="Elige la solución que mejor encaja con tu negocio">Choose the solution that best fits your business</h2>
+</div>
+<div class="sol-tabs reveal" id="solTabs"></div>
+<div class="sol-body reveal" id="solBody"></div>
+<div class="fit reveal"><span data-es="¿No sabes cuál elegir? Soy…">Not sure which one? I am a…</span><div class="chips" id="fitChips"></div></div>
+</div>
+</section>
+<!-- CLIENTES + GRUPOS -->
+<section class="sec">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="¿Quién usa RailClick?">Who uses RailClick?</div>
+<h2 data-es="Soluciones para cada tipo de negocio">Solutions for every type of business</h2>
+</div>
+<div class="users">
+<div class="ulist reveal">
+<div><b data-es="Agencias de viajes">Travel agencies</b><span data-es="Venta al cliente final">Selling to end clients</span></div>
+<div><b data-es="Turoperadores">Tour operators</b><span data-es="Paquetes con tren">Packages with rail</span></div>
+<div><b>OTAs</b><span data-es="Agencias de viajes online">Online Travel Agencies</span></div>
+<div><b>TMCs</b><span data-es="Viajes de empresa">Travel Management Companies</span></div>
+<div><b>DMCs</b><span data-es="Gestión de destino">Destination Management Companies</span></div>
+<div><b data-es="Consolidadores">Consolidators</b><span data-es="Distribución mayorista">Wholesale distribution</span></div>
+</div>
+<div class="group reveal">
+<div class="eyebrow" data-es="Reservas de grupo">Group bookings</div>
+<h3 data-es="Hasta 9 pasajeros por reserva">Up to 9 passengers per booking</h3>
+<label for="paxR" style="font-size:14px;color:#c9d0d5" data-es="¿Cuántas personas viajan?">How many people are travelling?</label>
+<input type="range" id="paxR" min="1" max="20" value="6">
+<div class="pax" id="paxDots" aria-hidden="true"></div>
+<p class="group-out" id="paxOut" aria-live="polite"></p>
+<span class="mail">agencias@railclick.com</span>
+</div>
+</div>
+</div>
+</section>
+<!-- EUROSTAR -->
+<section class="sec band-slate" id="eurostar">
+<div class="wrap">
+<div class="partner-head">
+<div class="reveal">
+<div class="eyebrow" data-es="Socio · Masterclass Eurostar · julio 2026">Partner · Eurostar Masterclass · July 2026</div>
+<h2 style="margin-top:12px" data-es="Vende el viaje, no solo los billetes">Sell the journey, not just the tickets</h2>
+</div>
+<img class="reveal" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/eurostar-trains.webp" alt="Eurostar trains" loading="lazy" style="border-radius:18px;object-fit:cover;max-height:220px">
+</div>
+<div class="map-row">
+<div class="mapbox reveal"><svg id="esMap" role="img" aria-label="Eurostar routes map"></svg></div>
+<div class="reveal">
+<div class="eyebrow" style="margin-bottom:12px" data-es="Rutas estrella · trayecto más rápido">Flagship routes · fastest journey</div>
+<div class="rlist" id="esList"></div>
+<p class="note" style="margin-top:12px;color:#b9c1c6" data-es="Londres–Amberes solo es directo en ese sentido: la estación de Amberes no tiene control fronterizo para salidas hacia Reino Unido. De Amberes a Londres: tren SNCB a Bruselas y Eurostar desde allí.">London–Antwerp is direct in this direction only: Antwerp has no border-control facilities for UK-bound departures. Antwerp to London: SNCB train to Brussels, then Eurostar.</p>
+</div>
+</div>
+<div class="vs-air">
+<div class="reveal"><b data-es="UBICACIÓN">LOCATION</b><h3 data-es="En el centro de la ciudad">In the city centre</h3><ul><li data-es="Estación en pleno centro">Station in the city centre</li><li data-es="Conexión con transporte local y nacional">Easy connection to local and national transport</li><li data-es="Sin traslados al aeropuerto">No airport transfers to pay for</li></ul></div>
+<div class="reveal"><b data-es="CHECK-IN">CHECK-IN</b><h3 data-es="Embarque simplificado">Simplified check-in</h3><ul><li data-es="Menos tiempo de antelación">Shorter check-in time</li><li data-es="Todos los controles en la salida">All checks done on departure</li></ul></div>
+<div class="reveal"><b data-es="EQUIPAJE">LUGGAGE</b><h3 data-es="Equipaje sin complicaciones">Luggage made easy</h3><ul><li data-es="Sin recogida de maletas">No baggage reclaim</li><li data-es="Franquicia generosa incluida">Generous allowance included</li><li data-es="Sin límites de peso ni de líquidos">No weight or liquid restrictions</li></ul></div>
+<div class="reveal"><b data-es="FLEXIBILIDAD">FLEXIBILITY</b><h3 data-es="Flexibilidad en todas las tarifas">Built-in flexibility</h3><ul><li data-es="Cambios hasta 1 h antes de salir">Exchangeable up to 1 hour before departure</li><li data-es="Standard y Plus reembolsables hasta 7 días antes, con pequeño cargo">Standard/Plus refundable up to 7 days before, small fee</li><li data-es="Premier reembolsable hasta 2 días después del viaje">Premier refundable up to 2 days after travel</li></ul></div>
+</div>
+<div class="es-extra">
+<img class="reveal" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/es-lounge.webp" alt="Eurostar lounge" loading="lazy">
+<div class="es-new reveal">
+<h3 data-es="Nuevos destinos a principios de 2030">New destinations in the early 2030s</h3>
+<p data-es="Con su nueva flota, Eurostar podrá lanzar rutas directas nuevas. Tiempos y paradas aún sin confirmar; esta es una indicación:">With its new fleet, Eurostar will be able to launch new direct routes. Times and stops are not yet confirmed; this is an indication:</p>
+<div class="nr"><b data-es="Londres">London</b><span>5–6 h</span><b style="text-align:right" data-es="Fráncfort">Frankfurt</b></div>
+<div class="nr"><b data-es="Londres">London</b><span>5–6 h</span><b style="text-align:right" data-es="Ginebra">Geneva</b></div>
+<div class="nr"><b data-es="Ámsterdam / Bruselas">Amsterdam / Brussels</b><span>5–6 h</span><b style="text-align:right" data-es="Ginebra">Geneva</b></div>
+</div>
+</div>
+</div>
+</section>
+<!-- TRENITALIA -->
+<section class="sec" id="trenitalia">
+<div class="wrap">
+<div class="partner-head">
+<div class="reveal">
+<div class="eyebrow" data-es="Socio · Trenitalia">Partner · Trenitalia</div>
+<h2 style="margin-top:12px" data-es="El tren por Italia y más allá">Rail travel across Italy and beyond</h2>
+</div>
+<img class="reveal" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/fr-front.webp" alt="Frecciarossa 1000" loading="lazy">
+</div>
+<div class="it-hl reveal">
+<div><b class="num">240+</b><span data-es="Frecciarossa al día">Frecciarossa trains per day</span></div>
+<div><b class="num">300 km/h</b><span data-es="Velocidad máxima">Top speed</span></div>
+<div><b class="num">2h50</b><span data-es="Roma–Milán sin paradas, récord">Rome–Milan nonstop record</span></div>
+</div>
+<div class="map-row">
+<div class="mapbox reveal"><svg id="itMap" role="img" aria-label="Italy high-speed travel times"></svg></div>
+<div class="leg-card reveal" id="itCard"></div>
+</div>
+<div class="classes">
+<div class="reveal">
+<div class="chips" id="clTabs"></div>
+<div class="cl-gal" id="clGal" style="margin-top:14px"></div>
+</div>
+<div class="cl-txt reveal">
+<div class="eyebrow" data-es="Frecciarossa 1000 · niveles de servicio">Frecciarossa 1000 · service levels</div>
+<h3 id="clName" style="margin-top:10px"></h3>
+<p id="clDesc"></p>
+<div class="mx-wrap"><table class="matrix" id="matrix"></table></div>
+<p class="note" style="margin-top:8px" data-es="*Executive solo en Frecciarossa 1000 y 500. **Catering en la mayoría de rutas Frecciarossa.">*Executive only on Frecciarossa 1000 and 500. **Catering available on most Frecciarossa routes.</p>
+</div>
+</div>
+<div class="svc-grid">
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/cat1.webp" alt="" loading="lazy"><div><h3>FrecciaBistrò · EasyBistrò</h3><p data-es="Bar a bordo con pasta, ensaladas, pizza, vinos locales y cervezas artesanas, o pedido al asiento desde FrecciaPlay.">Onboard bar with pasta, salads, pizza, local wines and craft beers, or order to your seat from FrecciaPlay.</p></div></div>
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/lug2.webp" alt="" loading="lazy"><div><h3 data-es="Zona de equipaje">Luggage zone</h3><p data-es="Espacios dedicados para maletas grandes en el coche, además de los portaequipajes.">Dedicated areas for large suitcases in each coach, in addition to overhead racks.</p></div></div>
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/lounge1.webp" alt="" loading="lazy"><div><h3>FrecciaLounge · FrecciaClub</h3><p data-es="Salas en Roma Termini y Milano Centrale, con más de 500 m² y jardín. Próximas aperturas en Nápoles, Bolonia y Florencia.">Lounges at Roma Termini and Milano Centrale, over 500 m² with a garden. Opening soon in Naples, Bologna and Florence.</p></div></div>
+</div>
+<div class="intl">
+<div class="card reveal">
+<div class="eyebrow" data-es="Frecciarossa internacional">Frecciarossa international</div>
+<h3 style="margin-top:8px" data-es="Trenitalia France: Milán–Lyon–París y Marsella–Lyon–París">Trenitalia France: Milan–Lyon–Paris and Marseille–Lyon–Paris</h3>
+<div class="fare-list">
+<div><span data-es="París–Milán · Standard">Paris–Milan · Standard</span><b data-es="desde 35 €">from €35</b></div>
+<div><span data-es="París–Lyon · Standard">Paris–Lyon · Standard</span><b data-es="desde 23 €">from €23</b></div>
+<div><span data-es="París–Marsella · Standard">Paris–Marseille · Standard</span><b data-es="desde 27 €">from €27</b></div>
+</div>
+<p class="note" style="margin-top:8px" data-es="Tarifa Serenità. También tarifas de grupo y acompañantes de PMR.">Serenità fare. Group and PRM companion fares also available.</p>
+</div>
+<div class="card reveal">
+<div class="eyebrow">iryo</div>
+<h3 style="margin-top:8px" data-es="iryo: entre las principales ciudades españolas">iryo: running between Spain's main cities</h3>
+<div class="fare-list">
+<div><span>Barcelona–Madrid</span><b>2h30</b></div>
+<div><span>Madrid–Sevilla</span><b>2h40</b></div>
+<div><span>Madrid–Valencia</span><b>2h50</b></div>
+</div>
+<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/fr-34.webp" alt="iryo" loading="lazy" style="height:110px;width:auto;margin:10px 0 0 auto">
+</div>
+</div>
+<div class="pompei reveal">
+<div class="pompei-txt">
+<div class="eyebrow" style="color:#7fd6dc">Frecciarossa + FrecciaLink</div>
+<h3 data-es="De las grandes ciudades a Pompeya">From Italy's main cities to Pompeii</h3>
+<p data-es="Servicio diario hasta el 8 de octubre de 2026 vía Napoli Centrale o Napoli Afragola. Ejemplo: Roma–Pompei Scavi, ida y vuelta en el día.">Daily service until 8 October 2026 via Napoli Centrale or Napoli Afragola. Example: Rome–Pompei Scavi, round trip in one day.</p>
+<div class="tt">
+<div><span>08:05</span><span></span><span>10:01</span></div>
+<div><span>18:50</span><span></span><span>20:55</span></div>
+</div>
+<p class="note" style="color:#b9c1c6" data-es="Roma Termini → Pompei Scavi en 1h56 · vuelta en 2h05">Roma Termini → Pompei Scavi in 1h56 · return in 2h05</p>
+</div>
+<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/pompei.webp" alt="Pompeii" loading="lazy">
+</div>
+</div>
+</section>
+<!-- RED REGIONAL -->
+<section class="sec band-mist">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="Más allá de la alta velocidad">Beyond high speed</div>
+<h2 data-es="Intercity, trenes nocturnos, regionales y aeropuerto">Intercity, night trains, regional and airport links</h2>
+</div>
+<div class="fleet">
+<div class="card reveal">
+<h3>Intercity</h3>
+<p data-es="Butacas amplias, enchufes, zona de bicis (6 plazas + 2 de carga), zona familiar y plazas PMR.">Spacious armchairs, power sockets, bike area (6 places + 2 charging points), family area and PRM seats.</p>
+<div class="seatcmp">
+<div><b data-es="1ª Plus">1st Class Plus</b><span data-es="103 cm entre butacas · 63 cm de ancho">103 cm pitch · 63 cm seat</span></div>
+<div><b data-es="2ª Easy">2nd Class Easy</b><span data-es="95 cm entre butacas · 51 cm de ancho">95 cm pitch · 51 cm seat</span></div>
+</div>
+<h3 style="font-size:19px;margin-top:8px">Intercity Notte</h3>
+<p data-es="Cabina Superior, coche cama Relax, litera Comfort y asiento Easy. Desayuno incluido, sin colas, mascotas admitidas y cabina con cierre interior.">Superior Cabin, Relax Bed Coach, Comfort Couchette and Easy seat. Breakfast included, no queues, pets allowed and cabins lockable from inside.</p>
+<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/icnotte.webp" alt="" loading="lazy" style="border-radius:12px;aspect-ratio:16/10;object-fit:cover">
+</div>
+<div class="card reveal">
+<h3>Regionale</h3>
+<div class="kp"><div><b class="num" data-count="6000">6.000+</b><span data-es="viajes al día">trips per day</span></div><div><b class="num" data-count="1700">1.700+</b><span data-es="destinos">destinations</span></div></div>
+<p data-es="La red regional que lleva el viaje hasta el último pueblo de Italia.">The regional network that takes the journey to every corner of Italy.</p>
+<div class="reg-stage"><img class="reg-train" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/regionale-cut.webp" alt="Trenitalia Regionale" loading="lazy"></div>
+</div>
+<div class="card reveal">
+<h3>Leonardo Express</h3>
+<div class="kp"><div><b class="num">32′</b><span data-es="Roma Termini ↔ Fiumicino">Roma Termini ↔ Fiumicino</span></div></div>
+<ul>
+<li data-es="Desde Termini 04:50–23:05 · desde el aeropuerto 05:38–23:53">From Termini 04:50–23:05 · from the airport 05:38–23:53</li>
+<li data-es="Menores de 4 años gratis; un niño de 4 a 12 gratis por adulto">Under-4s free; one child aged 4–12 free per paying adult</li>
+<li data-es="Equipaje grande sin recargo y mascota pequeña gratis">Large luggage at no extra cost and small pets free</li>
+<li data-es="Minigruppi: 4 billetes por 40 € en vez de 56 €">“Minigruppi”: 4 tickets for €40 instead of €56</li>
+<li data-es="No reembolsable">Not refundable</li>
+</ul>
+<img class="cut" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/leonardo.webp" alt="Leonardo Express" loading="lazy">
+</div>
+</div>
+</div>
+</section>
+<!-- CROSS BORDER -->
+<section class="sec band-slate" id="crossborder">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="Conexiones transfronterizas">Cross-border connections</div>
+<h2 data-es="De Italia a Suiza, Alemania y Austria">From Italy to Switzerland, Germany and Austria</h2>
+<p data-es="En colaboración con otros ferrocarriles europeos. Elige un servicio para verlo en el mapa.">In collaboration with other European railways. Choose a service to see it on the map.</p>
+</div>
+<div class="chips xb-tabs reveal" id="xbTabs"></div>
+<div class="xb">
+<div class="mapbox reveal"><svg id="xbMap" role="img" aria-label="Cross-border routes map"></svg></div>
+<div class="xb-info reveal" id="xbInfo"></div>
+</div>
+</div>
+</section>
+<!-- TURÍSTICOS -->
+<section class="sec">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="Treni Turistici Italiani · programa 2026">Treni Turistici Italiani · 2026 program</div>
+<h2 data-es="El viaje como destino">The journey as the destination</h2>
+</div>
+<div class="tour">
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/tt3.webp" alt="" loading="lazy"><div><h3>Espresso</h3><p data-es="De día y de noche, combinan paisajes, privacidad y descanso.">Day and overnight services blending scenic views, privacy and relaxation.</p><ul><li>Roma ↔ Perugia</li><li>Roma ↔ Arezzo</li><li>Roma ↔ München</li></ul></div></div>
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/tt1.webp" alt="" loading="lazy"><div><h3 data-es="Trenes históricos">Historic Trains</h3><p data-es="Una colección única: cada tren devuelve el encanto de viajar en otra época.">A collection like no other: each train brings back the charm of travel from a bygone age.</p><ul><li>Roma ↔ Siena</li><li>Milano ↔ Alba</li><li>Torino ↔ Ventimiglia</li><li>Torino ↔ Nizza Monferrato</li></ul></div></div>
+<div class="card reveal"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/tt2.webp" alt="" loading="lazy"><div><h3>Italian Rail Tour</h3><p data-es="Un auténtico crucero en tren, premium, cuidado y sin prisas.">A true train cruise: premium, curated and unhurried.</p><ul><li>Roma → Napoli → Monopoli → Lecce → Ostuni → Salerno</li><li>Roma → Salerno → Matera → Napoli</li><li>Roma → Firenze → Bologna → Ravenna → Venezia → Verona → Milano → Monterosso → Pisa → Firenze</li></ul></div></div>
+</div>
+</div>
+</section>
+<!-- TARIFAS -->
+<section class="sec band-mist" id="fares">
+<div class="wrap">
+<div class="sec-head reveal">
+<div class="eyebrow" data-es="Tarifas básicas · Frecciarossa e Intercity">Basic offers · Frecciarossa and Intercity</div>
+<h2 data-es="De la más flexible a la más barata">From most flexible to lowest price</h2>
+</div>
+<div class="need reveal"><span data-es="Tu cliente necesita…">Your customer needs…</span><div class="chips" id="needChips"></div></div>
+<div class="fares" id="fareCards"></div>
+<div class="top reveal">
+<div>
+<div class="eyebrow">Top Fare · Trenitalia</div>
+<h3 style="margin-top:8px" data-es="Una tarifa especial para turoperadores">A special fare for tour operators</h3>
+<p data-es="Pensada para quien vende paquetes que incluyen tren junto a alojamiento, transporte u otras experiencias. Disponible solo en Portal web y Marca blanca, no por API.">Designed for operators selling packages that combine rail with accommodation, transport and other experiences. Available only through the Web Portal and White Label, not via API.</p>
+</div>
+<ul>
+<li><b>%</b><span data-es="Descuento especial sobre la tarifa Base">Special discount on the Base fare</span></li>
+<li><b>⚡</b><span data-es="En trenes de alta velocidad y larga distancia">On high-speed and long-distance trains</span></li>
+<li><b>✕</b><span data-es="No admite cambios ni cancelaciones">Tickets cannot be changed or cancelled</span></li>
+<li><b>⊕</b><span data-es="Válido solo combinado con otros servicios del paquete; el precio no aparece en el billete">Valid only combined with other package services; the price is not shown on the ticket</span></li>
+</ul>
+</div>
+</div>
+</section>
+<!-- CIERRE -->
+<section class="sec" id="contact">
+<div class="wrap close-grid">
+<div class="reveal">
+<div class="eyebrow" data-es="¿Por qué RailClick?">Why RailClick?</div>
+<h2 style="margin-top:12px" data-es="Todo el mundo del tren en <span>una sola plataforma</span>">The entire rail world on <span>a single platform</span></h2>
+<div class="pills">
+<span data-es="Un contrato">One contract</span><span data-es="Un punto de acceso">One access point</span><span data-es="Múltiples operadores">Multiple rail operators</span><span data-es="Implantación rápida">Fast implementation</span><span data-es="Soporte experto">Dedicated expert support</span><span data-es="Para negocios de cualquier tamaño">Businesses of any size</span>
+</div>
+<div class="dl">
+<a class="btn" href="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/RailClick-presentation-EN.pdf" target="_blank" rel="noopener" data-es="Presentación en PDF (inglés)">Download PDF deck (English)</a>
+<a class="btn ghost" href="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/RailClick-presentacion-ES.pdf" target="_blank" rel="noopener" data-es="Presentación en PDF (castellano)">PDF deck (Spanish)</a>
+</div>
+</div>
+<div class="contact reveal">
+<img class="ph" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/closing.webp" alt="" loading="lazy">
+<div class="contact-in">
+<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/qr.webp" alt="QR code to connect with RailClick">
+<div><b data-es="Empieza a vender tren con RailClick">Start selling rail with RailClick</b><p data-es="Escanea el código o escríbenos.">Scan the code or write to us.</p><p style="margin-top:8px;font-family:var(--f-mono);color:#fff;user-select:all">agencias@railclick.com</p><p style="font-family:var(--f-mono);color:#fff">www.railclick.com</p></div>
+</div>
+</div>
+</div>
+</section>
+<footer>
+<div class="wrap">
+<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg" alt="RailClick">
+<span data-es="RailClick forma parte de Global GSA · Información según la presentación de RailClick 2026 y la de sus socios Eurostar y Trenitalia.">RailClick is part of Global GSA · Information from the RailClick 2026 presentation and its partners Eurostar and Trenitalia.</span>
+</div>
+</footer>
+<script>
+function RC_MAIN(MAPS){
+document.documentElement.classList.add('js');
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var DPR=Math.min(window.devicePixelRatio||1,2),NS='http://www.w3.org/2000/svg';
+function $(id){return document.getElementById(id);}
+function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function onVisible(n,cb,o){try{var io=new IntersectionObserver(function(es){es.forEach(function(e){cb(e.isIntersecting);});},o||{threshold:.05});io.observe(n);}catch(e){cb(true);}}
+var C={slate:'#414A52',slate2:'#2f363c',teal:'#0DA3AE',tealInk:'#0a7f88',fog:'#e7e9eb',muted:'#7c858d',line:'#d9dcdf'};
+/* ===== IDIOMA ===== */
+var LANG='en',renders=[];
+function t(o){return typeof o==='string'?o:(o[LANG]||o.en);}
+document.querySelectorAll('[data-es]').forEach(function(n){n.setAttribute('data-en',n.innerHTML);});
+function setLang(l){LANG=l;document.documentElement.lang=l;
+document.querySelectorAll('[data-es]').forEach(function(n){n.innerHTML=n.getAttribute('data-'+l);});
+$('lgEN').classList.toggle('on',l==='en');$('lgES').classList.toggle('on',l==='es');
+renders.forEach(function(f){f();});
+try{localStorage.setItem('rc-lang',l);}catch(e){}}
+$('lgEN').onclick=function(){setLang('en');};$('lgES').onclick=function(){setLang('es');};
+/* reveal + nav */
+document.querySelectorAll('.reveal').forEach(function(n){if(n.getBoundingClientRect().top>innerHeight*.9)n.classList.add('pre');onVisible(n,function(s){if(s)n.classList.remove('pre');},{threshold:.1});});
+var navA=document.querySelectorAll('.nav-links a');
+navA.forEach(function(a){var tg=document.querySelector(a.getAttribute('href'));if(tg)onVisible(tg,function(s){if(s){navA.forEach(function(x){x.classList.remove('on');});a.classList.add('on');}},{rootMargin:'-45% 0px -50% 0px'});});
+addEventListener('scroll',function(){$('nav').classList.toggle('scrolled',scrollY>10);},{passive:true});
+/* contadores */
+document.querySelectorAll('[data-count]').forEach(function(n){var end=+n.getAttribute('data-count'),done=false,start=end>1900&&end<2100?1990:0;
+onVisible(n,function(s){if(!s||done||RM)return;done=true;var t0=performance.now();(function step(now){var q=Math.min((now-t0)/1400,1),e=1-Math.pow(1-q,3),v=Math.round(start+(end-start)*e);n.textContent=end>=1000&&end<1900||end>=2100?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,LANG==='es'?'.':',')+(n.textContent.indexOf('+')>-1||end===6000||end===1700?'+':''):v;if(q<1)requestAnimationFrame(step);else n.classList.add('pop');})(t0);},{threshold:.6});});
+/* ===== HERO: vías con trenes en paralaje ===== */
+(function(){
+var c=$('heroCanvas'),x=c.getContext('2d'),W,H,lanes=[],run=true,t0=performance.now();
+function size(){W=c.clientWidth;H=c.clientHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);
+var band=Math.min(250,H*.3),top=H-band;lanes=[];
+var S=[.6,.82,1.08,1.4];
+var f=Math.max(.65,Math.min(1,W/1000));S.forEach(function(s,i){s*=f;var y=top+band*(.1+i*.24);var dir=i%2?-1:1;
+var v=(85+Math.random()*60)*s;lanes.push({y:y,s:s,dir:dir,v:v,a:.45+i*.18,trains:[spawn(s,v,true)]});});}
+function spawn(s,v,init){var cars=3+Math.floor(Math.random()*4),car=70*s,L=cars*car+car*.5;
+var x0=init?Math.random()*W*.7:-L-20;
+return {x:x0,L:L,cars:cars,car:car,v:v,gap:W*(.25+Math.random()*.9),teal:Math.random()<.3};}
+function track(l){var s=l.s,y=l.y;x.strokeStyle='rgba(65,74,82,'+(l.a*.35)+')';x.lineWidth=1;
+x.beginPath();x.moveTo(0,y+9*s);x.lineTo(W,y+9*s);x.moveTo(0,y+12*s);x.lineTo(W,y+12*s);x.stroke();
+x.strokeStyle='rgba(65,74,82,'+(l.a*.22)+')';x.lineWidth=2*s;x.beginPath();for(var px=0;px<W;px+=14*s){x.moveTo(px,y+7.5*s);x.lineTo(px,y+13.5*s);}x.stroke();}
+function rr(px,py,w,h,r){x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+h,r);x.arcTo(px+w,py+h,px,py+h,r);x.arcTo(px,py+h,px,py,r);x.arcTo(px,py,px+w,py,r);x.closePath();}
+function train(l,t,B){var s=l.s,h=20*s,y=l.y-h+6*s;x.save();
+if(l.dir<0){x.translate(W,0);x.scale(-1,1);}var tx=t.x;
+x.globalAlpha=l.a;var body=t.L-t.car*.5,nose=t.car*1.1;
+/* cuerpo + morro aerodinámico */
+x.beginPath();x.moveTo(tx+4*s,y);x.lineTo(tx+body,y);x.bezierCurveTo(tx+body+nose*.55,y,tx+body+nose,y+h*.7,tx+body+nose,y+h);x.lineTo(tx,y+h);x.quadraticCurveTo(tx,y,tx+4*s,y);x.closePath();
+x.fillStyle=t.teal?'#0DA3AE':'#fff';x.fill();x.strokeStyle=t.teal?'#0a7f88':'#414A52';x.lineWidth=1.1;x.stroke();
+/* faro + estelas */
+var nx=tx+body+nose;var g=x.createLinearGradient(nx,0,nx+90*s,0);g.addColorStop(0,'rgba(13,163,174,.35)');g.addColorStop(1,'rgba(13,163,174,0)');x.fillStyle=g;x.beginPath();x.moveTo(nx,y+h*.55);x.lineTo(nx+90*s,y+h*.15);x.lineTo(nx+90*s,y+h*1.05);x.closePath();x.fill();
+if(B>1.15){var k2=Math.min(1,(B-1.15)/2);x.strokeStyle='rgba(65,74,82,'+(.35*k2)+')';x.lineWidth=1;x.beginPath();for(var q=0;q<3;q++){var ly=y+h*(.25+q*.25),ll=(40+q*25)*s*B*k2;x.moveTo(tx-6*s,ly);x.lineTo(tx-6*s-ll,ly);}x.stroke();}
+/* franja */
+x.fillStyle=t.teal?'#fff':'#0DA3AE';x.fillRect(tx+2*s,y+h*.68,body+nose*.62-2*s,2.2*s);
+/* ventanas */
+x.fillStyle=t.teal?'rgba(255,255,255,.85)':'#414A52';
+for(var k=0;k<t.cars;k++){var cx=tx+k*t.car;for(var w=0;w<4;w++)rr(cx+8*s+w*14.5*s,y+h*.22,10*s,h*.26,1.5*s),x.fill();
+if(k>0){x.fillRect(cx-.5,y+2*s,1,h-4*s);}}
+rr(tx+body+nose*.18,y+h*.2,nose*.42,h*.3,3*s);x.fill();
+/* bogies */
+x.fillStyle='#414A52';for(var k=0;k<t.cars;k++){var cx=tx+k*t.car;x.beginPath();x.arc(cx+12*s,y+h+1.5*s,2.4*s,0,6.283);x.arc(cx+t.car-12*s,y+h+1.5*s,2.4*s,0,6.283);x.fill();}
+x.restore();}
+function frame(now){if(!run)return;var dt=Math.min((now-t0)/1000,.05);t0=now;x.clearRect(0,0,W,H);
+lanes.forEach(function(l){track(l);
+var B=window.__rcB||1;l.trains.forEach(function(t){t.x+=t.v*dt*B;train(l,t,B);});
+l.trains=l.trains.filter(function(t){return t.x<W+60;});
+var last=l.trains[l.trains.length-1];if(!last||last.x>last.gap)l.trains.push(spawn(l.s,l.v,false));});
+if(!RM)requestAnimationFrame(frame);}
+size();addEventListener('resize',function(){size();if(RM)frame(performance.now());});
+if(RM)frame(performance.now());else{onVisible(c,function(s){var w=run;run=s;if(s&&!w){t0=performance.now();requestAnimationFrame(frame);}});requestAnimationFrame(frame);}
+})();
+/* ===== RETO: diagrama ===== */
+(function(){
+var svg=$('chalSvg'),mode=0,box=$('chal');
+var ops=[{n:'Renfe',y:40},{n:'SNCF',y:105},{n:'Trenitalia',y:170},{n:'Eurostar',y:235},{n:'DB',y:300},{n:'ÖBB',y:365}];
+function draw(){svg.innerHTML='';box.classList.toggle('solved',!!mode);
+var ax=80,ay=210,hx=330;
+ops.forEach(function(o,i){var ox=540,oy=o.y;
+if(!mode){for(var k=0;k<3;k++){var off=(k-1)*14;el('path',{d:'M'+ax+' '+(ay+off)+' C'+(220+k*40)+' '+(ay+off*4)+' '+(380-k*30)+' '+(oy-off*3)+' '+ox+' '+oy,fill:'none',stroke:k===1?C.slate:'#b7bec4','stroke-width':k===1?1.8:1.2,'stroke-dasharray':k===2?'4 5':'none',opacity:.85},svg);}
+el('text',{x:ox-40,y:oy-14,'font-family':'IBM Plex Mono, monospace','font-size':10,fill:C.muted},svg).textContent=(LANG==='es'?['API','XML','Web','Contrato','Usuario','Backoffice']:['API','XML','Web','Contract','Login','Back office'])[i];}
+else{var p=el('path',{d:'M'+hx+' '+ay+' C'+(hx+90)+' '+ay+' '+(ox-90)+' '+oy+' '+ox+' '+oy,fill:'none',stroke:C.teal,'stroke-width':2.4},svg);}
+var g=el('g',{},svg);el('rect',{x:ox,y:oy-18,width:92,height:36,rx:18,fill:'#fff',stroke:mode?C.teal:C.line,'stroke-width':1.5},g);el('text',{x:ox+46,y:oy+5,'text-anchor':'middle','font-family':'Sora, sans-serif','font-size':13,'font-weight':600,fill:C.slate2},g).textContent=o.n;});
+if(mode){el('path',{d:'M'+ax+' '+ay+' L'+hx+' '+ay,stroke:C.teal,'stroke-width':4,fill:'none'},svg);
+var hub=el('g',{},svg);el('circle',{cx:hx,cy:ay,r:46,fill:'#fff',stroke:C.teal,'stroke-width':3},hub);
+var im=el('image',{x:hx-38,y:ay-12,width:76,height:20},hub);im.setAttributeNS('http://www.w3.org/1999/xlink','href','https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg');im.setAttribute('href','https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/logo.svg');
+if(!RM){var pulse=el('circle',{cx:hx,cy:ay,r:46,fill:'none',stroke:C.teal,'stroke-width':2},svg);var a1=el('animate',{attributeName:'r',from:46,to:80,dur:'2s',repeatCount:'indefinite'},pulse);el('animate',{attributeName:'opacity',from:.8,to:0,dur:'2s',repeatCount:'indefinite'},pulse);}}
+var ag=el('g',{},svg);el('circle',{cx:ax,cy:ay,r:40,fill:C.slate},ag);el('text',{x:ax,y:ay+4,'text-anchor':'middle','font-family':'Sora, sans-serif','font-size':12,'font-weight':700,fill:'#fff'},ag).textContent=LANG==='es'?'Agencia':'Agency';
+$('chalNote').textContent=mode?(LANG==='es'?'Un contrato, un acceso y todos los operadores detrás.':'One contract, one access point, every operator behind it.'):(LANG==='es'?'Un acceso, un contrato y un sistema distinto por cada operador.':'A separate access, contract and system for every operator.');}
+[].forEach.call(document.querySelectorAll('.chal-toggle .chip'),function(b){b.onclick=function(){mode=+b.dataset.m;[].forEach.call(b.parentNode.children,function(x){x.classList.toggle('on',x===b);});draw();};});
+renders.push(draw);draw();
+var auto=false;onVisible(svg,function(s){if(s&&!auto&&!RM){auto=true;setTimeout(function(){var b=document.querySelector('.chal-toggle .chip[data-m="1"]');if(mode===0)b.click();},2600);}},{threshold:.5});
+})();
+/* ===== DESTINOS ===== */
+(function(){
+var svg=$('worldSvg'),W=MAPS.world;svg.setAttribute('viewBox','0 0 '+W.w+' '+W.h);
+var REG={
+europe:{n:{en:'Europe',es:'Europa'},vb:'428 28 148 108',list:[
+['826',{en:'United Kingdom',es:'Reino Unido'},'Eurostar · National Rail'],['372',{en:'Ireland',es:'Irlanda'},'Iarnród Éireann'],['250',{en:'France',es:'Francia'},'SNCF'],['724',{en:'Spain',es:'España'},'Renfe · iryo'],['620','Portugal','CP'],['380',{en:'Italy',es:'Italia'},'Trenitalia · Leonardo Express'],['276',{en:'Germany',es:'Alemania'},'DB'],['040','Austria','ÖBB · Nightjet · Railjet'],['756',{en:'Switzerland',es:'Suiza'},'SBB'],['056',{en:'Belgium',es:'Bélgica'},'SNCB'],['528',{en:'Netherlands',es:'Países Bajos'},'NS'],['442',{en:'Luxembourg',es:'Luxemburgo'},'CFL'],['208',{en:'Denmark',es:'Dinamarca'},'DSB'],['752',{en:'Sweden',es:'Suecia'},'SJ'],['203',{en:'Czech Republic',es:'Chequia'},'ČD · Railjet'],['703',{en:'Slovakia',es:'Eslovaquia'},'ZSSK'],['348',{en:'Hungary',es:'Hungría'},'MÁV'],['440',{en:'Lithuania',es:'Lituania'},'LTG']],req:[]},
+asia:{n:{en:'Asia & Oceania',es:'Asia y Oceanía'},vb:'630 60 280 370',list:[['156','China','China Railway'],['392',{en:'Japan',es:'Japón'},'Japan Rail Pass'],['410',{en:'South Korea',es:'Corea del Sur'},'Korea Rail Pass'],['704','Vietnam','Vietnam Railways'],['764',{en:'Thailand',es:'Tailandia'},'SRT'],['458',{en:'Malaysia',es:'Malasia'},'KTMB'],['360','Indonesia','Whoosh'],['036','Australia','Australia National']],req:['392','410','764','458','036']},
+americas:{n:{en:'Americas',es:'América'},vb:'50 10 330 460',list:[['124',{en:'Canada',es:'Canadá'},'VIA Rail'],['840',{en:'United States',es:'Estados Unidos'},'Amtrak · Brightline'],['152','Chile','EFE']],req:['124']}
+};
+var cur='europe',paths={};
+W.c.forEach(function(f){var p=el('path',{d:f.d},svg);paths[f.id]=p;});
+var tabs=$('regTabs');
+Object.keys(REG).forEach(function(k){var b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=k;b.onclick=function(){cur=k;draw(true);};tabs.appendChild(b);});
+function hl(id){Object.keys(paths).forEach(function(k){paths[k].classList.remove('hl');});if(paths[id])paths[id].classList.add('hl');
+[].forEach.call($('opsList').children,function(b){b.classList.toggle('on',b.dataset.id===id);});}
+var curVB=null,anim=null;
+function zoomTo(vb){var to=vb.split(' ').map(Number);if(!curVB||RM){curVB=to;svg.setAttribute('viewBox',to.join(' '));return;}var from=curVB.slice(),t0=performance.now();if(anim)cancelAnimationFrame(anim);
+(function step(n){var q=Math.min((n-t0)/900,1),e=q<.5?2*q*q:1-Math.pow(-2*q+2,2)/2;curVB=from.map(function(a,i){return a+(to[i]-a)*e;});svg.setAttribute('viewBox',curVB.join(' '));if(q<1)anim=requestAnimationFrame(step);})(t0);}
+function draw(zoom){var R=REG[cur];[].forEach.call(tabs.children,function(b){b.textContent=t(REG[b.dataset.k].n);b.classList.toggle('on',b.dataset.k===cur);});
+Object.keys(paths).forEach(function(k){paths[k].classList.remove('on','req','hl');});
+Object.keys(REG).forEach(function(r){REG[r].list.forEach(function(c){var p=paths[c[0]];if(p)p.classList.add(REG[r].req.indexOf(c[0])>-1?'req':'on');});});
+var ol=$('opsList');ol.innerHTML='';R.list.forEach(function(c){var b=document.createElement('button');b.type='button';b.dataset.id=c[0];b.innerHTML='<b>'+t(c[1])+'</b><span>'+c[2]+(R.req.indexOf(c[0])>-1?(LANG==='es'?' · bajo petición':' · on request'):'')+'</span>';b.onmouseenter=b.onclick=function(){hl(c[0]);};ol.appendChild(b);});
+$('reqBox').innerHTML=cur==='europe'?(LANG==='es'?'<b>Pases Eurail e Interrail</b> para recorrer hasta 33 países con un solo pase.':'<b>Eurail and Interrail Passes</b> to explore up to 33 countries with a single pass.'):(LANG==='es'?'<b>Reservas bajo petición:</b> Japan Rail Pass, Korea Rail Pass y billetes en Tailandia, Malasia, Australia y Canadá. Escribe a <b>agencias@railclick.com</b> con los datos del viaje.':'<b>Bookings on request:</b> Japan Rail Pass, Korea Rail Pass and tickets in Thailand, Malaysia, Australia and Canada. Email <b>agencias@railclick.com</b> with the travel details.');
+if(zoom!==false)zoomTo(R.vb);}
+Object.keys(paths).forEach(function(id){paths[id].addEventListener('click',function(){var found=null;Object.keys(REG).forEach(function(r){REG[r].list.forEach(function(c){if(c[0]===id)found=r;});});if(found){if(found!==cur){cur=found;draw();}hl(id);}});});
+renders.push(function(){draw(false);});draw();
+})();
+/* ===== SOLUCIONES ===== */
+(function(){
+var SOL=[
+{k:'wp',n:{en:'Web Portal',es:'Portal web'},s:{en:'Start selling within 24 hours.',es:'Empieza a vender en 24 horas.'},time:{en:'1 day',es:'1 día'},w:8,
+h:{en:'Start selling in just 1 day',es:'Empieza a vender en solo 1 día'},img:'office',
+steps:[{en:'Easy agency registration & activation',es:'Registro y activación sencillos de la agencia'},{en:'Agency and user setup',es:'Alta de la agencia y sus usuarios'},{en:'Access to your back office',es:'Acceso a tu backoffice'},{en:'Start selling',es:'Empieza a vender'}],
+for:{en:'Ideal for travel agencies, DMCs and tour operators without technical development capabilities.',es:'Ideal para agencias de viajes, DMCs y turoperadores sin capacidad de desarrollo técnico.'}},
+{k:'wl',n:{en:'White Label',es:'Marca blanca'},s:{en:'Your brand, our technology.',es:'Tu marca, nuestra tecnología.'},time:{en:'1 week',es:'1 semana'},w:35,
+h:{en:'Your own rail booking platform',es:'Tu propia plataforma de reservas de tren'},img:'wl',
+feat:[{en:'Custom domain',es:'Dominio propio'},{en:'Branded design',es:'Diseño con tu marca'},{en:'Rail search engine',es:'Buscador de trenes'},{en:'Ticket issuance',es:'Emisión de billetes'},{en:'Service fee management for agencies',es:'Gestión de tasas de servicio para agencias'}],
+for:{en:'Offer your customers a fully personalised experience under your own brand. Estimated implementation: 1 week.',es:'Ofrece a tus clientes una experiencia totalmente personalizada con tu marca. Implantación estimada: 1 semana.'}},
+{k:'api',n:{en:'API Connection',es:'Conexión API'},s:{en:'Full integration with your digital ecosystem.',es:'Integración total con tu ecosistema digital.'},time:{en:'Custom project',es:'Proyecto a medida'},w:100,
+h:{en:'The whole rail inventory, one integration',es:'Todo el inventario ferroviario, una sola integración'},img:'api',
+feat:[{en:'Real-time availability',es:'Disponibilidad en tiempo real'},{en:'Automatic ticket issuance',es:'Emisión automática de billetes'},{en:'Autonomy from your own platform',es:'Autonomía desde tu plataforma'},{en:'Scalability',es:'Escalabilidad'},{en:'Technical documentation',es:'Documentación técnica'},{en:'Dedicated support',es:'Soporte dedicado'},{en:'Multiple rail operators through a single integration',es:'Múltiples operadores con una sola integración'}],
+for:{en:'Designed for OTAs, TMCs and travel platforms.',es:'Pensada para OTAs, TMCs y plataformas de viajes.'}}
+];
+var FIT=[{n:{en:'Travel agency',es:'Agencia de viajes'},s:0},{n:{en:'DMC',es:'DMC'},s:0},{n:{en:'Tour operator with my own brand',es:'Turoperador con marca propia'},s:1},{n:{en:'OTA',es:'OTA'},s:2},{n:{en:'TMC',es:'TMC'},s:2}];
+var cur=0,tabs=$('solTabs'),body=$('solBody');
+SOL.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.className='sol-tab';b.onclick=function(){cur=i;draw();};tabs.appendChild(b);});
+function draw(){[].forEach.call(tabs.children,function(b,i){var s=SOL[i];b.classList.toggle('on',i===cur);b.innerHTML='<em>'+t(s.time)+'</em><b>'+t(s.n)+'</b><span>'+t(s.s)+'</span>';});
+var s=SOL[cur],vis=s.img==='wl'?'<div class="sol-vis"><div class="wl-grid"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/wl1.webp" alt=""><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/wl2.webp" alt=""><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/wl3.webp" alt=""><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/wl4.webp" alt=""></div></div>':'<div class="sol-vis"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/'+s.img+'.webp" alt=""></div>';
+var inner='<div><div class="eyebrow">'+t(s.n)+'</div><h3 style="margin-top:8px">'+t(s.h)+'</h3>';
+if(s.steps)inner+='<div class="steps4">'+s.steps.map(function(x,i){return '<div><b>0'+(i+1)+'</b>'+t(x)+'</div>';}).join('')+'</div>';
+if(s.feat)inner+='<div class="feat">'+s.feat.map(function(x){return '<div>'+t(x)+'</div>';}).join('')+'</div>';
+inner+='<div class="timeline"><div class="tl-bar"><i style="width:0"></i></div><div class="tl-lbl"><span>'+(LANG==='es'?'Tiempo de puesta en marcha':'Time to go live')+'</span><span>'+t(s.time)+'</span></div></div><p class="for">'+t(s.for)+'</p></div>';
+body.innerHTML=inner+vis;var bar=body.querySelector('.tl-bar i');requestAnimationFrame(function(){requestAnimationFrame(function(){bar.style.width=s.w+'%';});});
+var fc=$('fitChips');fc.innerHTML='';FIT.forEach(function(f){var b=document.createElement('button');b.type='button';b.className='chip'+(f.s===cur?' on':'');b.textContent=t(f.n);b.onclick=function(){cur=f.s;draw();body.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});};fc.appendChild(b);});}
+renders.push(draw);draw();
+})();
+/* ===== GRUPOS ===== */
+(function(){var r=$('paxR'),dots=$('paxDots');
+function draw(){var n=+r.value;dots.innerHTML='';for(var i=0;i<20;i++){var d=document.createElement('i');if(i<n)d.className=n>9?'grp':'in';dots.appendChild(d);}
+$('paxOut').innerHTML=n<=9?(LANG==='es'?'<b>'+n+' pasajero'+(n>1?'s':'')+'</b>: reserva directa en la plataforma.':'<b>'+n+' passenger'+(n>1?'s':'')+'</b>: book it directly on the platform.'):(LANG==='es'?'<b>'+n+' pasajeros</b>: es una reserva de grupo. Pide un presupuesto personalizado:':'<b>'+n+' passengers</b>: that is a group booking. Request a personalised quote:');}
+r.addEventListener('input',draw);renders.push(draw);draw();})();
+/* ===== MAPAS DE RUTAS (utilidades) ===== */
+function baseMap(svg,M,vb){svg.setAttribute('viewBox',vb||('0 0 '+M.w+' '+M.h));el('path',{d:M.d,class:'land'},svg);}
+function curve(A,B,k){var mx=(A[0]+B[0])/2,my=(A[1]+B[1])/2,dx=B[0]-A[0],dy=B[1]-A[1];return 'Q'+(mx-dy*k).toFixed(1)+' '+(my+dx*k).toFixed(1)+' '+B[0]+' '+B[1];}
+function drawLine(g,pts,color,dash,k){var d='M'+pts[0][0]+' '+pts[0][1];for(var i=1;i<pts.length;i++)d+=' '+curve(pts[i-1],pts[i],k==null?.08:k);var p=el('path',{d:d,class:'rt'+(dash?' dash':''),stroke:color},g);var h=el('path',{d:d,class:'rt-hit'},g);
+if(!RM&&!dash){var L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.style.transition='stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)';onVisible(p,function(s){if(s)p.style.strokeDashoffset=0;},{threshold:.2});}
+return [p,h];}
+function city(g,P,label,anchor,dx,dy){var k=+(g.ownerSVGElement||g).style.getPropertyValue('--k')||1;var c=el('g',{class:'city'},g);el('circle',{cx:P[0],cy:P[1],r:4.5*k},c);var tx=el('text',{x:P[0]+(dx||8)*k,y:P[1]+(dy||4)*k,'text-anchor':anchor||'start'},c);tx.textContent=label;return c;}
+function fitK(svg){var vb=svg.viewBox.baseVal,w=svg.clientWidth||600;var k=Math.max(.3,Math.min(1.4,vb.width/w));svg.style.setProperty('--k',k.toFixed(3));return k;}
+/* ===== EUROSTAR ===== */
+(function(){
+var M=MAPS.europe,c=M.c,svg=$('esMap');baseMap(svg,M,'240 160 360 280');fitK(svg);addEventListener('resize',function(){fitK(svg);draw();});
+var N={london:{en:'London',es:'Londres'},paris:{en:'Paris',es:'París'},brussels:{en:'Brussels',es:'Bruselas'},amsterdam:{en:'Amsterdam',es:'Ámsterdam'},cologne:{en:'Cologne',es:'Colonia'},antwerp:{en:'Antwerp',es:'Amberes'},disney:{en:'Disneyland Paris',es:'Disneyland París'},lille:'Lille'};
+var R=[['paris','brussels','1h22',82],['paris','amsterdam','3h20',200],['paris','cologne','3h20',200],['london','paris','2h17',137],['london','disney','3h04',184,'lille'],['london','amsterdam','4h10',250],['london','brussels','2h01',121],['london','antwerp','2h41',161]];
+var g=el('g',{},svg),cg=el('g',{},svg),lines=[];
+function draw(){g.innerHTML='';cg.innerHTML='';lines=[];
+R.forEach(function(r,i){var pts=r[4]?[c[r[0]],c[r[4]],c[r[1]]]:[c[r[0]],c[r[1]]];var ln=drawLine(g,pts,i===7?'#7fd6dc':'#0DA3AE',i===7,.12*(i%2?1:-1));lines.push(ln[0]);ln[1].addEventListener('mouseenter',function(){sel(i);});ln[1].addEventListener('click',function(){sel(i);});});
+var lab={london:['end',-9,-6],paris:['end',-9,4],brussels:['start',9,8],amsterdam:['start',9,-4],cologne:['start',9,4],antwerp:['start',9,-6],disney:['start',9,12],lille:['end',-9,-4]};
+Object.keys(lab).forEach(function(k){city(cg,c[k],t(N[k]),lab[k][0],lab[k][1],lab[k][2]);});
+var list=$('esList');list.innerHTML='';R.forEach(function(r,i){var b=document.createElement('button');b.type='button';b.className='rbtn';b.innerHTML='<span>'+t(N[r[0]])+' → '+t(N[r[1]])+(i===7?'<br><small>'+(LANG==='es'?'directo desde dic. 2026':'direct from Dec 2026')+'</small>':'')+'</span><b>'+r[2]+'</b><div class="bar"><i style="width:'+(r[3]/250*100)+'%"></i></div>';b.onmouseenter=b.onclick=function(){sel(i);};list.appendChild(b);});}
+function sel(i){lines.forEach(function(p,j){p.classList.toggle('sel',j===i);p.style.opacity=j===i?1:.35;});[].forEach.call($('esList').children,function(b,j){b.classList.toggle('on',j===i);});}
+renders.push(draw);draw();
+})();
+/* ===== ITALIA ===== */
+(function(){
+var M=MAPS.italy,c=M.c,svg=$('itMap');svg.setAttribute('viewBox','40 100 470 420');svg.id='itSvg';fitK(svg);addEventListener('resize',function(){fitK(svg);draw();});
+el('path',{d:M.d,class:'itc'},svg);el('path',{d:M.it,class:'it'},svg);
+var N={turin:{en:'Turin',es:'Turín'},milan:{en:'Milan',es:'Milán'},venice:{en:'Venice',es:'Venecia'},bologna:{en:'Bologna',es:'Bolonia'},florence:{en:'Florence',es:'Florencia'},rome:{en:'Rome',es:'Roma'},naples:{en:'Naples',es:'Nápoles'},salerno:'Salerno'};
+var L=[['turin','milan',"58′"],['milan','venice','2h27'],['milan','bologna','1h54'],['venice','bologna','1h33'],['bologna','florence',"38′"],['florence','rome','1h30'],['rome','naples','1h02'],['naples','salerno',"37′"]];
+var IMG={rome:'rome',florence:'florence'};
+var g=el('g',{},svg),cg=el('g',{},svg),tg=el('g',{},svg),lines=[];
+function draw(){g.innerHTML='';cg.innerHTML='';tg.innerHTML='';lines=[];
+var rec=drawLine(g,[c.milan,c.rome],'#9aa3ab',true,-.18);rec[1].addEventListener('mouseenter',function(){card(-1);});rec[1].addEventListener('click',function(){card(-1);});
+L.forEach(function(l,i){var ln=drawLine(g,[c[l[0]],c[l[1]]],'#0DA3AE',false,0);lines.push(ln[0]);ln[1].addEventListener('mouseenter',function(){card(i);});ln[1].addEventListener('click',function(){card(i);});
+var A=c[l[0]],B=c[l[1]],mx=(A[0]+B[0])/2,my=(A[1]+B[1])/2;var tb=el('g',{},tg);el('rect',{x:mx-20,y:my-10,width:40,height:20,rx:10,fill:'#fff',stroke:'#0DA3AE'},tb);el('text',{x:mx,y:my+4,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':11,'font-weight':600,fill:'#0a7f88'},tb).textContent=l[2];});
+var lab={turin:['end',-9,4],milan:['end',-9,-6],venice:['start',9,-6],bologna:['start',9,4],florence:['end',-9,6],rome:['end',-9,4],naples:['end',-9,-4],salerno:['start',9,10]};
+Object.keys(lab).forEach(function(k){city(cg,c[k],t(N[k]),lab[k][0],lab[k][1],lab[k][2]);});card(-1);}
+function card(i){lines.forEach(function(p,j){p.classList.toggle('sel',j===i);});var h;
+if(i<0)h='<div class="eyebrow">'+(LANG==='es'?'Récord sin paradas':'Nonstop record')+'</div><div class="big">2h50</div><h3>'+(LANG==='es'?'Roma – Milán':'Rome – Milan')+'</h3><p style="color:var(--slate-3)">'+(LANG==='es'?'Pasa el ratón o toca un tramo del mapa. Los tiempos son los de la solución más rápida entre las dos ciudades.':'Hover or tap a leg on the map. Times refer to the fastest travel solution between the two cities.')+'</p><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/rome.webp" alt="">';
+else{var l=L[i],ik=IMG[l[1]]||IMG[l[0]];h='<div class="eyebrow">Frecciarossa</div><div class="big">'+l[2]+'</div><h3>'+t(N[l[0]])+' – '+t(N[l[1]])+'</h3>'+(ik?'<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/'+ik+'.webp" alt="">':'<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/fr-side.webp" alt="" style="object-fit:contain;aspect-ratio:auto">');}
+$('itCard').innerHTML=h;}
+renders.push(draw);draw();
+})();
+/* ===== CLASES FRECCIAROSSA ===== */
+(function(){
+var CL=[
+{k:'Executive',img:['exec1','exec2','exec3'],d:{en:'The top service level: swivelling large seats, relax lighting, fast track, free à la carte menu with open bar and free access to FrecciaLounge.',es:'El nivel más alto: butacas grandes giratorias, iluminación relax, fast track, menú a la carta gratuito con barra libre y acceso a FrecciaLounge.'}},
+{k:'Business',img:['bus1','bus2','bus1'],d:{en:'Free welcome food and drinks, crystal seat division and the option of a silent coach.',es:'Comida y bebida de bienvenida gratuitas, separación de cristal entre asientos y opción de coche en silencio.'}},
+{k:'Premium',img:['prem1','prem2','prem1'],d:{en:'More space than Standard, with free welcome snacks and water.',es:'Más espacio que Standard, con snacks y agua de bienvenida gratuitos.'}},
+{k:'Standard',img:['std1','std2','std1'],d:{en:'The entry level with every common service: wifi, power sockets, luggage zone, air conditioning and bar coach.',es:'El nivel de entrada con todos los servicios comunes: wifi, enchufes, zona de equipaje, aire acondicionado y coche bar.'}}
+];
+var ROWS=[[{en:'Wifi · sockets · luggage zone',es:'Wifi · enchufes · zona de equipaje'},1,1,1,1],[{en:'Air conditioning · cleaning · toilet in each coach',es:'Aire acond. · limpieza · aseo en cada coche'},1,1,1,1],[{en:'Bar coach · FrecciaPlay',es:'Coche bar · FrecciaPlay'},1,1,1,1],[{en:'Free welcome snacks and water',es:'Snacks y agua de bienvenida'},0,1,0,0],[{en:'Free welcome food and drinks',es:'Comida y bebida de bienvenida'},0,0,1,0],[{en:'À la carte menu and open bar',es:'Menú a la carta y barra libre'},0,0,0,1],[{en:'Silent coach · crystal division',es:'Coche silencio · separación de cristal'},0,0,1,0],[{en:'Swivel seat · fast track · lounge',es:'Butaca giratoria · fast track · sala VIP'},0,0,0,1]];
+var order=['Standard','Premium','Business','Executive'],cur=0,tabs=$('clTabs');
+CL.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=c.k;b.onclick=function(){cur=i;draw();};tabs.appendChild(b);});
+function draw(){var c=CL[cur];[].forEach.call(tabs.children,function(b,i){b.classList.toggle('on',i===cur);});
+$('clGal').innerHTML=c.img.map(function(s){return '<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/'+s+'.webp" alt="">';}).join('');
+$('clName').textContent=c.k;$('clDesc').textContent=t(c.d);var col=order.indexOf(c.k)+1;
+$('matrix').innerHTML='<tr><th>'+(LANG==='es'?'Servicio':'Service')+'</th>'+order.map(function(o,i){return '<th class="'+(i+1===col?'colon':'')+'">'+o+'</th>';}).join('')+'</tr>'+ROWS.map(function(r){return '<tr><td>'+t(r[0])+'</td>'+[1,2,3,4].map(function(j){return '<td class="'+(r[j]?'y':'n')+(j===col?' colon':'')+'">'+(r[j]?'●':'–')+'</td>';}).join('')+'</tr>';}).join('');}
+renders.push(draw);draw();
+})();
+/* ===== TRANSFRONTERIZO ===== */
+(function(){
+var M=MAPS.europe,c=M.c,svg=$('xbMap');baseMap(svg,M,'400 260 340 260');
+var N={milan:{en:'Milan',es:'Milán'},zurich:{en:'Zurich',es:'Zúrich'},basel:'Basel',frankfurt:{en:'Frankfurt',es:'Fráncfort'},geneva:{en:'Geneva',es:'Ginebra'},venice:{en:'Venice',es:'Venecia'},munich:{en:'Munich',es:'Múnich'},vienna:{en:'Vienna',es:'Viena'},salzburg:'Salzburg',graz:'Graz',villach:'Villach',bologna:{en:'Bologna',es:'Bolonia'},rome:{en:'Rome',es:'Roma'},lugano:'Lugano',innsbruck:'Innsbruck',verona:'Verona',florence:{en:'Florence',es:'Florencia'},mannheim:'Mannheim'};
+var X=[
+{k:'ec',n:'EuroCity',vb:'420 250 260 230',lines:[[['milan','lugano','zurich','basel','frankfurt'],'#0DA3AE'],[['milan','geneva'],'#7fd6dc'],[['venice','verona','milan'],'#7fd6dc']],cities:['milan','lugano','zurich','basel','frankfurt','geneva','venice','verona'],img:'frankfurt',
+h:{en:'Up to 44 EuroCity trains a day',es:'Hasta 44 trenes EuroCity al día'},p:{en:'They connect Italy with the main Swiss cities and Frankfurt. On board: luggage zone, modern seats, Bar Bistrò, family area, free seat selection and e-ticketing; silence area on Giruno trains.',es:'Conectan Italia con las principales ciudades suizas y Fráncfort. A bordo: zona de equipaje, asientos modernos, Bar Bistrò, zona familiar, selección de asiento gratuita y billete electrónico; zona de silencio en los Giruno.'},
+kp:[['44',{en:'trains a day',es:'trenes al día'}],['7h34',{en:'Milan → Frankfurt',es:'Milán → Fráncfort'}]],
+tt:[['EC 150','Milano 11:10','Frankfurt 18:44'],['EC 151','Frankfurt 08:02','Milano 15:50']]},
+{k:'nj',n:'ÖBB Nightjet',vb:'480 300 260 300',lines:[[['rome','florence','bologna','villach','vienna'],'#7fd6dc',1],[['bologna','villach','graz'],'#7fd6dc',1],[['bologna','verona','innsbruck','munich'],'#7fd6dc',1],[['villach','salzburg'],'#7fd6dc',1]],cities:['rome','florence','bologna','verona','villach','vienna','graz','salzburg','munich','innsbruck'],img:'nightjet',
+h:{en:'Leave Italy in the evening, wake up in Vienna',es:'Sal de Italia por la noche y despierta en Viena'},p:{en:'Night trains arriving the next morning in the city centre of Vienna, Graz, Salzburg and Munich. Choose the accommodation:',es:'Trenes nocturnos que llegan a la mañana siguiente al centro de Viena, Graz, Salzburgo y Múnich. Elige el alojamiento:'},
+acc:[[{en:'Sleeping car · maximum comfort',es:'Coche cama · máximo confort'},{en:'Single or double compartments with private WC and washbasin (shower in Plus), fixed beds, breakfast included and free wifi.',es:'Compartimentos individuales o dobles con WC y lavabo privados (ducha en Plus), camas fijas, desayuno incluido y wifi gratis.'}],[{en:'Couchettes · families and groups',es:'Literas · familias y grupos'},{en:'4-berth compartments with fixed beds, NFC lock, night kit and breakfast included.',es:'Compartimentos de 4 literas con camas fijas, cierre NFC, kit de noche y desayuno incluido.'}],[{en:'Mini Cabin · the new concept',es:'Mini cabina · el nuevo concepto'},{en:'Single or double cabin for solo travellers or couples, with NFC lock, locker, foldable table, night kit and breakfast.',es:'Cabina individual o doble para quien viaja solo o en pareja, con cierre NFC, taquilla, mesa plegable, kit de noche y desayuno.'}],[{en:'Seats · practical and affordable',es:'Asientos · práctico y económico'},{en:'Ergonomic seats with full-length headrest, wireless charging and space for bikes, prams and skis.',es:'Asientos ergonómicos con reposacabezas completo, carga inalámbrica y espacio para bicis, carritos y esquís.'}]]},
+{k:'rj',n:'ÖBB Railjet',vb:'480 300 260 280',lines:[[['venice','verona','innsbruck','munich'],'#0DA3AE'],[['bologna','verona'],'#0DA3AE'],[['venice','villach','vienna'],'#0DA3AE']],cities:['venice','verona','bologna','innsbruck','munich','villach','vienna'],img:'railjet',
+h:{en:'New in PICO: Railjet',es:'Nuevo en PICO: Railjet'},p:{en:'Cross-border and domestic Railjet services in Austria are now available, linking Italy with Munich and Vienna.',es:'Ya disponibles los Railjet transfronterizos y domésticos de Austria, que unen Italia con Múnich y Viena.'},pics:['rj1','rj2','rj3','rj4']}
+];
+var cur=0,tabs=$('xbTabs'),g=el('g',{},svg),cg=el('g',{},svg),curVB=null,anim=null,acc=0;
+X.forEach(function(x,i){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=x.n;b.onclick=function(){cur=i;acc=0;draw();};tabs.appendChild(b);});
+function zoomTo(vb){var to=vb.split(' ').map(Number);if(!curVB||RM){curVB=to;svg.setAttribute('viewBox',to.join(' '));return;}var from=curVB.slice(),t0=performance.now();if(anim)cancelAnimationFrame(anim);(function step(n){var q=Math.min((n-t0)/900,1),e=q<.5?2*q*q:1-Math.pow(-2*q+2,2)/2;curVB=from.map(function(a,i){return a+(to[i]-a)*e;});svg.setAttribute('viewBox',curVB.join(' '));if(q<1)anim=requestAnimationFrame(step);})(t0);}
+function draw(){var x=X[cur];[].forEach.call(tabs.children,function(b,i){b.classList.toggle('on',i===cur);});
+var vbw=+x.vb.split(' ')[2];svg.style.setProperty('--k',Math.max(.3,vbw/(svg.clientWidth||600)).toFixed(3));
+g.innerHTML='';cg.innerHTML='';x.lines.forEach(function(l){drawLine(g,l[0].map(function(k){return c[k];}),l[1],!!l[2],.04);});
+x.cities.forEach(function(k){city(cg,c[k],t(N[k]||k),'start',8,4);});zoomTo(x.vb);
+var h='<h3>'+t(x.h)+'</h3><p>'+t(x.p)+'</p>';
+if(x.kp)h+='<div class="xb-kp">'+x.kp.map(function(k){return '<div><b>'+k[0]+'</b><span>'+t(k[1])+'</span></div>';}).join('')+'</div>';
+if(x.tt)h+='<div class="timetable">'+x.tt.map(function(r){return '<div><em>'+r[0]+'</em><span>'+r[1]+' → '+r[2]+'</span><span></span></div>';}).join('')+'</div><p class="note" style="color:#b9c1c6">'+(LANG==='es'?'Servicio directo diario todo el año, con paradas en Lugano, Zúrich, Basilea, Friburgo, Karlsruhe y Mannheim, entre otras.':'Direct daily service all year round, stopping at Lugano, Zurich, Basel, Freiburg, Karlsruhe and Mannheim, among others.')+'</p>';
+if(x.acc)h+='<div class="acc">'+x.acc.map(function(a,i){return '<button type="button" class="'+(i===acc?'on':'')+'" data-i="'+i+'"><b>'+t(a[0])+'</b><span>'+t(a[1])+'</span></button>';}).join('')+'</div>';
+if(x.pics)h+='<div class="rjpics">'+x.pics.map(function(p){return '<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/'+p+'.webp" alt="">';}).join('')+'</div>';
+h+='<img class="xb-img" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/img/'+x.img+'.webp" alt="" style="'+(x.img==='frankfurt'?'height:auto;width:100%;max-height:200px;object-fit:cover;border-radius:14px':'')+'">';
+$('xbInfo').innerHTML=h;
+[].forEach.call($('xbInfo').querySelectorAll('.acc button'),function(b){b.onclick=function(){acc=+b.dataset.i;draw();};});}
+renders.push(draw);draw();
+})();
+/* ===== TARIFAS ===== */
+(function(){
+var F=[
+{n:'Flexi',f:95,r:[[1,{en:'Booking change',es:'Cambio de reserva'}],[1,{en:'Ticket change',es:'Cambio de billete'}],[1,{en:'Name change',es:'Cambio de nombre'}],[1,{en:'Refund with 10% fee',es:'Reembolso con 10 % de cargo'}],[1,{en:'Another train within 4 h after departure',es:'Otro tren hasta 4 h después de la salida'}]]},
+{n:'Base',f:75,r:[[1,{en:'Booking change',es:'Cambio de reserva'}],[1,{en:'Ticket change',es:'Cambio de billete'}],[1,{en:'Name change',es:'Cambio de nombre'}],[1,{en:'Refund with 20% fee',es:'Reembolso con 20 % de cargo'}],[1,{en:'Another train within 1 h after departure',es:'Otro tren hasta 1 h después de la salida'}]]},
+{n:'Economy',f:40,r:[[0,{en:'Booking change',es:'Cambio de reserva'}],[1,{en:'Ticket change',es:'Cambio de billete'}],[1,{en:'Name change',es:'Cambio de nombre'}],[0,{en:'Refund',es:'Reembolso'}],[0,{en:'Another train after departure',es:'Otro tren tras la salida'}]]},
+{n:'Super Economy',f:15,r:[[0,{en:'Booking change',es:'Cambio de reserva'}],[0,{en:'Ticket change',es:'Cambio de billete'}],[1,{en:'Name change',es:'Cambio de nombre'}],[0,{en:'Refund',es:'Reembolso'}],[0,{en:'Another train after departure',es:'Otro tren tras la salida'}]]}
+];
+var NEED=[{n:{en:'Maximum flexibility',es:'Máxima flexibilidad'},i:0},{n:{en:'Possible refund',es:'Poder reembolsar'},i:1},{n:{en:'Only a name change',es:'Solo cambiar el nombre'},i:3},{n:{en:'Change the ticket, best price',es:'Cambiar billete al mejor precio'},i:2}];
+var cur=1,box=$('fareCards');
+function draw(){box.innerHTML='';F.forEach(function(f,i){var d=document.createElement('div');d.className='fare reveal'+(i===cur?' on':'');d.tabIndex=0;d.innerHTML='<h3>'+f.n+'</h3>'+f.r.map(function(r){return '<div class="row '+(r[0]?'y':'n')+'"><i>'+(r[0]?'✓':'✕')+'</i><span>'+t(r[1])+'</span></div>';}).join('')+'<div class="flex-meter" title="'+(LANG==='es'?'Flexibilidad':'Flexibility')+'"><i style="width:'+f.f+'%"></i></div>';d.onclick=function(){cur=i;draw();};box.appendChild(d);});
+var nc=$('needChips');nc.innerHTML='';NEED.forEach(function(n){var b=document.createElement('button');b.type='button';b.className='chip'+(n.i===cur?' on':'');b.textContent=t(n.n);b.onclick=function(){cur=n.i;draw();};nc.appendChild(b);});}
+renders.push(draw);draw();
+})();
+var saved=null;try{saved=localStorage.getItem('rc-lang');}catch(e){}
+if(location.hash==='#es')saved='es';
+if(saved==='es')setLang('es');
+}
+</script>
+<script>
+function RC_FX(){
+var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function io(n,cb,o){try{new IntersectionObserver(function(es){es.forEach(function(e){cb(e.isIntersecting,e);});},o).observe(n);}catch(e){cb(true);}}
+/* 1. Titulares palabra a palabra */
+function split(h){if(h.dataset.split)return;h.dataset.split=1;var i=0;
+(function walk(n){Array.prototype.slice.call(n.childNodes).forEach(function(c){
+if(c.nodeType===3){var parts=c.textContent.split(/(\s+)/),f=document.createDocumentFragment();
+parts.forEach(function(p){if(!p)return;if(/^\s+$/.test(p)){f.appendChild(document.createTextNode(p));return;}var w=document.createElement('span');w.className='w';var k=document.createElement('i');k.style.setProperty('--i',i++);k.textContent=p;w.appendChild(k);f.appendChild(w);});
+c.parentNode.replaceChild(f,c);}
+else if(c.nodeType===1&&c.tagName!=='BR')walk(c);});})(h);}
+if(!RM){document.querySelectorAll('.hero h1, .sec h2').forEach(split);}
+/* 2. Entrada encadenada de la portada */
+var hero=document.getElementById('top');requestAnimationFrame(function(){setTimeout(function(){hero.classList.add('go','lit');},60);});
+/* 3. Secciones: subrayado, barrido, titulares */
+document.querySelectorAll('.sec').forEach(function(sec){io(sec,function(v){if(v)sec.classList.add('lit');},{threshold:.18});});
+document.querySelectorAll('.sec h2').forEach(function(h){io(h,function(v){if(v)h.classList.add('lit');},{threshold:.4});});
+/* 4. Escalonado de hermanos + destello de tarjetas */
+document.querySelectorAll('.reveal').forEach(function(n){
+var sib=Array.prototype.filter.call(n.parentNode.children,function(c){return c.classList.contains('reveal');}),i=sib.indexOf(n);
+if(sib.length>1)n.style.transitionDelay=(i*.11)+'s';
+var ims=n.tagName==='IMG'?[]:n.querySelectorAll(':scope>img');Array.prototype.forEach.call(ims,function(im){im.style.transitionDelay=(i*.11+.15)+'s';});
+if(n.classList.contains('card'))io(n,function(v){if(v&&!n.dataset.f){n.dataset.f=1;setTimeout(function(){n.classList.add('flash');},i*110+250);}},{threshold:.35});});
+/* 5. Recorrido lateral con tren + barra en móvil */
+var st=[['top',{en:'Start',es:'Inicio'}],['platform',{en:'Platform',es:'Plataforma'}],['inspire',{en:'Inspiration',es:'Inspiración'}],['destinations',{en:'Destinations',es:'Destinos'}],['solutions',{en:'Solutions',es:'Soluciones'}],['eurostar',{en:'Eurostar',es:'Eurostar'}],['trenitalia',{en:'Trenitalia',es:'Trenitalia'}],['crossborder',{en:'Cross-border',es:'Transfronterizo'}],['fares',{en:'Fares',es:'Tarifas'}],['contact',{en:'Contact',es:'Contacto'}]].filter(function(x){return document.getElementById(x[0]);});
+var trip=document.createElement('nav');trip.className='trip';trip.setAttribute('aria-label','Progress');trip.innerHTML='<div class="rail"></div><div class="done"></div>'+st.map(function(x,i){return '<a href="#'+x[0]+'" style="top:'+(i/(st.length-1)*100)+'%"><span></span></a>';}).join('')+'<div class="loco"></div>';document.body.appendChild(trip);
+var bar=document.createElement('div');bar.className='tbar';bar.innerHTML='<i></i>';document.body.appendChild(bar);
+var dots=trip.querySelectorAll('a'),loco=trip.querySelector('.loco'),done=trip.querySelector('.done'),cur=-1,sayT;
+function labels(){var es=document.documentElement.lang==='es';Array.prototype.forEach.call(dots,function(d,i){d.firstChild.textContent=st[i][1][es?'es':'en'];});}
+labels();new MutationObserver(labels).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+var lastY=scrollY,boost=1,heroIn=hero.querySelector('.hero-in'),pars=document.querySelectorAll('.hero-photo img');
+function upd(){var y=scrollY,vh=innerHeight,max=document.documentElement.scrollHeight-vh;
+var tops=st.map(function(x){return document.getElementById(x[0]).getBoundingClientRect().top+y-vh*.3;});tops[0]=0;tops=tops.map(function(t){return Math.min(t,max);});
+var p=0;for(var i=0;i<tops.length-1;i++){if(y>=tops[i]){var span=Math.max(1,tops[i+1]-tops[i]);p=i+Math.min(1,(y-tops[i])/span);}}
+var pct=p/(st.length-1)*100;loco.style.top=pct+'%';done.style.height=pct+'%';bar.firstChild.style.width=(max>0?y/max*100:0)+'%';
+var c=Math.min(st.length-1,Math.round(p));Array.prototype.forEach.call(dots,function(d,i){d.classList.toggle('past',i<=c);d.classList.toggle('cur',i===c);});
+if(c!==cur){cur=c;Array.prototype.forEach.call(dots,function(d){d.classList.remove('say');});if(c>0){dots[c].classList.add('say');clearTimeout(sayT);sayT=setTimeout(function(){dots[c].classList.remove('say');},1600);}}
+trip.classList.toggle('on',y>vh*.4);
+if(!RM&&y<vh*1.2){heroIn.style.transform='translateY('+(-y*.12)+'px)';heroIn.style.opacity=Math.max(0,1-y/(vh*1.1));Array.prototype.forEach.call(pars,function(im){im.style.transform='scale(1.08) translateY('+(y*.06)+'px)';});}
+var dv=Math.abs(y-lastY);lastY=y;boost=Math.min(4,boost+dv*.012);}
+addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+(function decay(){boost=1+(boost-1)*.94;window.__rcB=RM?1:boost;requestAnimationFrame(decay);})();
+/* 6. Paralaje suave en fotos */
+if(!RM){var ph=[].slice.call(document.querySelectorAll('.why .card img, .svc-grid .card img, .tour .card img, .contact .ph'));
+function par(){var vh=innerHeight;ph.forEach(function(im){var r=im.parentNode.getBoundingClientRect();if(r.bottom<0||r.top>vh)return;var k=(r.top+r.height/2-vh/2)/vh;im.style.objectPosition='50% '+(50+k*18)+'%';});}
+addEventListener('scroll',par,{passive:true});par();}
+}
+</script>
+<script>
+function RC_TRV(){
+var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function io(n,cb,th){try{new IntersectionObserver(function(es){es.forEach(function(e){cb(e.isIntersecting);});},{threshold:th||.25}).observe(n);}catch(e){cb(true);}}
+var ht=document.querySelector('.tk-hero');if(ht)setTimeout(function(){ht.classList.add('stamped');},RM?0:2300);
+var col=document.querySelector('.collage');if(col)io(col,function(v){if(v)col.classList.add('go');},.25);
+var tks=document.querySelector('.tickets');
+if(tks){var cards=tks.querySelectorAll('.tk-card'),cnt=tks.querySelector('.tk-count b'),head=tks.querySelector('.tk-head .ey2'),done=false;
+io(tks,function(v){if(!v||done)return;done=true;
+Array.prototype.forEach.call(cards,function(c,i){c.style.transitionDelay=(i*.32)+'s';setTimeout(function(){c.classList.add('stamped');cnt.textContent=i+1;
+if(i===cards.length-1){var es=document.documentElement.lang==='es';head.textContent=es?'5 billetes listos ✓':'5 tickets ready ✓';head.style.color='var(--teal-ink)';}},RM?0:i*320+900);});
+tks.classList.add('go');},.2);}
+if(!RM){var fl=[].slice.call(document.querySelectorAll('[data-float]'));
+function f(){var vh=innerHeight;fl.forEach(function(n){var r=n.parentNode.getBoundingClientRect();if(r.bottom<0||r.top>vh)return;var k=+n.getAttribute('data-float');n.style.transform='translateY('+((r.top-vh/2)*k)+'px) rotate('+((r.top-vh/2)*k*.08)+'deg)';});}
+addEventListener('scroll',f,{passive:true});f();}
+}
+</script>
+<script>
+document.documentElement.classList.add('js');
+fetch('https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@620db1e067b52cfbf840dcd7b459efab6ca834db/maps.json').then(function(r){return r.json();}).then(function(m){RC_MAIN(m);RC_FX();RC_TRV();ping();});
+/* altura automática para iframe en WordPress */
+function ping(){try{var h=document.documentElement.scrollHeight;parent.postMessage({rch:h},'*');}catch(e){}}
+addEventListener('load',ping);addEventListener('resize',ping);setInterval(ping,1500);
+addEventListener('message',function(e){var d=e.data||{};if(d.rcy){var t=document.getElementById(d.rcy);if(t)t.scrollIntoView();}});
+</script>
