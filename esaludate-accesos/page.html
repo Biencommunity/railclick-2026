@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cada vía cuenta · eSalùdate</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Accesos vasculares explicados en 3D e interactivo, y el curso online Cuidados de los Accesos Vasculares de eSalùdate (30 h, 2,5 créditos CFC).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: página clínica blanca, bandas niebla-teal; 3D como protagonista en portada, anatomía y dispositivos; una vía de suero lateral marca el avance */
+:root{
+--paper:#ffffff; --mist:#f1f7f8; --fog:#e2eef0; --line:#d3e2e5;
+--ink:#1f2d33; --ink-2:#343434; --ink-3:#5b6b71; --muted:#7f9196;
+--teal:#1a96a3; --teal-2:#1aa3b2; --teal-ink:#117583; --teal-soft:#e3f3f5;
+--orange:#f76f01; --orange-ink:#c45500; --orange-soft:#fff0e3;
+--vein:#3b5ba9; --blood:#b3202e; --ok:#1f9d6b; --warn:#f0a020; --bad:#d8432f;
+--f-disp:"Bricolage Grotesque","Arimo",system-ui,sans-serif;
+--f-text:"Arimo","Helvetica Neue",Arial,sans-serif;
+--f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink-2);font:400 17px/1.6 var(--f-text);-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,h2,h3{font-family:var(--f-disp);color:var(--ink);margin:0;letter-spacing:-.02em;text-wrap:balance;line-height:1.05}
+h2{font-size:clamp(32px,4.6vw,56px);font-weight:800}
+h3{font-size:22px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+p{margin:0}
+a{color:var(--teal-ink)}
+img{display:block;max-width:100%}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1200px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sec{padding-block:clamp(72px,10vw,128px);position:relative;scroll-margin-top:64px}
+.band{background:var(--mist)}
+.band-dark{background:#12343a;color:#d7e9ec}
+.band-dark h2,.band-dark h3{color:#fff}
+.eyebrow{font:600 12.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal-ink);display:inline-block;position:relative;padding-bottom:10px}
+.eyebrow::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:44px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform 1s cubic-bezier(.2,.8,.2,1) .2s}
+.lit .eyebrow::after,.hero .eyebrow::after{transform:scaleX(1)}
+.band-dark .eyebrow{color:#7fd3dc}
+.lead{font-size:clamp(17px,1.6vw,20px);color:var(--ink-3);max-width:62ch}
+.band-dark .lead{color:#b8d3d8}
+.head{display:grid;gap:18px;max-width:820px;margin-bottom:48px}
+.num{font-family:var(--f-disp);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:var(--ink)}
+.mono{font-family:var(--f-mono)}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:15px 26px;font-weight:700;font-size:16px;text-decoration:none;background:var(--orange);color:#fff;box-shadow:0 10px 24px -10px rgba(247,111,1,.7);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px -12px rgba(247,111,1,.8)}
+.btn.ghost{background:transparent;color:var(--teal-ink);box-shadow:inset 0 0 0 2px var(--teal)}
+.chip{border:1.5px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:9px 16px;font-size:14.5px;font-weight:600;transition:all .2s}
+.chip:hover{border-color:var(--teal)}
+.chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.src{font-size:13px;color:var(--muted);margin-top:22px;max-width:80ch}
+.src a{color:var(--muted)}
+/* NAV */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:70;background:var(--paper)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s}
+.nav.scrolled{border-color:var(--line)}
+.nav-in{display:flex;align-items:center;gap:20px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font:500 26px/1 var(--f-text);color:var(--orange);letter-spacing:-.01em}
+.logo svg{width:30px;height:34px}
+.logo b{font-weight:500;color:var(--teal)}
+.nav-links{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{color:var(--ink-3);text-decoration:none;font-size:14.5px;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.nav-links a.on,.nav-links a:hover{background:var(--teal-soft);color:var(--teal-ink)}
+.nav .btn{padding:10px 18px;font-size:14px;box-shadow:none}
+@media (max-width:860px){.nav-links{display:none}.nav .btn{margin-left:auto}}
+/* HERO */
+.hero{position:relative;overflow:hidden;background:radial-gradient(900px 600px at 78% 40%,#e3f3f5 0%,rgba(255,255,255,0) 70%),var(--paper)}
+.hero-in{display:grid;grid-template-columns:1fr 1.05fr;gap:30px;align-items:center;padding-block:72px 40px}
+.hero-in>*{min-width:0}
+.hero h1{font-size:clamp(52px,7.4vw,104px);font-weight:800;letter-spacing:-.045em;line-height:.95;margin-top:18px}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.hero .lead{margin-top:22px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.stage{position:relative;aspect-ratio:1/0.92;max-width:100%;border-radius:32px;background:radial-gradient(circle at 50% 45%,#ffffff 0%,#eaf5f7 62%,#dcecef 100%);box-shadow:inset 0 0 0 1px var(--line)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:32px;touch-action:pan-y}
+.stage .tag{position:absolute;font:600 12px/1.2 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;background:#fff;color:var(--ink);border-radius:10px;padding:8px 11px;box-shadow:0 8px 24px -12px rgba(18,52,58,.45);pointer-events:none;transition:opacity .4s}
+.stage .tag b{display:block;color:var(--teal-ink);font-size:11px}
+.stage .hint{position:absolute;left:18px;bottom:16px;font:500 12px var(--f-mono);color:var(--muted)}
+@media (max-width:600px){.stage .hint{display:none}}
+.insert{position:absolute;right:18px;bottom:14px;display:flex;align-items:center;gap:10px;font:600 12px var(--f-mono);color:var(--teal-ink)}
+.insert .bar{width:120px;height:6px;border-radius:3px;background:var(--fog);overflow:hidden}
+.insert .bar i{display:block;height:100%;width:0;background:var(--teal)}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);margin-top:10px}
+.hero-stats div{padding:22px 18px 6px 0}
+.hero-stats .num{font-size:clamp(30px,3.4vw,44px);display:block;line-height:1}
+.hero-stats span{font-size:14px;color:var(--ink-3);display:block;margin-top:8px;line-height:1.4}
+@media (max-width:900px){.hero-in{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr 1fr}}
+/* RIESGO */
+.risk{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.risk>*{min-width:0}
+.people{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin-top:8px}
+.people i{aspect-ratio:1/1.6;border-radius:40% 40% 18% 18%;background:var(--fog);transition:background .35s}
+.people i.p{background:var(--teal)}
+.people i.c{background:var(--orange)}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:18px;font-size:14.5px;color:var(--ink-3)}
+.legend b{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.flebo{background:var(--paper);border-radius:24px;padding:30px;box-shadow:0 1px 0 var(--line),0 20px 40px -30px rgba(18,52,58,.35)}
+.fbar{margin-top:20px}
+.fbar .lab{display:flex;justify-content:space-between;font-size:14.5px;color:var(--ink-3);margin-bottom:8px}
+.fbar .lab b{font-family:var(--f-mono);color:var(--ink)}
+.fbar .track{height:16px;border-radius:8px;background:var(--fog);position:relative;overflow:hidden}
+.fbar .fill{position:absolute;top:0;bottom:0;border-radius:8px;transition:left 1.4s cubic-bezier(.2,.8,.2,1),width 1.4s cubic-bezier(.2,.8,.2,1)}
+@media (max-width:900px){.risk{grid-template-columns:1fr}}
+/* ANATOMÍA */
+.anat{display:grid;grid-template-columns:1.25fr .75fr;gap:34px;align-items:stretch}
+.anat>*{min-width:0}
+.armstage{position:relative;min-height:440px;border-radius:28px;background:radial-gradient(circle at 40% 40%,#fff 0%,#eef6f7 70%);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.armstage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.armstage .lbl{position:absolute;font:600 12px/1 var(--f-mono);color:var(--ink);background:rgba(255,255,255,.92);border-radius:8px;padding:6px 8px;white-space:nowrap;pointer-events:none;transform:translate(-50%,-140%);transition:opacity .3s,background .3s}
+.armstage .lbl.on{background:var(--ink);color:#fff}
+.armstage .hint{position:absolute;left:16px;bottom:14px;font:500 12px var(--f-mono);color:var(--muted)}
+.vlist{display:flex;flex-wrap:wrap;gap:8px}
+.vcard{margin-top:20px;background:var(--paper);border-radius:22px;padding:26px;box-shadow:0 1px 0 var(--line),0 20px 40px -30px rgba(18,52,58,.35)}
+.vcard .use{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.vcard .use span{font:600 12px var(--f-mono);border-radius:999px;padding:6px 10px;background:var(--teal-soft);color:var(--teal-ink)}
+.vcard .use span.no{background:var(--orange-soft);color:var(--orange-ink)}
+.vcard p{margin-top:10px;color:var(--ink-3);font-size:15.5px}
+@media (max-width:900px){.anat{grid-template-columns:1fr}.armstage{min-height:360px}}
+/* DISPOSITIVOS */
+.dev{display:grid;grid-template-columns:.95fr 1.05fr;gap:40px;align-items:start}
+.dev>*{min-width:0}
+.ctrl{background:var(--paper);border-radius:24px;padding:28px;box-shadow:0 1px 0 var(--line),0 20px 40px -30px rgba(18,52,58,.35)}
+.ctrl label{font-weight:700;color:var(--ink);display:block}
+.days{display:flex;align-items:baseline;gap:10px;margin:12px 0 6px}
+.days .num{font-size:64px;line-height:1;color:var(--teal-ink)}
+input[type=range]{width:100%;accent-color:var(--teal);height:28px}
+.scale{display:flex;justify-content:space-between;font:500 12px var(--f-mono);color:var(--muted)}
+.tog{display:flex;align-items:center;gap:12px;margin-top:22px;font-size:15.5px;color:var(--ink-2)}
+.tog input{width:22px;height:22px;accent-color:var(--orange)}
+.rec{margin-top:24px;border-radius:18px;background:var(--teal-soft);padding:20px 22px}
+.rec .k{font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal-ink)}
+.rec h3{margin-top:6px;font-size:28px}
+.rec p{margin-top:8px;color:var(--ink-3);font-size:15.5px}
+.bodybox{position:relative;border-radius:28px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.bodybox svg{display:block;width:100%;height:auto}
+.devgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+.dcard{background:var(--paper);border-radius:20px;padding:20px;box-shadow:inset 0 0 0 1.5px var(--line);transition:box-shadow .3s,transform .3s;text-align:left;border:0;color:inherit}
+.dcard.on{box-shadow:inset 0 0 0 2.5px var(--teal);transform:translateY(-3px)}
+.dcard .t{font:600 11.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dcard h3{font-size:19px;margin-top:6px}
+.dcard dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:12px 0 0;font-size:14px}
+.dcard dt{color:var(--muted)}
+.dcard dd{margin:0;color:var(--ink-2);font-weight:600}
+@media (max-width:900px){.dev{grid-template-columns:1fr}.devgrid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.devgrid{grid-template-columns:1fr}}
+/* COMPLICACIONES */
+.comp{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.comp>*{min-width:0}
+.site{border-radius:28px;overflow:hidden;background:#f6e7df;box-shadow:inset 0 0 0 1px var(--line)}
+.site svg{display:block;width:100%;height:auto}
+.grade{display:flex;gap:6px;margin-top:16px}
+.grade button{flex:1;border:0;border-radius:12px;padding:12px 0;background:var(--fog);color:var(--ink-2);font:700 18px var(--f-disp)}
+.grade button.on{background:var(--ink);color:#fff}
+.gtext{margin-top:18px;min-height:110px}
+.gtext h3{font-size:24px}
+.gtext p{margin-top:8px;color:var(--ink-3)}
+.act{display:inline-block;margin-top:12px;font:600 13px var(--f-mono);padding:7px 12px;border-radius:999px}
+.ctypes{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:56px}
+.ctypes div{background:var(--paper);border-radius:18px;padding:18px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.ctypes b{display:block;font-family:var(--f-disp);font-size:18px;color:var(--ink)}
+.ctypes span{font-size:14px;color:var(--ink-3);display:block;margin-top:6px;line-height:1.45}
+@media (max-width:900px){.comp{grid-template-columns:1fr}.ctypes{grid-template-columns:1fr 1fr}}
+/* CUIDADOS */
+.care{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.care>*{min-width:0}
+.bundle{display:grid;gap:12px}
+.bitem{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;background:var(--paper);border-radius:18px;padding:18px 20px;box-shadow:inset 0 0 0 1.5px var(--line);transition:box-shadow .5s}
+.bitem .ck{width:44px;height:44px;border-radius:50%;background:var(--fog);display:grid;place-items:center;transition:background .4s}
+.bitem .ck svg{width:22px;height:22px;stroke:#fff;stroke-width:3;fill:none;stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset .5s .2s}
+.bitem.done{box-shadow:inset 0 0 0 2px var(--teal)}
+.bitem.done .ck{background:var(--teal)}
+.bitem.done .ck svg{stroke-dashoffset:0}
+.bitem h3{font-size:18px}
+.bitem p{font-size:15px;color:var(--ink-3);margin-top:4px}
+.bitem .ev{font:600 11.5px var(--f-mono);color:var(--teal-ink);margin-left:6px}
+.flush{background:var(--paper);border-radius:24px;padding:26px;box-shadow:0 1px 0 var(--line),0 20px 40px -30px rgba(18,52,58,.35)}
+.flush svg{width:100%;height:auto;display:block;margin-top:14px}
+.flush .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.quiz{margin-top:24px;background:var(--paper);border-radius:24px;padding:26px;box-shadow:0 1px 0 var(--line),0 20px 40px -30px rgba(18,52,58,.35)}
+.quiz .q{font-weight:700;color:var(--ink);margin-top:6px}
+.quiz .opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.quiz .opts button.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.quiz .opts button.ko{background:var(--bad);border-color:var(--bad);color:#fff}
+.quiz .fb{margin-top:12px;font-size:15px;color:var(--ink-3);min-height:48px}
+.quiz .qn{font:600 12px var(--f-mono);color:var(--muted)}
+@media (max-width:900px){.care{grid-template-columns:1fr}}
+/* CURSO */
+.course{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:start}
+.course>*{min-width:0}
+.ficha{background:#fff;color:var(--ink-2);border-radius:26px;padding:30px;box-shadow:0 30px 60px -30px rgba(0,0,0,.5)}
+.ficha h3{font-size:26px;color:var(--ink)}
+.ficha .eyebrow{color:var(--teal-ink)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.facts div{border-top:2px solid var(--fog);padding-top:12px}
+.facts .num{font-size:34px;line-height:1;display:block}
+.facts span{font-size:13.5px;color:var(--ink-3)}
+.price{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.price .num{font-size:52px;color:var(--orange)}
+.price small{display:block;font-size:13px;color:var(--muted)}
+.rovi{font-size:13px;color:var(--muted);margin-top:14px}
+.prog{display:grid;gap:10px}
+.mod{border-radius:18px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);overflow:hidden}
+.mod button{display:grid;grid-template-columns:52px 1fr 24px;gap:12px;align-items:center;width:100%;background:none;border:0;color:#fff;text-align:left;padding:18px 20px}
+.mod .n{font:700 15px var(--f-mono);color:#7fd3dc}
+.mod .t{font:700 18px/1.25 var(--f-disp)}
+.mod .pl{font:700 22px var(--f-mono);color:#7fd3dc;transition:transform .3s}
+.mod.open .pl{transform:rotate(45deg)}
+.mod .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s}
+.mod.open .body{grid-template-rows:1fr}
+.mod .body>div{overflow:hidden}
+.mod ul{margin:0;padding:0 24px 20px 84px;color:#c8e0e4;font-size:15.5px}
+.mod li{margin-top:4px}
+.teachers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
+.tch{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:start;background:rgba(255,255,255,.06);border-radius:18px;padding:18px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.tch .av{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font:800 22px var(--f-disp);color:#fff;background:linear-gradient(140deg,var(--teal),#0d5f69)}
+.tch h3{font-size:17px;color:#fff}
+.tch p{font-size:14px;color:#b8d3d8;margin-top:4px;line-height:1.45}
+.eds{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:40px}
+.ed{border-radius:18px;padding:18px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.ed .k{font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:#7fd3dc}
+.ed b{display:block;font:700 19px var(--f-disp);color:#fff;margin-top:6px}
+.ed span{font-size:13.5px;color:#9fbfc5}
+.ed.past{opacity:.5}
+.ed.next{background:var(--orange);box-shadow:none}
+.ed.next .k,.ed.next span{color:#fff}
+.count{display:flex;gap:10px;margin-top:10px}
+.count div{background:rgba(255,255,255,.18);border-radius:10px;padding:6px 8px;text-align:center;min-width:52px}
+.count b{font:800 20px var(--f-mono);margin:0}
+.count span{font-size:11px;display:block}
+@media (max-width:900px){.course{grid-template-columns:1fr}.teachers{grid-template-columns:1fr}.eds{grid-template-columns:1fr 1fr}}
+/* ESALUDATE */
+.esa{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.esa>*{min-width:0}
+.esanum{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.esanum div{padding:22px 0;border-top:1px solid var(--line)}
+.esanum .num{font-size:clamp(40px,5vw,64px);line-height:1;display:block;color:var(--teal)}
+.esanum div:nth-child(2) .num,.esanum div:nth-child(3) .num{color:var(--orange)}
+.esanum span{font-size:15px;color:var(--ink-3)}
+.stars{display:flex;align-items:center;gap:14px;margin-top:26px;font-size:15px;color:var(--ink-3)}
+.stars b{font:800 34px var(--f-disp);color:var(--ink)}
+.stars svg{width:120px;height:22px}
+.photo{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:4/3;background:var(--fog)}
+.photo img{width:100%;height:100%;object-fit:cover}
+.photo figcaption{position:absolute;left:14px;bottom:14px;right:14px;background:rgba(255,255,255,.94);border-radius:14px;padding:12px 14px;font-size:14px;color:var(--ink-2)}
+@media (max-width:900px){.esa{grid-template-columns:1fr}}
+/* CTA */
+.final{text-align:left}
+.final-in{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+.final-in>*{min-width:0}
+.contact{background:var(--paper);border-radius:24px;padding:26px;box-shadow:0 1px 0 var(--line),0 20px 40px -30px rgba(18,52,58,.35);display:grid;gap:12px}
+.contact .k{font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.contact b{font:700 20px var(--f-disp);color:var(--ink);user-select:all}
+.copy{border:0;background:var(--teal-soft);color:var(--teal-ink);border-radius:8px;padding:4px 10px;font:600 12px var(--f-mono);margin-left:8px}
+footer{padding-block:40px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+footer ol{margin:10px 0 0;padding-left:18px}
+footer li{margin-top:4px}
+@media (max-width:900px){.final-in{grid-template-columns:1fr}}
+/* IMÁGENES de stock dentro de bloques */
+.figimg{border-radius:22px;overflow:hidden;background:var(--fog)}
+.figimg img{width:100%;height:100%;object-fit:cover}
+/* VÍA LATERAL (progreso) */
+.iv{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:50;width:28px;height:min(64vh,560px);opacity:0;transition:opacity .5s;pointer-events:none}
+.iv.on{opacity:1}
+.iv svg{width:100%;height:100%;overflow:visible}
+.iv a{pointer-events:auto}
+.iv .say{font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;fill:#fff}
+@media (max-width:1240px){.iv{display:none}}
+.pbar{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:61;pointer-events:none}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--orange))}
+/* REVELADO ENCADENADO */
+.js .rv{transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.js .rv.pre{opacity:0;transform:translateY(28px)}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.w>i{display:inline-block;font-style:normal;transition:transform .9s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*50ms)}
+.js .split:not(.lit) .w>i{transform:translateY(105%)}
+.flash{animation:flash 1.5s ease-out}
+@keyframes flash{25%{box-shadow:inset 0 0 0 2.5px var(--teal),0 18px 40px -20px rgba(26,150,163,.6)}}
+.pop{animation:pop .8s ease-out}
+@keyframes pop{35%{color:var(--orange);transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.js .rv.pre{opacity:1;transform:none}.js .split:not(.lit) .w>i{transform:none}*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="pbar" aria-hidden="true"><i id="pbar"></i></div>
+<header class="nav" id="nav">
+<div class="wrap nav-in">
+<a class="logo" href="#top" aria-label="eSalùdate, inicio">
+<svg viewBox="0 0 30 34" aria-hidden="true"><path d="M15 33 C15 33 3 21 3 13 a12 12 0 0 1 24 0 c0 8-12 20-12 20z" fill="#f76f01"/><circle cx="15" cy="13" r="7.5" fill="#fff"/><path d="M15 6.5 v6.5 h5" stroke="#1a96a3" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+<span>e<b>Salùdate</b></span>
+</a>
+<nav class="nav-links" aria-label="Secciones">
+<a href="#riesgo">El reto</a><a href="#anatomia">Anatomía</a><a href="#dispositivos">Dispositivos</a><a href="#complicaciones">Complicaciones</a><a href="#cuidados">Cuidados</a><a href="#curso">El curso</a>
+</nav>
+<a class="btn" href="https://web.esaludate.com/es/component/fabrik/form/222" target="_blank" rel="noopener">Inscribirme</a>
+</div>
+</header>
+<!-- HERO -->
+<section class="hero" id="top">
+<div class="wrap">
+<div class="hero-in">
+<div>
+<span class="eyebrow">Curso online · Enfermería · 2,5 créditos CFC</span>
+<h1 class="split">Cada vía <em>cuenta.</em></h1>
+<p class="lead">Un catéter venoso es el procedimiento invasivo más habitual del hospital. Bien elegido, insertado y cuidado, dura lo que debe y no se complica. Aprende a hacerlo con evidencia en el curso <b>Cuidados de los Accesos Vasculares</b> de eSalùdate.</p>
+<div class="hero-cta">
+<a class="btn" href="#curso">Ver el curso · 89 €</a>
+<a class="btn ghost" href="#anatomia">Explorar en 3D</a>
+</div>
+</div>
+<div class="stage" id="heroStage">
+<canvas id="heroCv" aria-label="Modelo 3D de un catéter dentro de una vena, con glóbulos rojos circulando"></canvas>
+<div class="tag" id="tgSkin" style="left:6%;top:9%"><b>Piel</b>Punto de inserción</div>
+<div class="tag" id="tgVein" style="right:6%;top:52%"><b>Vena</b>Flujo sanguíneo</div>
+<div class="tag" id="tgCath" style="left:8%;bottom:18%"><b>Catéter</b>Punta en la luz venosa</div>
+<span class="hint">Arrastra para girar</span>
+<div class="insert"><span>Inserción</span><span class="bar"><i id="insBar"></i></span><span id="insPct">0 %</span></div>
+</div>
+</div>
+<div class="hero-stats">
+<div><b class="num" data-count="76" data-suf=" %">76 %</b><span>de los hospitalizados lleva una vía periférica<sup>1</sup></span></div>
+<div><b class="num" data-count="12" data-suf=" %">12 %</b><span>porta una vía central<sup>1</sup></span></div>
+<div><b class="num" data-count="30" data-suf=" h">30 h</b><span>lectivas, 100 % online en 30 días</span></div>
+<div><b class="num">2,5</b><span>créditos CFC para enfermería</span></div>
+</div>
+</div>
+</section>
+<!-- RIESGO -->
+<section class="sec band" id="riesgo">
+<div class="wrap">
+<div class="head rv">
+<span class="eyebrow">El reto</span>
+<h2 class="split">Tres de cada cuatro pacientes llevan un catéter</h2>
+<p class="lead">Cada catéter es una puerta de entrada para la infección nosocomial. Por eso el programa nacional Flebitis Zero insiste en elegir bien el dispositivo, insertarlo con asepsia y retirarlo en cuanto deja de ser necesario.</p>
+</div>
+<div class="risk">
+<div class="rv">
+<div class="people" id="people" role="img" aria-label="De cada 100 pacientes hospitalizados, 76 llevan vía periférica y 12 vía central"></div>
+<div class="legend"><span><b style="background:var(--teal)"></b>Vía periférica: más del 76 %</span><span><b style="background:var(--orange)"></b>Vía central: cerca del 12 %</span><span><b style="background:var(--fog)"></b>Sin catéter</span></div>
+<p class="src">Cada figura es 1 de cada 100 pacientes hospitalizados. <sup>1</sup> Datos del estudio EPINE citados en la ficha del curso. Un paciente puede llevar ambos tipos.</p>
+</div>
+<div class="flebo rv">
+<h3>La flebitis varía muchísimo entre hospitales</h3>
+<div class="fbar"><div class="lab"><span>Pacientes con catéter afectados en España</span><b>20 – 65 %</b></div><div class="track"><span class="fill" id="fRange" style="left:0;width:0;background:var(--bad)"></span></div></div>
+<div class="fbar"><div class="lab"><span>Estándar de referencia de la INS</span><b>≈ 5 %</b></div><div class="track"><span class="fill" id="fStd" style="left:0;width:0;background:var(--ok)"></span></div></div>
+<p class="src">Fuente: Programa Flebitis Zero (AEMPS, 2019). Escala de 0 a 100 %.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- ANATOMÍA -->
+<section class="sec" id="anatomia">
+<div class="wrap">
+<div class="head rv">
+<span class="eyebrow">Bloque 2 del curso · Anatomía vascular</span>
+<h2 class="split">Elige la vena antes que el catéter</h2>
+<p class="lead">Gira el brazo y toca cada vena. Para una vía periférica se prefiere el antebrazo, lejos de las zonas de flexión. Para un midline o un PICC se busca una vena del brazo, ancha y recta, con ecografía.</p>
+</div>
+<div class="anat">
+<div class="armstage rv" id="armStage">
+<canvas id="armCv" aria-label="Modelo 3D del brazo con las venas superficiales y profundas"></canvas>
+<span class="hint">Arrastra para girar · toca una vena</span>
+</div>
+<div class="rv">
+<div class="vlist" id="vlist" role="tablist" aria-label="Venas del miembro superior"></div>
+<div class="vcard" id="vcard" aria-live="polite"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- DISPOSITIVOS -->
+<section class="sec band" id="dispositivos">
+<div class="wrap">
+<div class="head rv">
+<span class="eyebrow">Bloque 3 del curso · Catéteres venosos</span>
+<h2 class="split">¿Qué catéter necesita tu paciente?</h2>
+<p class="lead">La duración prevista del tratamiento y el tipo de fármaco orientan la elección. Mueve el control y mira dónde queda la punta de cada dispositivo.</p>
+</div>
+<div class="dev">
+<div class="ctrl rv">
+<label for="dDays">Duración prevista de la terapia intravenosa</label>
+<div class="days"><b class="num" id="dNum">4</b><span id="dUnit">días</span></div>
+<input type="range" id="dDays" min="1" max="120" value="4" aria-describedby="dRec">
+<div class="scale"><span>1 día</span><span>15</span><span>30</span><span>120 días</span></div>
+<label class="tog"><input type="checkbox" id="dVes"> El tratamiento incluye fármacos vesicantes o irritantes</label>
+<div class="rec" id="dRec" aria-live="polite"></div>
+<p class="src">Orientativo, según MAGIC (Chopra et al., <i>Ann Intern Med</i> 2015) y la guía de dispositivos venosos de PiCuida. La decisión es clínica e individual.</p>
+</div>
+<div class="bodybox rv">
+<svg id="bodySvg" viewBox="0 0 560 520" role="img" aria-label="Silueta del tórax y el brazo con el trayecto del catéter seleccionado"></svg>
+</div>
+</div>
+<div class="devgrid" id="devgrid"></div>
+</div>
+</section>
+<!-- COMPLICACIONES -->
+<section class="sec" id="complicaciones">
+<div class="wrap">
+<div class="head rv">
+<span class="eyebrow">Bloque 4 del curso · Complicaciones</span>
+<h2 class="split">Detecta la flebitis antes de que avance</h2>
+<p class="lead">Flebitis Zero propone una única escala para valorar el punto de inserción: la escala visual de flebitis de Maddox. Pasa de un grado a otro y observa la zona.</p>
+</div>
+<div class="comp">
+<div class="site rv"><svg id="siteSvg" viewBox="0 0 560 380" role="img" aria-label="Punto de inserción del catéter con los signos del grado seleccionado"></svg></div>
+<div class="rv">
+<div class="grade" id="grade" role="tablist" aria-label="Grado de flebitis"></div>
+<div class="gtext" id="gtext" aria-live="polite"></div>
+</div>
+</div>
+<div class="ctypes">
+<div class="rv"><b>Flebitis y tromboflebitis</b><span>Inflamación de la pared venosa: mecánica, química o infecciosa.</span></div>
+<div class="rv"><b>Oclusión</b><span>El catéter deja de permitir infundir o aspirar. Un buen lavado la previene.</span></div>
+<div class="rv"><b>Infección</b><span>Local o bacteriemia relacionada con el catéter.</span></div>
+<div class="rv"><b>Rotura</b><span>Fisura o fractura del catéter; riesgo de fuga o embolia.</span></div>
+<div class="rv"><b>Trombosis</b><span>Trombo en la vena que aloja el catéter, más ligada a los dispositivos centrales.</span></div>
+</div>
+</div>
+</section>
+<!-- CUIDADOS -->
+<section class="sec band" id="cuidados">
+<div class="wrap">
+<div class="head rv">
+<span class="eyebrow">Bloque 5 del curso · Mantenimiento y cuidados</span>
+<h2 class="split">Cinco medidas que bajan la flebitis</h2>
+<p class="lead">Es el paquete de medidas del programa Flebitis Zero. Se aplica a la vez, cada día y con cada catéter.</p>
+</div>
+<div class="care">
+<div class="bundle" id="bundle">
+<div class="bitem rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><h3>Elegir bien el catéter <span class="ev">IB</span></h3><p>El calibre más pequeño y la longitud más corta. Miembro superior y fuera de las zonas de flexión.</p></div></div>
+<div class="bitem rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><h3>Higiene de manos <span class="ev">IA</span></h3><p>Solución hidroalcohólica antes y después de tocar el catéter.</p></div></div>
+<div class="bitem rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><h3>Clorhexidina alcohólica al 2 % <span class="ev">IA</span></h3><p>Para preparar la piel, dejándola secar por completo antes de puncionar.</p></div></div>
+<div class="bitem rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><h3>Mantenimiento aséptico <span class="ev">IB</span></h3><p>Apósito transparente semipermeable, revisión diaria del punto y desinfección del puerto antes de cada acceso.</p></div></div>
+<div class="bitem rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><h3>Retirar lo innecesario <span class="ev">IB</span></h3><p>Cada día: ¿sigue haciendo falta este catéter? Si no, se retira.</p></div></div>
+<p class="src">Entre paréntesis, el nivel de evidencia indicado por Flebitis Zero (AEMPS, 2019).</p>
+</div>
+<div>
+<div class="flush rv">
+<span class="eyebrow">Lavado pulsátil</span>
+<h3 style="margin-top:14px">Empuja, para, empuja</h3>
+<p style="color:var(--ink-3);margin-top:6px;font-size:15.5px">Pequeños bolos de suero fisiológico crean turbulencia que arrastra los restos de la pared del catéter. Se termina con presión positiva.</p>
+<svg id="flushSvg" viewBox="0 0 520 150" role="img" aria-label="Jeringa empujando suero en pulsos dentro de un catéter"></svg>
+<div class="row"><button class="chip on" id="flushBtn">Ver el lavado</button><span class="mono" style="font-size:13px;color:var(--muted)" id="flushTxt">10 ml de SF 0,9 % en PICC domiciliario</span></div>
+</div>
+<div class="quiz rv" id="quiz"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- CURSO -->
+<section class="sec band-dark" id="curso">
+<div class="wrap">
+<div class="head rv">
+<span class="eyebrow">eSalùdate · Formación online</span>
+<h2 class="split">Cuidados de los Accesos Vasculares</h2>
+<p class="lead">Recomendaciones nacionales e internacionales basadas en la evidencia para insertar y mantener catéteres venosos. Para enfermeras y enfermeros, a tu ritmo, en 30 días.</p>
+</div>
+<div class="course">
+<div class="prog" id="prog"></div>
+<div class="ficha rv">
+<span class="eyebrow">Ficha del curso</span>
+<h3 style="margin-top:14px">Modalidad online</h3>
+<div class="facts">
+<div><b class="num" data-count="30">30</b><span>horas lectivas</span></div>
+<div><b class="num" data-count="30">30</b><span>días para completarlo</span></div>
+<div><b class="num">2,5</b><span>créditos CFC para enfermería</span></div>
+<div><b class="num" data-count="5">5</b><span>bloques de contenido</span></div>
+</div>
+<div class="price">
+<div><b class="num">89 €</b><small>Matrícula</small></div>
+<a class="btn" href="https://web.esaludate.com/es/component/fabrik/form/222" target="_blank" rel="noopener">Inscribirme</a>
+</div>
+<p class="rovi">Curso patrocinado por ROVI. Los créditos no son aplicables a profesionales que se están formando como especialistas en Ciencias de la Salud. Tras pagar recibes un email de confirmación y las claves llegan el día de inicio.</p>
+</div>
+</div>
+<div class="eds" id="eds"></div>
+<div class="teachers">
+<div class="tch rv"><span class="av">MA</span><div><h3>María Antonia Cubero Pérez</h3><p>Supervisora de la Unidad de Oncología Médica del Hospital Gregorio Marañón (Madrid). Profesora asociada de la UCM y experta en terapia intravenosa y accesos venosos.</p></div></div>
+<div class="tch rv"><span class="av">CN</span><div><h3>Cristo Nauzet Hernández Hernández</h3><p>Supervisor de Área Funcional en la Dirección de Enfermería del Hospital Universitario de Gran Canaria Dr. Negrín. Profesor de la ULPGC y doctorando en Ciencias de la Salud.</p></div></div>
+</div>
+</div>
+</section>
+<!-- ESALUDATE -->
+<section class="sec" id="esaludate">
+<div class="wrap esa">
+<div>
+<div class="head rv" style="margin-bottom:28px">
+<span class="eyebrow">Quiénes lo imparten</span>
+<h2 class="split">Formación sanitaria hecha por sanitarios</h2>
+<p class="lead">eSalùdate es especialista en simulación práctica para profesionales de la salud y creadora de los Centros Tecnológicos de Simulación. Además de los cursos online, organiza los Findes eSalùdate presenciales y congresos.</p>
+</div>
+<div class="esanum">
+<div><b class="num" data-count="212">212</b><span>cursos</span></div>
+<div><b class="num" data-count="44729">44.729</b><span>alumnos</span></div>
+<div><b class="num" data-count="147">147</b><span>docentes</span></div>
+<div><b class="num" data-count="12">12</b><span>congresos</span></div>
+</div>
+<div class="stars rv"><b>4,8</b><svg viewBox="0 0 120 22" aria-hidden="true"><g fill="#f0a020"><path id="st" d="M11 1l3 6.6 7.2.8-5.4 4.9 1.5 7.1L11 16.8 4.7 20.4l1.5-7.1L.8 8.4 8 7.6z"/><use href="#st" x="24"/><use href="#st" x="48"/><use href="#st" x="72"/><use href="#st" x="96"/></g></svg><span>Valoración en Google, 924 reseñas</span></div>
+</div>
+<figure class="photo rv" style="margin:0" id="esaPhoto">
+<img src="img/nurse-laptop.webp" alt="Enfermera formándose con un portátil en la consulta" loading="lazy">
+<figcaption>Curso 100 % online: entras con tus claves y avanzas a tu ritmo durante 30 días.</figcaption>
+</figure>
+</div>
+</section>
+<!-- CTA -->
+<section class="sec band final" id="inscripcion">
+<div class="wrap final-in">
+<div class="rv">
+<span class="eyebrow">Próxima edición</span>
+<h2 class="split" style="margin-top:16px">Tu siguiente vía, con evidencia</h2>
+<p class="lead" style="margin-top:18px">5.ª edición del 3 al 30 de noviembre de 2026. 30 horas, 2,5 créditos CFC y 89 € de matrícula.</p>
+<div class="hero-cta"><a class="btn" href="https://web.esaludate.com/es/component/fabrik/form/222" target="_blank" rel="noopener">Inscribirme en la 5.ª edición</a><a class="btn ghost" href="https://www.esaludate.com/formacion/findes-esaludate/especialidad/ecografia/20260401-cuidados-accesos-vasculares-online/" target="_blank" rel="noopener">Ficha en esaludate.com</a></div>
+</div>
+<div class="contact rv">
+<span class="k">Teléfono</span><div><b>91 993 33 00</b><button class="copy" data-copy="919933300">Copiar</button></div>
+<span class="k">WhatsApp</span><div><b>675 937 260</b><button class="copy" data-copy="675937260">Copiar</button></div>
+<span class="k">Email</span><div><b>contacto@esaludate.com</b><button class="copy" data-copy="contacto@esaludate.com">Copiar</button></div>
+<span style="font-size:13.5px;color:var(--muted)">Lunes a viernes, de 8:30 a 14:30 y de 16:00 a 18:00 h.</span>
+</div>
+</div>
+</section>
+<footer>
+<div class="wrap">
+<b style="color:var(--ink-2)">Fuentes</b>
+<ol>
+<li><a href="https://www.esaludate.com/formacion/findes-esaludate/especialidad/ecografia/20260401-cuidados-accesos-vasculares-online/" target="_blank" rel="noopener">Ficha del curso Cuidados de los Accesos Vasculares, eSalùdate</a> (datos EPINE, programa, docentes, ediciones y precio).</li>
+<li><a href="https://www.resistenciaantibioticos.es/sites/default/files/documentos/programa_flebitis_zero.pdf" target="_blank" rel="noopener">Programa Flebitis Zero, AEMPS / PRAN, 2019</a>.</li>
+<li>Chopra V, et al. Michigan Appropriateness Guide for Intravenous Catheters (MAGIC). <i>Ann Intern Med</i>. 2015;163:S1–S40.</li>
+<li><a href="https://www.picuida.es/wp-content/uploads/2017/01/Guia-Dispositivos-Venosos.pdf" target="_blank" rel="noopener">Guía de dispositivos venosos, PiCuida</a> (escala Maddox, longitudes, lavados y apósitos).</li>
+<li><a href="https://www.esaludate.com" target="_blank" rel="noopener">esaludate.com</a> (cifras de la entidad y valoración).</li>
+</ol>
+<p style="margin-top:14px">Contenido divulgativo para profesionales sanitarios. No sustituye los protocolos de cada centro.</p>
+</div>
+</footer>
+<div class="iv" id="iv" aria-hidden="true"><svg id="ivSvg" viewBox="0 0 28 560" preserveAspectRatio="none"></svg></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+document.documentElement.classList.add('js');
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function $(i){return document.getElementById(i)}
+function io(n,cb,th){try{new IntersectionObserver(function(es){es.forEach(function(e){cb(e.isIntersecting,e)})},{threshold:th||.2}).observe(n)}catch(e){cb(true)}}
+var NS='http://www.w3.org/2000/svg';
+function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+var fmt=function(v){return String(v).replace(/\B(?=(\d{3})+(?!\d))/g,'.')};
+/* ---------- titulares palabra a palabra ---------- */
+document.querySelectorAll('.split').forEach(function(h){var i=0;
+(function walk(n){[].slice.call(n.childNodes).forEach(function(c){
+if(c.nodeType===3){var f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(function(p){if(!p)return;if(/^\s+$/.test(p)){f.appendChild(document.createTextNode(p));return}var w=document.createElement('span');w.className='w';var k=document.createElement('i');k.style.setProperty('--i',i++);k.textContent=p;w.appendChild(k);f.appendChild(w)});c.parentNode.replaceChild(f,c)}
+else if(c.nodeType===1)walk(c)})})(h);
+if(h.closest('.hero'))requestAnimationFrame(function(){setTimeout(function(){h.classList.add('lit')},80)});else io(h,function(v){if(v)h.classList.add('lit')},.3);
+});
+/* ---------- revelado escalonado ---------- */
+document.querySelectorAll('.rv').forEach(function(n){
+var sib=[].filter.call(n.parentNode.children,function(c){return c.classList.contains('rv')}),i=sib.indexOf(n);
+if(n.getBoundingClientRect().top>innerHeight*.92)n.classList.add('pre');
+if(sib.length>1)n.style.transitionDelay=Math.min(i,6)*.1+'s';
+io(n,function(v){if(v){n.classList.remove('pre');if(n.matches('.ctypes>div,.dcard,.tch')&&!n.dataset.f){n.dataset.f=1;setTimeout(function(){n.classList.add('flash')},i*110+300)}}},.12);
+});
+document.querySelectorAll('.sec').forEach(function(s){io(s,function(v){if(v)s.classList.add('lit')},.15)});
+/* ---------- contadores ---------- */
+document.querySelectorAll('[data-count]').forEach(function(n){var end=+n.dataset.count,suf=n.dataset.suf||'',done=false;
+io(n,function(v){if(!v||done||RM)return;done=true;var t0=performance.now();(function st(t){var q=Math.min((t-t0)/1500,1),e=1-Math.pow(1-q,3);n.textContent=fmt(Math.round(end*e))+suf;if(q<1)requestAnimationFrame(st);else n.classList.add('pop')})(t0)},.6)});
+/* ---------- nav + barra + vía lateral ---------- */
+var links=document.querySelectorAll('.nav-links a');
+var stops=[['top','Inicio'],['riesgo','El reto'],['anatomia','Anatomía'],['dispositivos','Dispositivos'],['complicaciones','Complicaciones'],['cuidados','Cuidados'],['curso','El curso'],['inscripcion','Inscripción']];
+var ivs=$('ivSvg');
+(function(){var g=el('g',{},ivs);
+el('rect',{x:4,y:0,width:20,height:44,rx:7,fill:'#fff',stroke:'#1a96a3','stroke-width':2},g);
+el('rect',{x:9,y:44,width:10,height:10,rx:2,fill:'#1a96a3'},g);
+el('rect',{x:12.5,y:60,width:3,height:500,rx:1.5,fill:'#d3e2e5'},ivs);
+el('rect',{x:12.5,y:60,width:3,height:0,rx:1.5,fill:'#1a96a3',id:'ivFill'},ivs);
+stops.forEach(function(s,i){var y=60+i*(500/(stops.length-1));var a=el('a',{href:'#'+s[0]},ivs);el('circle',{cx:14,cy:y,r:6,fill:'#fff',stroke:'#d3e2e5','stroke-width':2.5,class:'ivd'},a);var t=el('title',{},a);t.textContent=s[1]});
+var drop=el('path',{d:'M14 0 C10 6 9 9 9 11 a5 5 0 0 0 10 0 c0-2-1-5-5-11z',fill:'#f76f01',id:'ivDrop'},ivs);
+})();
+var dots=ivs.querySelectorAll('.ivd'),ivFill=$('ivFill'),drop=$('ivDrop');
+function onScroll(){var y=scrollY,vh=innerHeight,max=document.documentElement.scrollHeight-vh;
+$('nav').classList.toggle('scrolled',y>8);$('pbar').style.width=(max>0?y/max*100:0)+'%';
+var tops=stops.map(function(s){var e=$(s[0]);return e?Math.min(max,e.getBoundingClientRect().top+y-vh*.35):0});tops[0]=0;
+var p=0;for(var i=0;i<tops.length-1;i++)if(y>=tops[i])p=i+Math.min(1,(y-tops[i])/Math.max(1,tops[i+1]-tops[i]));
+var yy=60+p*(500/(stops.length-1));ivFill.setAttribute('height',yy-60);drop.setAttribute('transform','translate(0,'+(yy-6)+')');
+var c=Math.round(p);dots.forEach(function(d,i){d.setAttribute('fill',i<=c?'#1a96a3':'#fff');d.setAttribute('stroke',i<=c?'#1a96a3':'#d3e2e5')});
+$('iv').classList.toggle('on',y>vh*.5);
+var cur=null;links.forEach(function(a){var t=$(a.getAttribute('href').slice(1));if(t&&t.getBoundingClientRect().top<vh*.4)cur=a});links.forEach(function(a){a.classList.toggle('on',a===cur)});
+}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+/* ---------- copiar ---------- */
+document.querySelectorAll('.copy').forEach(function(b){b.onclick=function(){var v=b.dataset.copy;function ok(){b.textContent='Copiado';setTimeout(function(){b.textContent='Copiar'},1500)}
+try{navigator.clipboard.writeText(v).then(ok,function(){sel(b)})}catch(e){sel(b)}};});
+function sel(b){var r=document.createRange();r.selectNodeContents(b.previousElementSibling);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+/* ---------- RIESGO: 100 personas + barras ---------- */
+(function(){var p=$('people'),h='';for(var i=0;i<100;i++)h+='<i></i>';p.innerHTML=h;var ps=p.children,done=false;
+io(p,function(v){if(!v||done)return;done=true;for(var i=0;i<100;i++)(function(i){setTimeout(function(){ps[i].className=i<12?'c':(i<76?'p':'')},RM?0:i*14)})(i)},.3);
+var fb=$('fRange').closest('.flebo');io(fb,function(v){if(v){$('fRange').style.left='20%';$('fRange').style.width='45%';$('fStd').style.width='5%'}},.4);
+})();
+/* ================= 3D: PORTADA ================= */
+var hasGL=!!window.THREE&&(function(){try{var c=document.createElement('canvas');return !!(c.getContext('webgl')||c.getContext('experimental-webgl'))}catch(e){return false}})();
+function makeRenderer(cv){var r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio||1,2));return r}
+function dragRotate(cv,obj,opt){var down=false,px=0,py=0;opt=opt||{};
+cv.addEventListener('pointerdown',function(e){down=true;px=e.clientX;py=e.clientY;cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',function(e){if(!down)return;obj.userData.ty=(obj.userData.ty||0)+(e.clientX-px)*.008;obj.userData.tx=Math.max(-(opt.maxX||.6),Math.min(opt.maxX||.6,(obj.userData.tx||0)+(e.clientY-py)*.006));px=e.clientX;py=e.clientY});
+cv.addEventListener('pointerup',function(){down=false});cv.addEventListener('pointercancel',function(){down=false});}
+if(hasGL)(function(){
+var cv=$('heroCv'),st=$('heroStage'),R=makeRenderer(cv),S=new THREE.Scene(),C=new THREE.PerspectiveCamera(34,1,.1,100);
+C.position.set(0,1.6,9.4);C.lookAt(0,-.2,0);
+S.add(new THREE.HemisphereLight(0xffffff,0xbfdde2,.85));var dl=new THREE.DirectionalLight(0xffffff,.75);dl.position.set(3,6,5);S.add(dl);var bl=new THREE.DirectionalLight(0x9fe3ea,.35);bl.position.set(-5,-2,-3);S.add(bl);
+var G=new THREE.Group();S.add(G);
+/* piel: capas */
+var skin=new THREE.Mesh(new THREE.BoxGeometry(7.4,.42,3.4),new THREE.MeshPhongMaterial({color:0xf2c7a9,transparent:true,opacity:.55,shininess:20}));skin.position.y=1.15;G.add(skin);
+var derm=new THREE.Mesh(new THREE.BoxGeometry(7.4,.9,3.4),new THREE.MeshPhongMaterial({color:0xf7dccb,transparent:true,opacity:.22}));derm.position.y=.49;G.add(derm);
+/* vena */
+var curve=new THREE.CatmullRomCurve3([new THREE.Vector3(-3.7,-.35,0),new THREE.Vector3(-1.5,-.2,.15),new THREE.Vector3(.6,-.42,-.05),new THREE.Vector3(3.7,-.3,.1)]);
+var vein=new THREE.Mesh(new THREE.TubeGeometry(curve,120,.62,40,false),new THREE.MeshPhongMaterial({color:0x5a73c4,transparent:true,opacity:.34,side:THREE.DoubleSide,shininess:70,specular:0xffffff,depthWrite:false}));G.add(vein);
+var veinIn=new THREE.Mesh(new THREE.TubeGeometry(curve,120,.6,40,false),new THREE.MeshPhongMaterial({color:0x7a1520,transparent:true,opacity:.12,side:THREE.BackSide,depthWrite:false}));G.add(veinIn);
+/* glóbulos rojos */
+var N=70,rbcG=new THREE.TorusGeometry(.12,.07,10,22),rbcM=new THREE.MeshPhongMaterial({color:0xc8202f,shininess:60,specular:0xff9999});
+var rbc=new THREE.InstancedMesh(rbcG,rbcM,N);G.add(rbc);var cells=[];for(var i=0;i<N;i++)cells.push({u:Math.random(),r:Math.random()*.42,a:Math.random()*6.28,s:.05+Math.random()*.04,rx:Math.random()*6,ry:Math.random()*6});
+var dmy=new THREE.Object3D();
+/* catéter */
+var entry=new THREE.Vector3(-2.2,1.5,0),tipEnd=new THREE.Vector3(1.0,-.36,0);
+var dir=tipEnd.clone().sub(entry),len=dir.length();dir.normalize();
+var cath=new THREE.Group();G.add(cath);
+var cathMat=new THREE.MeshPhongMaterial({color:0x1aa3b2,transparent:true,opacity:.92,shininess:90});
+var tube=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,len,24),cathMat);tube.position.y=-len/2;cath.add(tube);
+var tipC=new THREE.Mesh(new THREE.ConeGeometry(.075,.22,24),cathMat);tipC.rotation.x=Math.PI;tipC.position.y=-len-.11;cath.add(tipC);
+var hub=new THREE.Mesh(new THREE.CylinderGeometry(.24,.17,.7,28),new THREE.MeshPhongMaterial({color:0xf76f01,shininess:60}));hub.position.y=.35;cath.add(hub);
+var wing=new THREE.Mesh(new THREE.BoxGeometry(1,.05,.42),new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:.95}));wing.position.y=.05;cath.add(wing);
+var line=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,2.4,16),new THREE.MeshPhongMaterial({color:0xdfeff2,transparent:true,opacity:.9}));line.position.y=1.9;cath.add(line);
+var q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,-1,0),dir);cath.quaternion.copy(q);
+/* apósito */
+var dress=new THREE.Mesh(new THREE.BoxGeometry(1.8,.03,1.4),new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:0,shininess:100}));dress.position.set(-2.05,1.38,0);G.add(dress);
+G.rotation.set(.18,-.35,0);G.userData.ty=-.35;G.userData.tx=.18;
+dragRotate(cv,G,{maxX:.5});
+function size(){var w=st.clientWidth,h=st.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.fixedZ=w/h<.95?11.5:9.4;C.position.z=C.fixedZ;C.updateProjectionMatrix()}
+size();addEventListener('resize',size);
+var ins=0,target=0,t0=performance.now(),run=true,auto=0;
+io(st,function(v){run=v;if(v)requestAnimationFrame(loop)},.01);
+setTimeout(function(){target=1},RM?0:500);
+function project(v){var p=v.clone();G.localToWorld(p);p.project(C);return{x:(p.x*.5+.5)*st.clientWidth,y:(-p.y*.5+.5)*st.clientHeight}}
+function loop(now){if(!run)return;var dt=Math.max(0,Math.min(.05,(now-t0)/1000));t0=now;
+ins+=(target-ins)*Math.min(1,dt*1.6);var pos=entry.clone().add(dir.clone().multiplyScalar(-(1-ins)*(len*.92)));cath.position.copy(pos);
+dress.material.opacity=Math.max(0,(ins-.85)/.15)*.55;
+$('insBar').style.width=Math.round(ins*100)+'%';$('insPct').textContent=Math.round(ins*100)+' %';
+for(var i=0;i<N;i++){var c=cells[i];c.u=((c.u+c.s*dt*(RM?0:1))%1+1)%1;var P=curve.getPointAt(c.u),T=curve.getTangentAt(c.u);
+var nrm=new THREE.Vector3(0,1,0).cross(T).normalize(),bin=T.clone().cross(nrm);
+dmy.position.copy(P).add(nrm.multiplyScalar(Math.cos(c.a)*c.r)).add(bin.multiplyScalar(Math.sin(c.a)*c.r));
+c.rx+=dt*.8;c.ry+=dt*.5;dmy.rotation.set(c.rx,c.ry,0);dmy.updateMatrix();rbc.setMatrixAt(i,dmy.matrix)}
+rbc.instanceMatrix.needsUpdate=true;
+if(!RM){auto+=dt;G.userData.ty+=Math.sin(auto*.4)*.0006}
+G.rotation.y+=((G.userData.ty||0)-G.rotation.y)*.08;G.rotation.x+=((G.userData.tx||0)-G.rotation.x)*.08;
+R.render(S,C);
+var a=project(new THREE.Vector3(-2.6,1.4,1.6)),b=project(new THREE.Vector3(2.8,-.3,.6)),c2=project(cath.localToWorld?tipEnd.clone():tipEnd);
+if(!RM)requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+})();
+/* ================= 3D: BRAZO ================= */
+var VEINS=[
+{k:'cef',n:'Cefálica',c:0x2f6fd0,use:['Vía periférica en antebrazo','Midline / PICC: 3.ª opción'],no:[],d:'Recorre el borde radial (lado del pulgar) del antebrazo y el borde lateral del brazo hasta el surco deltopectoral. En el antebrazo es una buena vena para catéter periférico. En el brazo es más tortuosa y desemboca en ángulo, por eso queda detrás de la basílica para un PICC.'},
+{k:'bas',n:'Basílica',c:0x1a96a3,use:['Vía periférica en antebrazo','PICC y midline: 1.ª elección'],no:[],d:'Sube por el borde cubital del antebrazo y la cara medial del brazo, donde se hace profunda hacia la mitad. En el brazo es ancha y de trayecto recto: la vena preferida para insertar un PICC o un midline con ecografía.'},
+{k:'mcu',n:'Mediana cubital',c:0xf76f01,use:['Extracción de sangre'],no:['Evitar para infusión: zona de flexión'],d:'Une la cefálica y la basílica en la fosa del codo. Es la vena típica de las extracciones, pero para una infusión mantenida se evita: al doblar el codo el catéter se mueve y aumenta el riesgo de flebitis mecánica.'},
+{k:'man',n:'Mediana antebraquial',c:0x7a5cc9,use:['Vía periférica'],no:[],d:'Recorre la cara anterior del antebrazo. Su calibre es variable; cuando es visible y recta, es una opción cómoda para un catéter periférico corto.'},
+{k:'bra',n:'Braquial (profunda)',c:0x0d4f8b,use:['PICC: 2.ª elección, con ecografía'],no:['Junto a la arteria y el nervio mediano'],d:'Son venas profundas y pareadas que acompañan a la arteria braquial. Solo se canalizan con ecografía; hay que identificar la arteria y el nervio mediano para no lesionarlos.'},
+{k:'dor',n:'Red dorsal de la mano',c:0x5f8fe0,use:['Vía periférica de corta duración'],no:['Zona de flexión: evitarla si hay alternativa'],d:'Venas metacarpianas dorsales, visibles en el dorso de la mano. Flebitis Zero recomienda evitar mano y muñeca por ser zonas de flexión; se reservan cuando no hay otra opción.'}
+];
+var vSel=1;
+(function(){var vl=$('vlist');VEINS.forEach(function(v,i){var b=document.createElement('button');b.className='chip'+(i===vSel?' on':'');b.textContent=v.n;b.setAttribute('role','tab');b.onclick=function(){selectVein(i)};vl.appendChild(b)});})();
+function veinCard(i){var v=VEINS[i];$('vcard').innerHTML='<span class="eyebrow">Miembro superior</span><h3 style="margin-top:12px;font-size:26px">'+v.n+'</h3><div class="use">'+v.use.map(function(u){return '<span>'+u+'</span>'}).join('')+v.no.map(function(u){return '<span class="no">'+u+'</span>'}).join('')+'</div><p>'+v.d+'</p>'}
+var armApi=null;
+function selectVein(i){vSel=i;[].forEach.call($('vlist').children,function(b,j){b.classList.toggle('on',j===i)});veinCard(i);if(armApi)armApi.sel(i)}
+veinCard(vSel);
+if(hasGL)(function(){
+var cv=$('armCv'),st=$('armStage'),R=makeRenderer(cv),S=new THREE.Scene(),C=new THREE.PerspectiveCamera(30,1,.1,100);
+C.position.set(0,0,13);C.lookAt(0,0,0);
+S.add(new THREE.HemisphereLight(0xffffff,0xc9e2e6,.8));var dl=new THREE.DirectionalLight(0xffffff,.7);dl.position.set(2,5,6);S.add(dl);var rl=new THREE.DirectionalLight(0xbfe9ee,.4);rl.position.set(-4,-3,-4);S.add(rl);
+var Tilt=new THREE.Group();S.add(Tilt);var G=new THREE.Group();Tilt.add(G);
+/* radio del brazo a lo largo de x: mano(-5) -> hombro(5) */
+function rad(x){var t=(x+5)/10;var pts=[[0,.32],[.08,.44],[.15,.4],[.2,.34],[.32,.46],[.46,.6],[.5,.58],[.55,.6],[.75,.66],[.92,.78],[1,.9]];
+for(var i=1;i<pts.length;i++)if(t<=pts[i][0]){var a=pts[i-1],b=pts[i],k=(t-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*(k*k*(3-2*k))}return .9}
+var FLAT=.78;
+/* malla del brazo */
+var segX=90,segA=48,pos=[],idx=[];
+for(var i=0;i<=segX;i++){var x=-5+10*i/segX,r=rad(x);for(var j=0;j<=segA;j++){var a=j/segA*Math.PI*2;var hand=x<-3.1?(1+(-3.1-x)*.35):1;pos.push(x,Math.sin(a)*r*hand,Math.cos(a)*r*FLAT/(hand))}}
+for(i=0;i<segX;i++)for(j=0;j<segA;j++){var p0=i*(segA+1)+j,p1=p0+segA+1;idx.push(p0,p1,p0+1,p1,p1+1,p0+1)}
+var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();
+var skin=new THREE.Mesh(g,new THREE.MeshPhongMaterial({color:0xf1c3a4,transparent:true,opacity:.42,shininess:25,depthWrite:false,side:THREE.DoubleSide}));
+G.add(skin);
+var core=new THREE.Mesh(g,new THREE.MeshPhongMaterial({color:0xe9b7a0,transparent:true,opacity:.18,depthWrite:false}));core.scale.set(1,.72,.72);G.add(core);
+/* punto sobre la superficie: x, ángulo (0 = cara palmar, frente a cámara), profundidad */
+function sp(x,a,d){var r=rad(x)*(d||1.02);var hand=x<-3.1?(1+(-3.1-x)*.35):1;return new THREE.Vector3(x,Math.sin(a)*r*hand,Math.cos(a)*r*FLAT/hand)}
+var deg=Math.PI/180;
+var paths={
+cef:[sp(-3.2,-80*deg),sp(-2.4,-62*deg),sp(-1.2,-55*deg),sp(-.05,-50*deg),sp(1.4,-70*deg),sp(3,-80*deg),sp(4.4,-95*deg)],
+bas:[sp(-3.2,80*deg),sp(-2.4,68*deg),sp(-1.2,60*deg),sp(-.05,55*deg),sp(1.2,62*deg),sp(2.2,72*deg,.97),sp(3.2,78*deg,.8),sp(4.3,82*deg,.72)],
+mcu:[sp(-.55,-52*deg),sp(-.1,-15*deg),sp(.35,20*deg),sp(.75,57*deg)],
+man:[sp(-2.9,0),sp(-2.1,4*deg),sp(-1.2,-4*deg),sp(-.45,2*deg)],
+bra:[sp(.2,40*deg,.62),sp(1.6,55*deg,.6),sp(3,60*deg,.62),sp(4.4,62*deg,.64)],
+dor:[sp(-4.6,170*deg),sp(-4,175*deg),sp(-3.4,182*deg),sp(-3,185*deg)]
+};
+var dorExtra=[[sp(-4.6,150*deg),sp(-4,160*deg),sp(-3.3,178*deg)],[sp(-4.6,205*deg),sp(-4,195*deg),sp(-3.3,186*deg)]];
+var meshes=[],labels=[];
+VEINS.forEach(function(v,i){var crv=new THREE.CatmullRomCurve3(paths[v.k]);var r=v.k==='bra'?.09:.075;
+var m=new THREE.Mesh(new THREE.TubeGeometry(crv,80,r,14,false),new THREE.MeshPhongMaterial({color:v.c,shininess:80,specular:0xffffff,transparent:true,opacity:.95}));m.userData.i=i;G.add(m);meshes.push(m);
+if(v.k==='dor')dorExtra.forEach(function(pp){var mm=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pp),40,.06,10,false),m.material);mm.userData.i=i;G.add(mm);meshes.push(mm)});
+var lb=document.createElement('span');lb.className='lbl';lb.textContent=v.n;st.appendChild(lb);labels.push({el:lb,p:crv.getPointAt(v.k==='mcu'?.5:v.k==='bra'?.55:.5)});
+});
+/* arteria braquial (contexto) */
+var art=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([sp(.2,30*deg,.55),sp(2,40*deg,.52),sp(4.4,45*deg,.55)]),60,.07,12,false),new THREE.MeshPhongMaterial({color:0xc8323c,transparent:true,opacity:.6}));G.add(art);
+var zones=[];[[-.15,.5],[-3.25,.35]].forEach(function(z){var ring=new THREE.Mesh(new THREE.TorusGeometry(rad(z[0])*1.06,.03,8,60),new THREE.MeshBasicMaterial({color:0xf76f01,transparent:true,opacity:.0}));ring.rotation.y=Math.PI/2;ring.position.x=z[0];ring.scale.z=FLAT;G.add(ring);zones.push(ring)});
+G.rotation.set(-.15,0,0);G.userData.tx=-.15;G.userData.ty=0;
+dragRotate(cv,G,{maxX:1.2});
+var ray=new THREE.Raycaster(),mv=new THREE.Vector2(),downAt=null;
+cv.addEventListener('pointerdown',function(e){downAt=[e.clientX,e.clientY]});
+cv.addEventListener('pointerup',function(e){if(!downAt||Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1])>6)return;var r=cv.getBoundingClientRect();mv.x=(e.clientX-r.left)/r.width*2-1;mv.y=-(e.clientY-r.top)/r.height*2+1;ray.setFromCamera(mv,C);ray.params.Line={threshold:.2};var hit=ray.intersectObjects(meshes);if(hit.length)selectVein(hit[0].object.userData.i)});
+function size(){var w=st.clientWidth,h=st.clientHeight;R.setSize(w,h,false);C.aspect=w/h;var asp=w/h;Tilt.rotation.z=asp<1.1?-.95:-.42;C.position.z=asp<1.1?16.5:13.8;C.updateProjectionMatrix()}
+size();addEventListener('resize',size);
+var run=false,t0=performance.now(),pulse=0,shown=0;
+armApi={sel:function(i){var v=VEINS[i];var target={cef:-.55,bas:.5,mcu:0,man:0,bra:.75,dor:Math.PI}[v.k];G.userData.ty=target;G.userData.tx=v.k==='dor'?.15:-.15}};
+io(st,function(v){run=v;if(v){t0=performance.now();requestAnimationFrame(loop)}},.05);
+function loop(now){if(!run)return;var dt=Math.max(0,Math.min(.05,(now-t0)/1000));t0=now;pulse+=dt;shown=Math.min(1,shown+dt*.8);
+meshes.forEach(function(m){var on=m.userData.i===vSel;var s=on?1+Math.sin(pulse*5)*.06:1;m.scale.set(1,1,1);m.material.opacity=(on?1:.55)*shown;m.material.emissive=new THREE.Color(on?0x222222:0x000000)});
+zones.forEach(function(z){z.material.opacity=VEINS[vSel].k==='mcu'||VEINS[vSel].k==='dor'?.5+.4*Math.sin(pulse*4):0});
+G.rotation.y+=((G.userData.ty||0)-G.rotation.y)*.08;G.rotation.x+=((G.userData.tx||0)-G.rotation.x)*.08;
+R.render(S,C);
+var w=st.clientWidth,h=st.clientHeight;labels.forEach(function(l,i){var p=l.p.clone();G.localToWorld(p);var cam=p.clone().sub(C.position);var pr=p.clone().project(C);
+var nrm=l.p.clone().setX(0).normalize().applyQuaternion(G.quaternion);var facing=nrm.dot(cam.clone().normalize().negate())>-.2||i===vSel;
+l.el.style.left=(pr.x*.5+.5)*w+'px';l.el.style.top=(-pr.y*.5+.5)*h+'px';l.el.style.opacity=(facing&&(w>600||i===vSel))?shown:0;l.el.classList.toggle('on',i===vSel)});
+if(!RM)requestAnimationFrame(loop)}
+})();
+/* ================= DISPOSITIVOS ================= */
+var DEV=[
+{k:'cvp',t:'Periférico',n:'Catéter venoso periférico corto',len:'≤ 7,5 cm',tip:'Vena periférica del antebrazo',dur:'Hasta unos 5 días',why:'Para terapias cortas con fármacos compatibles con vía periférica. Calibre lo más pequeño posible.'},
+{k:'mid',t:'Periférico',n:'Midline',len:'8 – 25 cm',tip:'Vena del brazo, por debajo de la axila',dur:'6 – 14 días (hasta 2-4 semanas)',why:'Cuando la terapia periférica se alarga. MAGIC lo prefiere al PICC entre 6 y 14 días.'},
+{k:'picc',t:'Central',n:'PICC',len:'Según el paciente',tip:'Vena cava superior, unión cavoauricular',dur:'15 días o más',why:'Terapias largas o fármacos no aptos para vía periférica. Se inserta por la basílica con ecografía.'},
+{k:'cvc',t:'Central',n:'CVC no tunelizado',len:'Según la vía',tip:'Vena cava superior',dur:'Corta duración, menos de 15 días',why:'Pacientes críticos que necesitan varias luces. Vía subclavia, yugular o femoral.'},
+{k:'tun',t:'Central',n:'Tunelizado (Hickman, Broviac)',len:'Trayecto subcutáneo',tip:'Vena cava superior',dur:'Larga duración, meses',why:'El túnel bajo la piel aleja el punto de salida de la vena y reduce la infección.'},
+{k:'res',t:'Central',n:'Reservorio subcutáneo',len:'Cámara bajo la piel',tip:'Vena cava superior',dur:'Larga duración, meses o años',why:'Terapias intermitentes y prolongadas, como la quimioterapia. Se accede con aguja tipo Huber.'}
+];
+var dSel='cvp';
+function recommend(days,ves){
+if(ves&&days<15)return{k:days<=14?'cvc':'picc',h:'Acceso central',p:'Con fármacos vesicantes o irritantes, la vía periférica no es adecuada. En un paciente crítico y menos de 15 días, un CVC no tunelizado; si no, valorar PICC.'};
+if(days<=5)return{k:'cvp',h:'Catéter periférico corto',p:'Hasta 5 días con fármacos compatibles. MAGIC considera inapropiado un PICC para estas terapias.'};
+if(days<=14)return{k:'mid',h:'Midline',p:'Entre 6 y 14 días, MAGIC prefiere un midline o un periférico guiado por ecografía antes que un PICC.'};
+if(days<=30)return{k:'picc',h:'PICC',p:'Terapia de 15 días o más: un catéter central de inserción periférica, colocado por la basílica con ecografía.'};
+return{k:ves?'res':'tun',h:ves?'Reservorio subcutáneo o PICC de larga duración':'Tunelizado o PICC de larga duración',p:'Más de un mes: dispositivos de larga duración. Para tratamientos intermitentes, como la quimioterapia, el reservorio es habitual.'};
+}
+(function(){var dg=$('devgrid');DEV.forEach(function(d){var b=document.createElement('button');b.className='dcard rv';b.dataset.k=d.k;b.innerHTML='<span class="t">'+d.t+'</span><h3>'+d.n+'</h3><dl><dt>Longitud</dt><dd>'+d.len+'</dd><dt>Punta</dt><dd>'+d.tip+'</dd><dt>Duración</dt><dd>'+d.dur+'</dd></dl>';b.onclick=function(){dSel=d.k;drawBody();marks()};dg.appendChild(b)})})();
+function marks(){[].forEach.call($('devgrid').children,function(b){b.classList.toggle('on',b.dataset.k===dSel)})}
+var bs=$('bodySvg');
+/* silueta: tórax + brazo derecho del paciente (a la izquierda del dibujo) */
+(function(){
+el('path',{d:'M250 40 C230 40 220 60 222 80 C224 100 236 112 250 112 C264 112 276 100 278 80 C280 60 270 40 250 40Z',fill:'#f6e3d6',stroke:'#e2c6b4','stroke-width':2},bs);
+el('path',{d:'M180 150 C200 128 230 122 250 122 C270 122 300 128 320 150 L340 330 C342 380 330 470 320 520 L180 520 C170 470 158 380 160 330 Z',fill:'#f6e3d6',stroke:'#e2c6b4','stroke-width':2},bs);
+el('path',{d:'M180 150 C150 160 128 190 120 230 L96 330 C88 360 70 420 58 470 L84 478 C100 430 122 372 132 344 L160 250',fill:'#f6e3d6',stroke:'#e2c6b4','stroke-width':2},bs);
+el('path',{d:'M320 150 C350 160 372 190 380 230 L404 330 C412 360 430 420 442 470 L416 478 C400 430 378 372 368 344 L340 250',fill:'#f6e3d6',stroke:'#e2c6b4','stroke-width':2},bs);
+/* venas */
+el('path',{d:'M74 470 C92 420 110 360 126 330 C136 300 150 250 168 200 C178 175 196 160 214 156 L236 158 L250 170',fill:'none',stroke:'#5a73c4','stroke-width':5,'stroke-linecap':'round',opacity:.55,id:'vArm'},bs);
+el('path',{d:'M262 60 L262 120 L256 158 L252 175 L250 250',fill:'none',stroke:'#5a73c4','stroke-width':7,'stroke-linecap':'round',opacity:.55},bs);
+el('path',{d:'M206 152 L250 170',fill:'none',stroke:'#5a73c4','stroke-width':6,'stroke-linecap':'round',opacity:.55},bs);
+/* corazón */
+el('path',{d:'M250 248 C236 236 222 246 226 262 C230 276 250 290 256 296 C262 290 284 276 286 262 C290 246 274 236 262 246 Z',fill:'#e9a3a3',opacity:.85},bs);
+var t=el('text',{x:268,y:238,'font-family':'JetBrains Mono, monospace','font-size':12,fill:'#7f9196'},bs);t.textContent='Aurícula derecha';
+var t2=el('text',{x:272,y:150,'font-family':'JetBrains Mono, monospace','font-size':12,fill:'#7f9196'},bs);t2.textContent='Vena cava superior';
+el('g',{id:'devLayer'},bs);
+})();
+function drawBody(){var L=$('devLayer');L.innerHTML='';var col='#1a96a3';
+var P={cvp:'M84 450 C92 430 98 410 104 396',mid:'M128 330 C136 300 146 268 160 236',picc:'M128 330 C140 296 152 250 168 200 C178 176 196 162 214 157 L236 159 L250 172 L251 236',cvc:'M214 150 L236 158 L250 172 L251 236',tun:'M282 200 C268 186 252 176 240 162 L250 172 L251 236',res:'M290 214 C276 196 262 182 246 168 L251 180 L251 236'}[dSel];
+var p=el('path',{d:P,fill:'none',stroke:col,'stroke-width':5,'stroke-linecap':'round'},L);
+var len=p.getTotalLength();p.style.strokeDasharray=len;p.style.strokeDashoffset=RM?0:len;p.getBoundingClientRect();p.style.transition='stroke-dashoffset 1.2s cubic-bezier(.3,.7,.2,1)';p.style.strokeDashoffset=0;
+var end=p.getPointAtLength(len),st=p.getPointAtLength(0);
+el('circle',{cx:st.x,cy:st.y,r:8,fill:'#f76f01'},L);
+if(dSel==='res'){el('rect',{x:st.x-16,y:st.y-12,width:32,height:24,rx:10,fill:'#f76f01'},L)}
+var tip=el('circle',{cx:end.x,cy:end.y,r:9,fill:'#fff',stroke:col,'stroke-width':4},L);
+var d=DEV.filter(function(x){return x.k===dSel})[0];
+var bx=end.x>300?end.x-230:end.x+18,by=Math.max(20,end.y-12);
+if(dSel==='cvp'||dSel==='mid'){bx=150;by=dSel==='cvp'?400:300}
+if(dSel==='picc'||dSel==='cvc'||dSel==='tun'||dSel==='res'){bx=300;by=300}
+var g=el('g',{opacity:0},L);g.style.transition='opacity .5s .9s';
+el('rect',{x:bx,y:by,width:230,height:62,rx:12,fill:'#1f2d33'},g);
+var a=el('text',{x:bx+14,y:by+24,'font-family':'JetBrains Mono, monospace','font-size':11,fill:'#7fd3dc','letter-spacing':'1'},g);a.textContent='PUNTA DEL CATÉTER';
+var b=el('text',{x:bx+14,y:by+46,'font-family':'Arimo, sans-serif','font-size':14,'font-weight':700,fill:'#fff'},g);b.textContent=d.tip.length>30?d.tip.slice(0,30)+'…':d.tip;
+requestAnimationFrame(function(){g.setAttribute('opacity',1)});
+}
+function updDev(){var days=+$('dDays').value,ves=$('dVes').checked;$('dNum').textContent=days;$('dUnit').textContent=days===1?'día':'días';var r=recommend(days,ves);
+$('dRec').innerHTML='<span class="k">Recomendación orientativa</span><h3>'+r.h+'</h3><p>'+r.p+'</p>';if(r.k!==dSel){dSel=r.k;drawBody();marks()}}
+$('dDays').addEventListener('input',updDev);$('dVes').addEventListener('change',updDev);updDev();drawBody();marks();
+/* ================= ESCALA DE MADDOX ================= */
+var MAD=[
+{g:0,h:'Sin signos',p:'El punto de inserción está limpio, sin dolor ni enrojecimiento.',a:'Observar en cada turno',c:'var(--ok)'},
+{g:1,h:'Eritema',p:'Enrojecimiento en el punto de acceso, con o sin dolor.',a:'Retirar el catéter',c:'var(--warn)'},
+{g:2,h:'Dolor con eritema o edema',p:'Dolor en el punto de acceso con enrojecimiento o hinchazón.',a:'Retirar el catéter',c:'var(--warn)'},
+{g:3,h:'Cordón venoso palpable',p:'Dolor, eritema o edema, endurecimiento y un cordón venoso que se palpa.',a:'Retirar y valorar',c:'var(--bad)'},
+{g:4,h:'Cordón de más de 2 cm y supuración',p:'Como el grado 3, con un cordón palpable de más de 2 cm y drenaje purulento.',a:'Retirar, cultivar y avisar',c:'var(--bad)'}
+];
+var site=$('siteSvg');
+(function(){
+el('rect',{x:0,y:0,width:560,height:380,fill:'#f3d5c3'},site);
+el('path',{d:'M0 210 C140 190 300 200 560 180',fill:'none',stroke:'#7f8fd1','stroke-width':16,opacity:.35,'stroke-linecap':'round'},site);
+el('ellipse',{id:'mRed',cx:250,cy:200,rx:10,ry:8,fill:'#e2504a',opacity:0},site);
+el('ellipse',{id:'mEd',cx:250,cy:200,rx:10,ry:8,fill:'#ffd9c7',opacity:0},site);
+el('path',{id:'mCord',d:'M250 200 C320 192 380 190 450 186',fill:'none',stroke:'#c0392b','stroke-width':10,'stroke-linecap':'round',opacity:0},site);
+/* apósito y catéter */
+el('rect',{x:150,y:130,width:210,height:150,rx:22,fill:'#ffffff',opacity:.4,stroke:'#ffffff','stroke-width':2},site);
+el('path',{d:'M40 290 L210 214',stroke:'#cfe8ec','stroke-width':10,'stroke-linecap':'round'},site);
+el('rect',{x:196,y:196,width:44,height:26,rx:8,fill:'#f76f01',transform:'rotate(-24 218 209)'},site);
+el('path',{d:'M234 204 L262 199',stroke:'#1aa3b2','stroke-width':5,'stroke-linecap':'round'},site);
+el('circle',{id:'mPus',cx:262,cy:214,r:0,fill:'#f2e27a',stroke:'#d8c24a','stroke-width':2},site);
+var t=el('text',{x:20,y:36,'font-family':'JetBrains Mono, monospace','font-size':14,fill:'#7a4b3a'},site);t.id='mLab';
+})();
+function setGrade(i){var m=MAD[i];[].forEach.call($('grade').children,function(b,j){b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i)});
+$('gtext').innerHTML='<h3>Grado '+i+' · '+m.h+'</h3><p>'+m.p+'</p><span class="act" style="background:'+m.c+';color:#fff">'+m.a+'</span>';
+var r=[0,46,62,78,96][i],ed=[0,0,40,52,64][i];function a(id,o){var e=$(id);e.style.transition='all .7s cubic-bezier(.2,.8,.2,1)';for(var k in o)e.setAttribute(k,o[k])}
+a('mRed',{rx:r*1.4,ry:r,opacity:i?(.25+i*.1):0});a('mEd',{rx:ed*1.2,ry:ed*.8,opacity:i>=2?.35:0});a('mCord',{opacity:i>=3?.75:0,'stroke-width':i===4?14:10});a('mPus',{r:i===4?11:0});
+$('mLab').textContent='Escala de Maddox · grado '+i;}
+(function(){var g=$('grade');MAD.forEach(function(m,i){var b=document.createElement('button');b.textContent=i;b.setAttribute('role','tab');b.setAttribute('aria-label','Grado '+i);b.onclick=function(){setGrade(i)};g.appendChild(b)});setGrade(0);
+var played=false;io($('siteSvg'),function(v){if(!v||played||RM)return;played=true;var i=0;var iv=setInterval(function(){i++;setGrade(i);if(i>=2)clearInterval(iv)},900)},.5)})();
+/* ================= BUNDLE: check encadenado ================= */
+(function(){var items=document.querySelectorAll('.bitem'),done=false;io($('bundle'),function(v){if(!v||done)return;done=true;items.forEach(function(it,i){setTimeout(function(){it.classList.add('done')},RM?0:500+i*450)})},.3)})();
+/* ================= LAVADO PULSÁTIL ================= */
+var fs=$('flushSvg');
+(function(){
+el('rect',{x:20,y:52,width:170,height:46,rx:8,fill:'#ffffff',stroke:'#1f2d33','stroke-width':2},fs);
+el('rect',{id:'fLiq',x:22,y:54,width:150,height:42,rx:6,fill:'#cfeef2'},fs);
+el('rect',{id:'fPl',x:172,y:50,width:12,height:50,rx:3,fill:'#1f2d33'},fs);
+el('rect',{id:'fRod',x:184,y:70,width:70,height:10,rx:3,fill:'#1f2d33'},fs);
+for(var i=1;i<10;i++)el('line',{x1:22+i*16,y1:52,x2:22+i*16,y2:i%5?62:68,stroke:'#1f2d33','stroke-width':1.5},fs);
+el('rect',{x:0,y:66,width:22,height:18,rx:4,fill:'#f76f01'},fs);
+el('rect',{x:270,y:56,width:250,height:38,rx:19,fill:'#e3f3f5',stroke:'#1a96a3','stroke-width':2},fs);
+el('g',{id:'fDots'},fs);
+var t=el('text',{x:290,y:122,'font-family':'JetBrains Mono, monospace','font-size':13,fill:'#5b6b71',id:'fStep'},fs);t.textContent='Pulsa “Ver el lavado”';
+})();
+var flushing=false;
+$('flushBtn').onclick=function(){if(flushing)return;flushing=true;var D=$('fDots');D.innerHTML='';var dots=[];for(var i=0;i<26;i++){dots.push(el('circle',{cx:280+Math.random()*230,cy:64+Math.random()*22,r:3+Math.random()*2.5,fill:'#b3202e',opacity:.75},D))}
+var steps=[['Empuja',1],['Para',0],['Empuja',1],['Para',0],['Empuja',1],['Para',0],['Empuja',1],['Presión positiva al cerrar',2]],k=0,pl=172;
+function next(){if(k>=steps.length){flushing=false;$('fStep').textContent='Catéter limpio y permeable';return}var s=steps[k++];$('fStep').textContent=s[0];
+if(s[1]){pl=Math.max(30,pl-18);['fPl','fRod'].forEach(function(id,j){var e=$(id);e.style.transition='x .35s';e.setAttribute('x',j?pl+12:pl)});$('fLiq').style.transition='width .35s';$('fLiq').setAttribute('width',Math.max(0,pl-22));
+dots.forEach(function(d){if(+d.getAttribute('opacity')<=0)return;var nx=+d.getAttribute('cx')+40+Math.random()*50;d.style.transition='cx .5s, cy .5s, opacity .5s';d.setAttribute('cx',nx);d.setAttribute('cy',62+Math.random()*26);if(nx>505)d.setAttribute('opacity',0)})}
+setTimeout(next,RM?60:s[1]===0?380:620)}
+next()};
+io($('flushSvg'),function(v){if(v&&!RM&&!$('flushSvg').dataset.p){$('flushSvg').dataset.p=1;setTimeout(function(){$('flushBtn').click()},600)}},.6);
+/* ================= QUIZ ================= */
+var QZ=[
+{q:'¿Cada cuánto se cambia un apósito transparente semipermeable?',o:['Cada 24 h','Cada 48 h','Al menos cada 7 días'],a:2,f:'Al menos cada 7 días, o antes si se moja, se despega o se ensucia. El de gasa, cada 48 horas.'},
+{q:'¿Qué antiséptico se recomienda para preparar la piel?',o:['Povidona yodada','Clorhexidina alcohólica al 2 %','Alcohol de 70 %'],a:1,f:'Clorhexidina alcohólica al 2 %, dejándola secar por completo. Las otras quedan como alternativa si hay hipersensibilidad.'},
+{q:'¿Hay que cambiar el catéter periférico de forma rutinaria cada 72 horas?',o:['Sí, siempre','No, si funciona y no hay signos','Solo en pacientes jóvenes'],a:1,f:'Flebitis Zero indica que no es necesario sustituirlo antes de 72-96 horas; se retira cuando no hace falta o ante flebitis, infección o mal funcionamiento.'}
+];
+(function(){var qi=0,score=0,box=$('quiz');
+function render(){if(qi>=QZ.length){box.innerHTML='<span class="eyebrow">Ponte a prueba</span><h3 style="margin-top:14px">'+score+' de '+QZ.length+' aciertos</h3><p class="fb">'+(score===QZ.length?'Dominas lo básico. El curso te lleva al detalle de cada dispositivo.':'Justo lo que se repasa en el bloque 5 del curso.')+'</p><button class="chip on" id="qAgain">Repetir</button>';$('qAgain').onclick=function(){qi=0;score=0;render()};return}
+var Q=QZ[qi];box.innerHTML='<span class="eyebrow">Ponte a prueba</span><p class="qn" style="margin-top:14px">Pregunta '+(qi+1)+' de '+QZ.length+'</p><p class="q">'+Q.q+'</p><div class="opts">'+Q.o.map(function(o,i){return '<button class="chip" data-i="'+i+'">'+o+'</button>'}).join('')+'</div><p class="fb"></p>';
+[].forEach.call(box.querySelectorAll('.opts button'),function(b){b.onclick=function(){if(box.dataset.lock)return;box.dataset.lock=1;var i=+b.dataset.i;b.classList.add(i===Q.a?'ok':'ko');if(i!==Q.a)box.querySelector('[data-i="'+Q.a+'"]').classList.add('ok');else score++;box.querySelector('.fb').textContent=Q.f;
+setTimeout(function(){delete box.dataset.lock;qi++;render()},2600)}})}
+render()})();
+/* ================= PROGRAMA ================= */
+var PRG=[
+['Terapia intravenosa',['Definición e indicaciones','Métodos y principios','Funciones y responsabilidades de enfermería']],
+['Anatomía vascular',['Repaso de la anatomía venosa','Venas preferentes para insertar catéteres']],
+['Catéteres venosos',['Periféricos: catéter venoso periférico y midline','Centrales de corta duración (menos de 15 días)','Centrales de larga duración: PICC y tunelizados (reservorios, Hickman / Broviac)']],
+['Complicaciones',['Flebitis y tromboflebitis','Oclusión, infección y rotura','Trombosis']],
+['Mantenimiento y cuidados',['Educación sanitaria','Cuidados extraluminales e intraluminales','Cuidados de la retirada']]
+];
+(function(){var p=$('prog');PRG.forEach(function(m,i){var d=document.createElement('div');d.className='mod rv'+(i===0?' open':'');d.innerHTML='<button aria-expanded="'+(i===0)+'"><span class="n">0'+(i+1)+'</span><span class="t">'+m[0]+'</span><span class="pl">+</span></button><div class="body"><div><ul>'+m[1].map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul></div></div>';
+d.querySelector('button').onclick=function(){var o=!d.classList.contains('open');d.classList.toggle('open',o);this.setAttribute('aria-expanded',o)};p.appendChild(d)});
+var opened=false;io(p,function(v){if(!v||opened||RM)return;opened=true;var mods=p.children;[1,2].forEach(function(k,j){setTimeout(function(){mods[k].classList.add('open')},900+j*700)})},.3)})();
+/* ================= EDICIONES ================= */
+(function(){var E=[['2.ª edición','4 – 31 may','2026-05-04','2026-05-31'],['3.ª edición','1 – 30 jun','2026-06-01','2026-06-30'],['4.ª edición','1 – 31 oct','2026-10-01','2026-10-31'],['5.ª edición','3 – 30 nov','2026-11-03','2026-11-30']];
+var now=new Date(),box=$('eds'),next=null;
+E.forEach(function(e){var s=new Date(e[2]+'T00:00:00'),f=new Date(e[3]+'T23:59:59');var st=now>f?'past':(now>=s?'live':'');if(!st&&!next)next=e;
+var d=document.createElement('div');d.className='ed rv '+(st==='past'?'past':'');d.dataset.s=e[2];d.innerHTML='<span class="k">'+e[0]+'</span><b>'+e[1]+' 2026</b><span>'+(st==='past'?'Finalizada':st==='live'?'En curso':'Abierta la inscripción')+'</span>';box.appendChild(d)});
+if(next){var nd=[].filter.call(box.children,function(c){return c.dataset.s===next[2]})[0];nd.classList.add('next');var c=document.createElement('div');c.className='count';nd.appendChild(c);
+function tick(){var ms=new Date(next[2]+'T00:00:00')-new Date();if(ms<0)ms=0;var d=Math.floor(ms/864e5),h=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60;c.innerHTML='<div><b>'+d+'</b><span>días</span></div><div><b>'+h+'</b><span>horas</span></div><div><b>'+m+'</b><span>min</span></div>'}tick();setInterval(tick,30000)}
+})();
+/* imágenes que falten: se ocultan sin romper el diseño */
+document.querySelectorAll('img').forEach(function(im){im.addEventListener('error',function(){var f=im.closest('figure,.figimg');if(f)f.style.background='linear-gradient(140deg,#e3f3f5,#fff0e3)';im.remove()})});
+})();
+</script>
+<script>
+function vaPing(){try{parent.postMessage({vah:document.documentElement.scrollHeight},'*')}catch(e){}}
+addEventListener('load',vaPing);addEventListener('resize',vaPing);setInterval(vaPing,1500);
+</script>
+</body>
+</html>
