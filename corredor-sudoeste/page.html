@@ -151,6 +151,8 @@ sup.r a{color:var(--muted);text-decoration:none}
 .ev{opacity:.35;transition:opacity .5s}
 .ev.lit{opacity:1}
 
+.stk{position:sticky;top:110px}
+@media (max-width:900px){.stk{position:static;margin-bottom:30px}.info{position:static}}
 /* ancho */
 .gauge{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px}
 .gauge svg{width:100%;height:auto;display:block}
@@ -282,7 +284,7 @@ footer{padding:24px 0 50px;font-size:13px;color:var(--muted);border-top:1px soli
 <!-- HITOS -->
 <section class="sec alt" id="hitos">
   <div class="wrap grid2" style="align-items:start">
-    <div style="position:sticky;top:110px">
+    <div class="stk">
       <span class="eye">04 · Calendario</span>
       <h2 class="split" style="margin:14px 0 18px">De la reivindicación al <em>compromiso europeo.</em></h2>
       <p class="lead rv">Desde 2024 la conexión forma parte de la Red Básica del Corredor Atlántico europeo, y desde 2025 tiene fechas fijadas por Bruselas. Ahora se trata de que se cumplan.<sup class="r"><a href="#f3">3</a></sup></p>
