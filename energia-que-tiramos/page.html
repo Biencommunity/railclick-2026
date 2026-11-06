@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La energía que tiramos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{color-scheme:dark;--bg:#04070c;--bg2:#08101a;--panel:#0b1622;--line:#15283a;--ink:#e8f3ff;--soft:#9fb6cc;--muted:#5f7a92;
+--mint:#3dffb0;--sun:#ffc53d;--hot:#ff4d6d;--cyan:#2ef2ff;--blue:#4fa8ff;--vio:#b18cff;
+--fd:"Unbounded",system-ui,sans-serif;--ft:"Source Sans 3",system-ui,sans-serif;--fm:"JetBrains Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#04070c}}
+:root[data-theme="light"]{--bg:#04070c}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font-family:var(--ft);font-size:17px;line-height:1.55;overflow-x:clip}
+h1,h2,h3{font-family:var(--fd);letter-spacing:-.01em;text-wrap:balance}
+a{color:var(--mint)}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:20px}
+.tag{font:500 12px var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--mint)}
+.mono{font-family:var(--fm)}
+.g-m{color:var(--mint);text-shadow:0 0 18px rgba(61,255,176,.55)}
+.g-h{color:var(--hot);text-shadow:0 0 18px rgba(255,77,109,.6)}
+.g-s{color:var(--sun);text-shadow:0 0 18px rgba(255,197,61,.5)}
+.sec{padding-block:110px;position:relative}
+.sec-head{display:flex;flex-direction:column;gap:14px;max-width:740px;margin-bottom:44px}
+.sec-head h2{font-size:clamp(28px,4.4vw,52px);line-height:1.05;font-weight:700}
+.sec-head p{color:var(--soft);font-size:18px;max-width:62ch}
+sup.r{font:500 .6em var(--fm);margin-left:2px}
+sup.r a{color:var(--muted);text-decoration:none}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+.reveal{transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .8s;transition-delay:var(--d,0ms)}
+.js .reveal.pre{transform:translateY(26px);opacity:.001}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;background:linear-gradient(180deg,rgba(4,7,12,.94),rgba(4,7,12,0));pointer-events:none}
+.nav-in{max-width:1180px;margin-inline:auto;padding:14px 20px;display:flex;align-items:center;gap:14px;pointer-events:auto}
+.brand{display:flex;align-items:center;gap:10px;font:700 14px var(--fd);text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand svg{width:28px;height:15px;filter:drop-shadow(0 0 6px var(--mint))}
+.badge{font:500 11px var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--sun);border:1px solid rgba(255,197,61,.5);padding:3px 8px;border-radius:999px}
+.nav-links{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{font-size:13px;color:var(--soft);text-decoration:none;padding:7px 11px;border-radius:999px;white-space:nowrap}
+.nav-links a:hover,.nav-links a.on{color:var(--ink);background:rgba(61,255,176,.12)}
+.bar{position:fixed;left:0;top:0;height:2px;z-index:61;background:linear-gradient(90deg,var(--mint),var(--sun),var(--hot));width:0;box-shadow:0 0 10px var(--mint)}
+@media (max-width:760px){.nav-links{display:none}}
+
+/* hero */
+.hero{min-height:clamp(640px,96vh,1000px);display:flex;align-items:flex-end;overflow:hidden;position:relative}
+#heroCv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:38%;background:linear-gradient(0deg,var(--bg),transparent);pointer-events:none}
+.hero-in{position:relative;z-index:2;padding-block:120px 70px;width:100%}
+.hero h1{font-size:clamp(36px,6.8vw,96px);line-height:.96;font-weight:900;max-width:13ch;letter-spacing:-.03em;margin-top:18px}
+.hero h1 em{font-style:normal;color:var(--hot);text-shadow:0 0 30px rgba(255,77,109,.75),0 0 80px rgba(255,77,109,.35)}
+.hero .lead{margin-top:22px;max-width:54ch;font-size:19px;color:var(--soft)}
+.hstats{margin-top:38px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;max-width:900px}
+.hs{background:rgba(6,12,20,.86);backdrop-filter:blur(6px);padding:18px 20px}
+.hs b{display:block;font:700 clamp(22px,2.6vw,32px) var(--fm)}
+.hs span{font-size:13px;color:var(--muted)}
+@media (max-width:720px){.hstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.hint{font:500 12px var(--fm);color:var(--muted)}
+
+/* domino */
+.domino-wrap{height:330vh;position:relative}
+.dsticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.dstage{perspective:1100px;height:300px;position:relative;margin-top:20px}
+.drow{position:absolute;left:0;right:0;bottom:30px;height:250px;transform-style:preserve-3d;transform:rotateX(18deg)}
+.dom{position:absolute;bottom:0;width:clamp(64px,10vw,120px);height:clamp(150px,22vw,230px);transform-origin:right bottom;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.6,.05,.4,1)}
+.dom .face{position:absolute;inset:0;border-radius:12px;background:linear-gradient(160deg,#0e2236,#07111c);border:1.5px solid var(--c);box-shadow:0 0 18px var(--c),inset 0 0 22px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:8px}
+.dom .face b{font:700 clamp(15px,2vw,22px) var(--fm);color:var(--c);text-shadow:0 0 12px var(--c);text-align:center}
+.dom .face i{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.dom.fall{transform:rotateZ(62deg)}
+@media (max-width:600px){.dom{width:13vw;height:34vw}.dom .face b{font-size:10px;writing-mode:vertical-rl;transform:rotate(180deg)}.dom .face{padding:4px}}
+.dfloor{position:absolute;left:-10%;right:-10%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--mint),transparent);opacity:.4}
+.dcap{max-width:680px;min-height:150px;margin-top:24px}
+.dcap .tag{color:var(--sun)}
+.dcap h3{font-size:clamp(22px,3vw,34px);margin:8px 0}
+.dcap p{color:var(--soft)}
+.dcap-anim{animation:capIn .55s cubic-bezier(.2,.7,.2,1)}
+@keyframes capIn{from{opacity:0;transform:translateY(14px)}}
+.dprog{display:flex;gap:6px;margin-top:20px;max-width:680px}
+.dprog i{flex:1;height:3px;border-radius:2px;background:#132436;transition:background .3s,box-shadow .3s}
+.dprog i.on{background:var(--sun);box-shadow:0 0 10px var(--sun)}
+
+/* chart 3d */
+.c3{display:grid;grid-template-columns:1.35fr .65fr;gap:28px;align-items:stretch}
+@media (max-width:900px){.c3{grid-template-columns:1fr}}
+.c3-stage{position:relative;border:1px solid var(--line);border-radius:24px;background:radial-gradient(ellipse at 50% 70%,#0a1a2b,#04070c 70%);overflow:hidden;min-height:440px;cursor:grab}
+.c3-stage:active{cursor:grabbing}
+#c3cv{position:absolute;inset:0;width:100%;height:100%}
+.c3-hud{position:absolute;left:16px;top:14px;right:16px;display:flex;justify-content:space-between;font:500 12px var(--fm);color:var(--muted);pointer-events:none}
+.c3-tip{position:absolute;pointer-events:none;background:rgba(6,12,20,.92);border:1px solid var(--mint);border-radius:10px;padding:8px 12px;font:700 14px var(--fm);transform:translate(-50%,-120%);opacity:0;transition:opacity .2s;white-space:nowrap;box-shadow:0 0 18px rgba(61,255,176,.4)}
+.c3-side{display:flex;flex-direction:column;gap:12px}
+.cb{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:16px 18px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;cursor:pointer;transition:border-color .25s,background .25s}
+.cb:hover,.cb.on{border-color:var(--c);background:#0e1d2d;box-shadow:0 0 18px color-mix(in srgb,var(--c) 30%,transparent)}
+.cb b{font:700 24px var(--fm);color:var(--c)}
+.cb span{font-weight:600}
+.cb small{grid-column:1/-1;color:var(--muted);font-size:13px}
+.lbl3{position:absolute;font:700 12px var(--fm);color:var(--soft);transform:translate(-50%,0);pointer-events:none;white-space:nowrap}
+
+/* explainer / juego */
+.game{border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,#060d16,#04070c);overflow:hidden}
+#gcv{display:block;width:100%;height:auto;aspect-ratio:1200/520}
+.gbar{display:grid;grid-template-columns:1fr auto;gap:20px;padding:20px 24px;border-top:1px solid var(--line);align-items:center}
+@media (max-width:760px){.gbar{grid-template-columns:1fr}}
+.gctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.gbtn{border:1px solid rgba(61,255,176,.5);background:rgba(61,255,176,.1);border-radius:999px;padding:11px 18px;cursor:pointer;font-weight:600;box-shadow:0 0 18px rgba(61,255,176,.2);transition:.2s}
+.gbtn:hover{background:rgba(61,255,176,.22)}
+.gbtn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.gbtn.hot{border-color:rgba(255,77,109,.6);background:rgba(255,77,109,.1);box-shadow:0 0 18px rgba(255,77,109,.2)}
+.gbtn.sun{border-color:rgba(255,197,61,.6);background:rgba(255,197,61,.1);box-shadow:0 0 18px rgba(255,197,61,.2)}
+.gread{display:flex;gap:22px;flex-wrap:wrap;font-size:13px;color:var(--soft)}
+.gread b{display:block;font:700 26px var(--fm)}
+.gmsg{padding:0 24px 18px;font-size:14.5px;color:var(--soft);min-height:40px}
+.gmsg b{color:var(--ink)}
+.chips{display:flex;gap:6px}
+.chips span{width:14px;height:14px;border-radius:4px;border:1px solid var(--sun);box-shadow:0 0 8px rgba(255,197,61,.4)}
+.chips span.used{background:var(--sun)}
+
+/* tension + coste */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:900px){.duo{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:22px;background:var(--panel);padding:26px;position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+.card:hover{border-color:var(--c,var(--mint));transform:translateY(-4px)}
+.card h3{font-size:19px;margin:8px 0 6px}
+.card p{color:var(--soft);font-size:15px}
+.gauge svg{width:100%;max-width:360px;display:block;margin:10px auto 0}
+.rings{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.ring{text-align:center}
+.ring svg{width:150px;height:150px}
+.ring b{display:block;font:700 20px var(--fm)}
+.ring span{font-size:13px;color:var(--muted)}
+.big2{display:flex;align-items:baseline;gap:12px;margin-top:10px;flex-wrap:wrap}
+.big2 b{font:700 clamp(40px,5vw,62px) var(--fm)}
+
+/* red saturada */
+.sat{display:grid;grid-template-columns:.9fr 1.1fr;gap:34px;align-items:center}
+@media (max-width:900px){.sat{grid-template-columns:1fr}}
+.nodes{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--panel)}
+.nodes i{aspect-ratio:1;border-radius:50%;background:#12304a;transition:background .3s,box-shadow .3s,transform .2s;transition-delay:var(--dd)}
+.nodes.on i.s{background:var(--hot);box-shadow:0 0 8px var(--hot)}
+.nodes.on i:not(.s){background:var(--mint);box-shadow:0 0 8px var(--mint)}
+.nodes i:hover{transform:scale(1.6)}
+.inv{margin-top:34px;border:1px solid var(--line);border-radius:22px;background:var(--panel);padding:24px}
+.invbars{display:flex;align-items:flex-end;gap:16px;height:220px;margin-top:20px}
+.invbars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font:500 12px var(--fm);color:var(--muted)}
+.invbars .stk{width:100%;display:flex;flex-direction:column-reverse;border-radius:8px 8px 3px 3px;overflow:hidden}
+.invbars .stk i{flex:none}
+.invbars .stk i{display:block;height:0;transition:height 1.2s cubic-bezier(.2,.7,.2,1);transition-delay:var(--dd)}
+.invbars b{font:700 14px var(--fm);color:var(--ink);margin-bottom:6px}
+.leg{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--soft);margin-top:12px}
+.leg i{display:inline-block;width:18px;height:5px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.trf{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:24px}
+@media (max-width:700px){.trf{grid-template-columns:1fr}}
+.trf div{background:#060d16;padding:20px}
+.trf b{display:block;font:700 30px var(--fm)}
+.trf span{font-size:13.5px;color:var(--soft)}
+.quote{margin-top:30px;border-left:3px solid var(--mint);padding:6px 0 6px 20px;font:500 clamp(18px,2vw,23px)/1.4 var(--fd);color:var(--ink);max-width:62ch;box-shadow:-8px 0 20px -12px var(--mint)}
+
+/* propuestas */
+.props{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+@media (max-width:860px){.props{grid-template-columns:1fr}}
+.props div{background:#060d16;padding:26px;transition:background .3s}
+.props div:hover{background:#0a1827}
+.props b{display:block;font:500 13px var(--fm);color:var(--mint);margin-bottom:10px}
+.props h3{font-size:16px;margin-bottom:8px}
+.props p{font-size:14.5px;color:var(--soft)}
+.close{padding-block:140px 90px;overflow:hidden}
+.close h2{font-size:clamp(32px,6vw,82px);line-height:1;font-weight:900;max-width:15ch}
+.close h2 em{font-style:normal;color:var(--mint);text-shadow:0 0 30px rgba(61,255,176,.7)}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:34px;border:1px solid var(--mint);color:var(--ink);text-decoration:none;padding:14px 22px;border-radius:999px;box-shadow:0 0 22px rgba(61,255,176,.3);font-weight:600}
+.cta:hover{background:rgba(61,255,176,.14)}
+footer{border-top:1px solid var(--line);padding-block:30px 50px;font-size:13px;color:var(--muted)}
+footer ol{columns:2;column-gap:40px;padding-left:20px;margin-top:10px}
+footer li{break-inside:avoid;margin-bottom:6px}
+footer a{color:var(--soft)}
+@media (max-width:760px){footer ol{columns:1}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .reveal.pre{transform:none;opacity:1}.dom{transition:none}}
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<nav class="nav" aria-label="Secciones"><div class="nav-in">
+  <a class="brand" href="https://lafrecuenciaenergia.es" target="_blank" rel="noopener"><svg viewBox="0 0 26 14" aria-hidden="true"><path d="M1 7 Q4.5 0 8 7 T15 7 T22 7 L25 7" fill="none" stroke="#3dffb0" stroke-width="2.2" stroke-linecap="round"/></svg><span>La Frecuencia</span></a>
+  <span class="badge">Análisis</span>
+  <div class="nav-links"><a href="#domino">El dominó</a><a href="#ranking">Ranking UE</a><a href="#juego">El atasco</a><a href="#tension">Tensión</a><a href="#red">La red</a><a href="#salida">Salidas</a></div>
+</div></nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <canvas id="heroCv" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div class="tag">Renovables · Redes · ACER 2026</div>
+    <h1>La energía limpia que <em>tiramos</em></h1>
+    <p class="lead">España es el país de la UE que más producción renovable tuvo que recortar en 2025 por congestiones en la red. Hay sol y viento de sobra. Lo que falta es red para llevarlos.<sup class="r"><a href="#f1">1</a></sup></p>
+    <div class="hstats">
+      <div class="hs"><b class="g-h" data-count="3.1" data-dec="1" data-suf=" %">0</b><span>de la producción renovable recortada en 2025, la tasa más alta de la UE</span></div>
+      <div class="hs"><b class="g-s">×2</b><span>casi el doble que en 2024</span></div>
+      <div class="hs"><b data-count="15.5" data-dec="1" data-suf=" %">0</b><span>del precio del mercado diario: lo que cuestan las restricciones</span></div>
+      <div class="hs"><b data-count="5400" data-suf=" M€">0</b><span>coste europeo de gestionar congestiones</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOMINÓ -->
+<section class="domino-wrap" id="domino">
+  <div class="dsticky"><div class="wrap" style="width:100%">
+    <div class="tag" style="color:var(--sun)">01 · Haz scroll: el efecto dominó</div>
+    <div class="dstage"><div class="drow" id="drow"><div class="dfloor"></div></div></div>
+    <div class="dcap" id="dcap" aria-live="polite"></div>
+    <div class="dprog" id="dprog"></div>
+  </div></div>
+</section>
+
+<!-- RANKING 3D -->
+<section class="sec" id="ranking">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="tag">02 · Ranking europeo en 3D</span>
+      <h2>España encabeza la tabla que nadie quiere liderar</h2>
+      <p>Porcentaje de la producción renovable recortada por restricciones físicas de la red en 2025. Arrastra para girar el gráfico y pasa el cursor por cada columna.</p>
+    </div>
+    <div class="c3 reveal">
+      <div class="c3-stage" id="c3stage">
+        <canvas id="c3cv" aria-label="Gráfico 3D: España 3,1 %, Alemania 2,46 %, Francia 1,5 %, Italia 1,26 %"></canvas>
+        <div class="c3-hud"><span>RECORTE RENOVABLE · 2025</span><span>↻ arrastra</span></div>
+        <div class="c3-tip" id="c3tip"></div>
+      </div>
+      <div class="c3-side" id="c3side"></div>
+    </div>
+  </div>
+</section>
+
+<!-- JUEGO -->
+<section class="sec" id="juego" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="tag">03 · Explicado y jugable</span>
+      <h2>Ponte al mando del atasco</h2>
+      <p>El sol sale y los paneles producen más de lo que la línea puede transportar. Lo que no cabe se recorta. Tienes que reforzar la red, pero solo dispones de los refuerzos que permite el límite de inversión. Consigue aprovechar la máxima energía.</p>
+    </div>
+    <div class="game reveal">
+      <canvas id="gcv" width="1200" height="520" aria-label="Juego: energía renovable que fluye por una línea con capacidad limitada"></canvas>
+      <div class="gbar">
+        <div class="gctl">
+          <button class="gbtn" id="gplay">▶ Empezar el día</button>
+          <button class="gbtn sun" id="gup" disabled>⚡ Reforzar la red</button>
+          <div class="chips" id="chips" title="Refuerzos disponibles"></div>
+          <button class="gbtn hot" id="glim">Subir el límite de inversión</button>
+        </div>
+        <div class="gread"><div><b class="g-m" id="gok">0 %</b>aprovechada</div><div><b class="g-h" id="gko">0 %</b>recortada</div><div><b id="gh">06:00</b>hora</div></div>
+      </div>
+      <p class="gmsg" id="gmsg">Pulsa <b>Empezar el día</b>. Juego ilustrativo: muestra el mecanismo, no datos reales de la red.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TENSIÓN Y COSTE -->
+<section class="sec" id="tension" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="tag">04 · Tensión y coste</span>
+      <h2>Más ajustes, más caros, cada año</h2>
+      <p>Tras el apagón del 28 de abril de 2025, España y Portugal multiplicaron las actuaciones por problemas de tensión. Y el coste de gestionar las congestiones bate récords.<sup class="r"><a href="#f1">1</a></sup></p>
+    </div>
+    <div class="duo">
+      <div class="card reveal" style="--c:var(--sun)"><span class="tag" style="color:var(--sun)">Redespacho por tensión</span><h3>De 1 de cada 10 a 1 de cada 3</h3>
+        <div class="gauge"><svg viewBox="0 0 300 180" id="gauge"><path d="M30 160 A120 120 0 0 1 270 160" fill="none" stroke="#132436" stroke-width="18" stroke-linecap="round"/><path id="garc" d="M30 160 A120 120 0 0 1 270 160" fill="none" stroke="#ffc53d" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" style="filter:drop-shadow(0 0 8px #ffc53d);transition:stroke-dasharray 1.6s cubic-bezier(.2,.7,.2,1)"/><line id="gneedle" x1="150" y1="160" x2="150" y2="62" stroke="#fff" stroke-width="3" stroke-linecap="round" style="transform-origin:150px 160px;transform:rotate(-90deg);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)"/><circle cx="150" cy="160" r="8" fill="#fff"/><text id="gtxt" x="150" y="130" text-anchor="middle" fill="#e8f3ff" font-family="JetBrains Mono" font-weight="700" font-size="30">10 %</text></svg></div>
+        <div class="chips" style="justify-content:center;margin-top:8px" id="gyrs"><button class="gbtn sun" data-y="10">2022 · 10 %</button><button class="gbtn sun" data-y="33">2025 · 33 %</button></div>
+        <p style="margin-top:12px">Peso de las actuaciones por límites de tensión dentro del redespacho, según ACER.</p></div>
+      <div class="card reveal" style="--c:var(--hot);--d:120ms"><span class="tag" style="color:var(--hot)">Coste de las restricciones</span><h3>Segundo país de la UE</h3>
+        <div class="rings" id="rings">
+          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#132436" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="#ff4d6d" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" transform="rotate(-90 60 60)" data-v="16.7" style="transition:stroke-dasharray 1.6s;filter:drop-shadow(0 0 6px #ff4d6d);opacity:.55"/></svg><b>16,7 %</b><span>Irlanda</span></div>
+          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#132436" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="#ff4d6d" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" transform="rotate(-90 60 60)" data-v="15.5" style="transition:stroke-dasharray 1.6s .3s;filter:drop-shadow(0 0 8px #ff4d6d)"/></svg><b class="g-h">15,5 %</b><span>España</span></div>
+        </div>
+        <p style="margin-top:12px">Coste de las restricciones como porcentaje del precio medio del mercado diario en 2025.</p>
+        <div class="big2"><b class="g-h" data-count="25.6" data-dec="1" data-pre="+" data-suf=" %">0</b><span style="color:var(--soft)">subió el coste europeo de las congestiones: de 4.300 a 5.400 M€, máximo de la serie.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- RED -->
+<section class="sec" id="red" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="tag">05 · El cuello de botella</span>
+      <h2>La red no crece al ritmo de las renovables</h2>
+      <p>ACER lo resume así: el crecimiento de las renovables, unido al retraso en el desarrollo de las redes, dispara la gestión de congestiones.<sup class="r"><a href="#f1">1</a></sup> En España, la inversión que puede hacerse en redes tiene un techo fijado por ley.</p>
+    </div>
+    <div class="sat">
+      <div class="reveal">
+        <span class="tag" style="color:var(--hot)">Nudos de distribución</span>
+        <div class="big2"><b class="g-h" data-count="83.4" data-dec="1" data-suf=" %">0</b><span style="color:var(--soft)">de los nudos de la red de distribución, saturados para nueva demanda según los mapas de capacidad de las distribuidoras.<sup class="r"><a href="#f2">2</a></sup></span></div>
+        <p style="color:var(--soft);margin-top:16px">Cada punto es un 0,5 % de los nudos. Pasa el cursor por ellos.</p>
+      </div>
+      <div class="nodes reveal" id="nodes" style="--d:120ms"></div>
+    </div>
+    <div class="inv reveal">
+      <h3 style="font-size:20px">La inversión extra aprobada en julio de 2026</h3>
+      <p style="color:var(--soft);font-size:15px;margin-top:6px">El Real Decreto de planes de inversión permite 17.900 M€ adicionales hasta 2030, por encima de los límites de 0,13 % del PIB para distribución y 0,065 % para transporte. Millones de euros por año:<sup class="r"><a href="#f3">3</a></sup></p>
+      <div class="invbars" id="invbars"></div>
+      <div class="leg"><span><i style="background:var(--mint)"></i>Distribución</span><span><i style="background:var(--cyan)"></i>Transporte</span></div>
+    </div>
+    <div class="trf reveal">
+      <div><b class="g-m">6,58 %</b><span>retribución financiera de las redes fijada por la CNMC para 2026-2031<sup class="r"><a href="#f4">4</a></sup></span></div>
+      <div><b class="g-s">≥7 %</b><span>lo que pedían las eléctricas para invertir más<sup class="r"><a href="#f5">5</a></sup></span></div>
+      <div><b>0,13 %</b><span>del PIB: techo de la inversión retribuida en distribución<sup class="r"><a href="#f4">4</a></sup></span></div>
+    </div>
+    <p class="quote reveal">Para las distribuidoras, limitar la inversión en redes “no reduce costes para el sistema ni los consumidores, los incrementa”.<sup class="r"><a href="#f5">5</a></sup></p>
+  </div>
+</section>
+
+<!-- SALIDAS -->
+<section class="sec" id="salida" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="tag">06 · Salidas</span>
+      <h2>Lo que propone el regulador europeo</h2>
+      <p>Las recomendaciones de ACER para dejar de desperdiciar energía y dinero.<sup class="r"><a href="#f1">1</a></sup></p>
+    </div>
+    <div class="props reveal">
+      <div><b>01</b><h3>Más control de tensión</h3><p>Que los operadores aseguren recursos suficientes mediante procedimientos eficientes y competitivos.</p></div>
+      <div><b>02</b><h3>Potencia reactiva</h3><p>Mejorar su disponibilidad y las herramientas para gestionarla.</p></div>
+      <div><b>03</b><h3>Más allá del redespacho</h3><p>Reconfigurar la red, conectar reactancias o condensadores y ajustar la reactiva de las instalaciones.</p></div>
+      <div><b>04</b><h3>Interconexión al 70 %</h3><p>Cumplir el mínimo de capacidad disponible para el comercio transfronterizo, que la mayoría incumple.</p></div>
+      <div><b>05</b><h3>Baterías y flexibilidad</h3><p>Ampliar su participación en los mercados de balance, con más cooperación entre operadores.</p></div>
+      <div><b>06</b><h3>PPA y contratos por diferencias</h3><p>Incluidos los que combinan renovables y almacenamiento, para dar estabilidad a los ingresos.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="close">
+  <div class="wrap">
+    <h2 class="reveal">Sin red, la energía limpia <em>se pierde por el camino.</em></h2>
+    <p class="reveal" style="margin-top:22px;color:var(--soft);max-width:56ch;font-size:18px">España ya tiene el sol y el viento. Cada megavatio hora recortado es energía limpia pagada y no usada. Invertir en redes es la forma de que llegue a casas e industrias.</p>
+    <a class="cta reveal" href="https://lafrecuenciaenergia.es" target="_blank" rel="noopener">Más análisis en La Frecuencia →</a>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  Análisis de La Frecuencia. Ilustraciones, juego y esquemas simplificados, no a escala. Fuentes:
+  <ol>
+    <li id="f1"><a href="https://elperiodicodelaenergia.com/las-congestiones-de-la-red-obligan-a-desperdiciar-mas-renovables-en-espana-que-en-ningun-otro-pais-de-la-ue/" target="_blank" rel="noopener">El Periódico de la Energía – Informe ACER 2026 sobre congestiones (06/11/2026)</a></li>
+    <li id="f2"><a href="https://www.energias-renovables.com/panorama/el-83-de-los-nudos-de-la-20260724/" target="_blank" rel="noopener">Energías Renovables – El 83 % de los nudos de distribución, saturados</a></li>
+    <li id="f3"><a href="https://www.miteco.gob.es/en/prensa/ultimas-noticias/2026/julio/el-gobierno-acelera-la-electrificacion-de-la-economia-incrementa.html" target="_blank" rel="noopener">MITECO – Real Decreto de planes de inversión en redes (28/07/2026)</a></li>
+    <li id="f4"><a href="https://www.cnmc.es/prensa/circulares-retribucion-electrica-20251222" target="_blank" rel="noopener">CNMC – Circulares de retribución de las redes (22/12/2025)</a></li>
+    <li id="f5"><a href="https://www.publico.es/economia/cnmc-fija-retribucion-6-58-redes-electricas-provoca-rechazo-energeticas.html" target="_blank" rel="noopener">Público – La retribución del 6,58 % provoca el rechazo de las energéticas</a></li>
+  </ol>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+document.documentElement.classList.add('js');
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches,DPR=Math.min(devicePixelRatio||1,2);
+function fmt(n,d){d=d||0;var s=Math.abs(n).toFixed(d).split('.');s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return s.join(',');}
+function onVis(el,fn,th){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fn(el);io.unobserve(el);}});},{threshold:th||.25});io.observe(el);}
+function watch(el,cb){var io=new IntersectionObserver(function(es){es.forEach(function(e){cb(e.isIntersecting);});},{threshold:.02});io.observe(el);}
+document.querySelectorAll('.reveal').forEach(function(el){if(el.getBoundingClientRect().top>innerHeight*.9)el.classList.add('pre');onVis(el,function(){el.classList.remove('pre');},.12);});
+document.querySelectorAll('[data-count]').forEach(function(el){var to=+el.dataset.count,d=+el.dataset.dec||0,pre=el.dataset.pre||'',suf=el.dataset.suf||'';el.textContent=pre+fmt(0,d)+suf;onVis(el,function(){if(RM){el.textContent=pre+fmt(to,d)+suf;return;}var t0=performance.now();(function f(t){var q=Math.min(1,(t-t0)/1600),e=1-Math.pow(1-q,3);el.textContent=pre+fmt(to*e,d)+suf;if(q<1)requestAnimationFrame(f);})(t0);},.5);});
+var navA=document.querySelectorAll('.nav-links a');navA.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){navA.forEach(function(x){x.classList.remove('on');});a.classList.add('on');}});},{rootMargin:'-45% 0px -50% 0px'});io.observe(t);}});
+var bar=document.getElementById('bar');addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-innerHeight;bar.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true});
+
+/* ===== HERO: parque renovable neón, línea saturada y energía que se pierde ===== */
+(function(){
+  var c=document.getElementById('heroCv'),x=c.getContext('2d'),W,H,stars=[],parts=[],run=true,mx=0;
+  function size(){W=c.clientWidth;H=c.clientHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);stars=[];for(var i=0;i<120;i++)stars.push({x:Math.random()*W,y:Math.random()*H*.55,r:Math.random()*1.1+.2,p:Math.random()*6});}
+  addEventListener('mousemove',function(e){mx=e.clientX/innerWidth-.5;},{passive:true});
+  function turbine(cx,base,h,t,s){x.strokeStyle='rgba(61,255,176,.9)';x.lineWidth=2*s;x.shadowColor='#3dffb0';x.shadowBlur=14;x.beginPath();x.moveTo(cx,base);x.lineTo(cx,base-h);x.stroke();
+    for(var k=0;k<3;k++){var a=t*1.6+k*2.094;x.beginPath();x.moveTo(cx,base-h);x.lineTo(cx+Math.cos(a)*h*.42,base-h+Math.sin(a)*h*.42);x.stroke();}x.shadowBlur=0;}
+  function panelRow(x0,y0,n,s){for(var i=0;i<n;i++){var px=x0+i*34*s,py=y0;x.beginPath();x.moveTo(px,py);x.lineTo(px+28*s,py);x.lineTo(px+22*s,py-14*s);x.lineTo(px-6*s,py-14*s);x.closePath();x.fillStyle='rgba(79,168,255,.18)';x.fill();x.strokeStyle='rgba(79,168,255,.8)';x.lineWidth=1.2;x.stroke();}}
+  function frame(now){if(!run)return;var t=now/1000;x.clearRect(0,0,W,H);
+    var sky=x.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#020409');sky.addColorStop(.6,'#06121c');sky.addColorStop(1,'#0a1a24');x.fillStyle=sky;x.fillRect(0,0,W,H);
+    stars.forEach(function(s){x.globalAlpha=.3+.3*Math.sin(t*1.3+s.p);x.fillStyle='#cfe6ff';x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill();});x.globalAlpha=1;
+    var hy=H*.78,ox=mx*30;
+    var hg=x.createLinearGradient(0,hy-140,0,hy);hg.addColorStop(0,'rgba(61,255,176,0)');hg.addColorStop(1,'rgba(61,255,176,.16)');x.fillStyle=hg;x.fillRect(0,hy-140,W,140);
+    x.strokeStyle='rgba(61,255,176,.16)';x.lineWidth=1;for(var i=-24;i<=24;i++){x.beginPath();x.moveTo(W/2+i*40+ox,hy);x.lineTo(W/2+i*240+ox*3,H);x.stroke();}
+    for(var j=0;j<7;j++){var yy=hy+Math.pow(j/7,1.8)*(H-hy);x.beginPath();x.moveTo(0,yy);x.lineTo(W,yy);x.stroke();}
+    var s=Math.min(W/1400,H/820)*1.1,L=W*(W<700?.5:.52);
+    for(var k=0;k<5;k++)turbine(L+k*70*s+ox*.6,hy-6,(150+k%2*40)*s,t+k,s);
+    panelRow(L-20*s+ox*.8,hy+30*s,9,s);panelRow(L+10*s+ox,hy+62*s,10,s);
+    /* línea de transporte */
+    var lx0=L+380*s+ox,lx1=W+20,ly=hy-150*s;x.strokeStyle='rgba(255,197,61,.85)';x.lineWidth=2.4;x.shadowColor='#ffc53d';x.shadowBlur=12;
+    x.beginPath();x.moveTo(L+40*s+ox,hy-60*s);x.quadraticCurveTo(L+220*s+ox,ly-30*s,lx0,ly);x.lineTo(lx1,ly-20*s);x.stroke();x.shadowBlur=0;
+    /* cuello de botella */
+    var bx=lx0,by=ly;x.strokeStyle='rgba(255,77,109,.9)';x.lineWidth=3;x.shadowColor='#ff4d6d';x.shadowBlur=20;x.beginPath();x.arc(bx,by,18*s+Math.sin(t*4)*2,0,6.283);x.stroke();x.shadowBlur=0;
+    /* partículas */
+    if(!RM&&Math.random()<.9){parts.push({u:0,lane:Math.random(),waste:Math.random()<.32});}
+    for(var p=parts.length-1;p>=0;p--){var q=parts[p];q.u+=.006;var px,py,col='#3dffb0';
+      if(q.u<.55){var u=q.u/.55,ax=L+40*s+ox,ay=hy-60*s,cx2=L+220*s+ox,cy2=ly-30*s;px=(1-u)*(1-u)*ax+2*(1-u)*u*cx2+u*u*bx;py=(1-u)*(1-u)*ay+2*(1-u)*u*cy2+u*u*by;}
+      else if(!q.waste){var u2=(q.u-.55)/.45;px=bx+(lx1-bx)*u2;py=by-20*s*u2;col='#ffc53d';}
+      else{var u3=(q.u-.55)/.45;px=bx+u3*60*s*(q.lane-.3);py=by+u3*u3*260*s;col='#ff4d6d';}
+      x.globalAlpha=q.waste&&q.u>.55?Math.max(0,1-(q.u-.55)/.45):1;x.fillStyle=col;x.shadowColor=col;x.shadowBlur=12;x.beginPath();x.arc(px,py,2.6,0,6.283);x.fill();x.shadowBlur=0;x.globalAlpha=1;
+      if(q.u>=1)parts.splice(p,1);}
+    x.font='600 '+Math.max(11,13*s)+'px JetBrains Mono, monospace';x.fillStyle='rgba(255,77,109,.9)';x.fillText('RED SATURADA',bx+26*s,by-24*s);
+    requestAnimationFrame(frame);}
+  size();addEventListener('resize',size);watch(c,function(v){var w=run;run=v;if(v&&!w)requestAnimationFrame(frame);});requestAnimationFrame(frame);
+})();
+
+/* ===== DOMINÓ ===== */
+(function(){
+  var D=[
+    {v:'+ Renovables',c:'#3dffb0',t:'Ficha 1',h:'Cada vez más sol y viento',p:'España suma renovables a gran velocidad. Es una ventaja: energía limpia, barata y propia.'},
+    {v:'Red lenta',c:'#ffc53d',t:'Ficha 2',h:'La red no crece al mismo ritmo',p:'Según ACER, el retraso en el desarrollo de las redes frente al crecimiento renovable dispara las congestiones.'},
+    {v:'Congestión',c:'#ff9f43',t:'Ficha 3',h:'Las líneas se saturan',p:'En Europa, las actuaciones correctivas por congestiones físicas pasaron de 60 TWh en 2024 a 70 TWh en 2025.'},
+    {v:'3,1 %',c:'#ff4d6d',t:'Ficha 4',h:'Hay que recortar renovables',p:'España limitó el 3,1 % de su producción renovable en 2025, casi el doble que en 2024. La tasa más alta de la UE.'},
+    {v:'15,5 %',c:'#ff4d6d',t:'Ficha 5',h:'Y lo pagamos en el precio',p:'El coste de las restricciones equivalió al 15,5 % del precio medio del mercado diario español, el segundo más alto de la UE.'},
+    {v:'Inversión',c:'#2ef2ff',t:'La ficha que detiene la caída',h:'Más red para no tirar energía',p:'Reforzar y ampliar las redes es lo que permite aprovechar toda la producción renovable.'}];
+  var row=document.getElementById('drow'),cap=document.getElementById('dcap'),prog=document.getElementById('dprog'),wrap=document.getElementById('domino'),doms=[],last=-1;
+  D.forEach(function(d,i){var el=document.createElement('div');el.className='dom';el.style.setProperty('--c',d.c);el.style.left='calc('+(4+i*15.5)+'%)';el.innerHTML='<div class="face"><i></i><b>'+d.v+'</b><i></i></div>';row.appendChild(el);doms.push(el);var pi=document.createElement('i');prog.appendChild(pi);});
+  function show(i){if(i===last)return;last=i;var d=D[Math.max(0,i)];
+    doms.forEach(function(el,k){el.classList.toggle('fall',k<i&&k<D.length-1);});
+    cap.classList.remove('dcap-anim');void cap.offsetWidth;cap.classList.add('dcap-anim');
+    cap.innerHTML='<span class="tag">'+d.t+'</span><h3>'+d.h+'</h3><p>'+d.p+'</p>';
+    prog.querySelectorAll('i').forEach(function(p,k){p.classList.toggle('on',k<=i);});}
+  function up(){var r=wrap.getBoundingClientRect(),tot=r.height-innerHeight,p=Math.min(.999,Math.max(0,-r.top/tot));show(Math.floor(p*D.length));}
+  addEventListener('scroll',up,{passive:true});up();
+})();
+
+/* ===== RANKING 3D (three.js) ===== */
+(function(){
+  var DATA=[{n:'España',v:3.1,c:0xff4d6d,h:'#ff4d6d',s:'La tasa más alta de la UE'},{n:'Alemania',v:2.46,c:0xffc53d,h:'#ffc53d',s:'Segundo puesto'},{n:'Francia',v:1.5,c:0x4fa8ff,h:'#4fa8ff',s:'Menos de la mitad que España'},{n:'Italia',v:1.26,c:0x3dffb0,h:'#3dffb0',s:'Cuarto puesto'}];
+  var side=document.getElementById('c3side');
+  DATA.forEach(function(d,i){var b=document.createElement('div');b.className='cb';b.style.setProperty('--c',d.h);b.dataset.i=i;b.innerHTML='<span>'+d.n+'</span><b>'+fmt(d.v,d.v%1&&String(d.v).split('.')[1].length>1?2:1)+' %</b><small>'+d.s+'</small>';side.appendChild(b);});
+  var stage=document.getElementById('c3stage'),cv=document.getElementById('c3cv'),tip=document.getElementById('c3tip');
+  if(!window.THREE){stage.insertAdjacentHTML('beforeend','<p style="position:absolute;inset:auto 16px 16px;color:var(--muted)">Gráfico 3D no disponible.</p>');return;}
+  var R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(DPR);
+  var S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,100);C.position.set(0,5.5,12);C.lookAt(0,1.6,0);
+  S.add(new THREE.AmbientLight(0x6080a0,.7));var dl=new THREE.DirectionalLight(0xffffff,.8);dl.position.set(4,8,6);S.add(dl);
+  var G=new THREE.Group();S.add(G);
+  var grid=new THREE.GridHelper(12,24,0x1d4466,0x0e1d2c);G.add(grid);
+  var bars=[],lbls=[];
+  DATA.forEach(function(d,i){var h=d.v*1.5,geo=new THREE.BoxGeometry(1.2,1,1.2);geo.translate(0,.5,0);
+    var m=new THREE.MeshStandardMaterial({color:d.c,emissive:d.c,emissiveIntensity:.35,transparent:true,opacity:.88,roughness:.3});
+    var mesh=new THREE.Mesh(geo,m);mesh.position.set(-3+i*2,0,0);mesh.scale.y=.001;mesh.userData={i:i,h:h};G.add(mesh);bars.push(mesh);
+    var e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:d.c}));mesh.add(e);
+    var gl=new THREE.Mesh(new THREE.PlaneGeometry(1.8,1.8),new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:.18}));gl.rotation.x=-Math.PI/2;gl.position.set(-3+i*2,.01,0);G.add(gl);
+    var l=document.createElement('div');l.className='lbl3';l.textContent=d.n;stage.appendChild(l);lbls.push(l);});
+  var rotY=-.35,tgt=-.35,drag=false,px0=0,grow=0,sel=-1,ray=new THREE.Raycaster(),mv=new THREE.Vector2(-9,-9);
+  function size(){var w=stage.clientWidth,h=stage.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix();}
+  size();addEventListener('resize',size);
+  stage.addEventListener('pointerdown',function(e){drag=true;px0=e.clientX;stage.setPointerCapture(e.pointerId);});
+  stage.addEventListener('pointerup',function(){drag=false;});
+  stage.addEventListener('pointermove',function(e){var r=stage.getBoundingClientRect();mv.x=(e.clientX-r.left)/r.width*2-1;mv.y=-(e.clientY-r.top)/r.height*2+1;if(drag){tgt+=(e.clientX-px0)*.008;px0=e.clientX;}});
+  stage.addEventListener('pointerleave',function(){mv.set(-9,-9);sel=-1;});
+  side.querySelectorAll('.cb').forEach(function(b){b.addEventListener('mouseenter',function(){sel=+b.dataset.i;});b.addEventListener('click',function(){sel=+b.dataset.i;});b.addEventListener('mouseleave',function(){sel=-1;});});
+  var vis=false;watch(stage,function(v){vis=v;});onVis(stage,function(){grow=.0001;},.3);
+  (function loop(t){requestAnimationFrame(loop);if(!vis)return;
+    if(grow>0)grow=Math.min(1,grow+.012);
+    if(!drag&&!RM)tgt+=.0015;rotY+=(tgt-rotY)*.08;G.rotation.y=rotY;
+    ray.setFromCamera(mv,C);var hit=ray.intersectObjects(bars),hi=hit.length?hit[0].object.userData.i:sel;
+    bars.forEach(function(b,i){var e=Math.min(1,Math.max(0,grow*1.6-i*.15));e=1-Math.pow(1-e,3);b.scale.y=Math.max(.001,b.userData.h*e);
+      var on=i===hi;b.material.emissiveIntensity+=((on?.9:.35)-b.material.emissiveIntensity)*.15;b.material.opacity=hi<0||on?.9:.35;});
+    side.querySelectorAll('.cb').forEach(function(b,i){b.classList.toggle('on',i===hi);});
+    var r=stage.getBoundingClientRect();
+    bars.forEach(function(b,i){var p=new THREE.Vector3();b.getWorldPosition(p);p.y=-.35;p.project(C);lbls[i].style.left=((p.x+1)/2*r.width)+'px';lbls[i].style.top=((1-p.y)/2*r.height)+'px';});
+    if(hi>=0){var p2=new THREE.Vector3();bars[hi].getWorldPosition(p2);p2.y=bars[hi].scale.y+.2;p2.project(C);tip.style.left=((p2.x+1)/2*r.width)+'px';tip.style.top=((1-p2.y)/2*r.height)+'px';tip.style.opacity=1;tip.style.borderColor=DATA[hi].h;tip.innerHTML=DATA[hi].n+' · '+fmt(DATA[hi].v,DATA[hi].v===2.46||DATA[hi].v===1.26?2:1)+' %';}else tip.style.opacity=0;
+    R.render(S,C);})();
+})();
+
+/* ===== JUEGO: el atasco ===== */
+(function(){
+  var cv=document.getElementById('gcv'),x=cv.getContext('2d');cv.width=1200*DPR;cv.height=520*DPR;x.setTransform(DPR,0,0,DPR,0,0);
+  var W=1200,H=520,play=document.getElementById('gplay'),up=document.getElementById('gup'),lim=document.getElementById('glim'),chips=document.getElementById('chips'),msg=document.getElementById('gmsg');
+  var state,MAXUP=2,hiLim=false,parts=[];
+  function reset(){state={h:6,run:false,cap:1,ups:0,ok:0,ko:0,done:false};parts=[];renderChips();up.disabled=true;}
+  function renderChips(){chips.innerHTML='';for(var i=0;i<MAXUP;i++){var s=document.createElement('span');if(i<state.ups)s.className='used';chips.appendChild(s);}}
+  function gen(h){return Math.max(0,Math.sin((h-6)/14*Math.PI))*3.2;}
+  function capV(){return 1.1+state.cap*.55;}
+  play.onclick=function(){reset();state.run=true;up.disabled=false;play.textContent='↺ Reiniciar';msg.innerHTML='El sol sube. Cuando la producción supera la capacidad de la línea, la energía se recorta. <b>Refuerza la red</b> a tiempo.';};
+  up.onclick=function(){if(state.ups<MAXUP&&state.run){state.ups++;state.cap++;renderChips();if(state.ups>=MAXUP)up.disabled=true;flash=1;}};
+  lim.onclick=function(){hiLim=!hiLim;MAXUP=hiLim?5:2;lim.textContent=hiLim?'Volver al límite actual':'Subir el límite de inversión';lim.classList.toggle('hot',!hiLim);lim.classList.toggle('sun',hiLim);reset();play.textContent='▶ Empezar el día';msg.innerHTML=hiLim?'Límite ampliado: ahora tienes <b>5 refuerzos</b>. Prueba de nuevo.':'Vuelves al límite actual: <b>2 refuerzos</b>.';};
+  var flash=0;
+  function draw(t){x.clearRect(0,0,W,H);
+    var g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#050b14');g.addColorStop(1,'#08131f');x.fillStyle=g;x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(61,255,176,.08)';for(var i=0;i<W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke();}for(var j=0;j<H;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke();}
+    var h=state.h,sunX=120+(h-6)/14*280,sunY=150-Math.sin(Math.max(0,(h-6)/14)*Math.PI)*100;
+    x.fillStyle='#ffc53d';x.shadowColor='#ffc53d';x.shadowBlur=30;x.beginPath();x.arc(sunX,sunY,22,0,6.283);x.fill();x.shadowBlur=0;
+    for(var r=0;r<3;r++)for(var k=0;k<6;k++){var px=70+k*52,py=330+r*42;x.beginPath();x.moveTo(px,py);x.lineTo(px+44,py);x.lineTo(px+36,py-20);x.lineTo(px-8,py-20);x.closePath();x.fillStyle='rgba(79,168,255,'+(.12+gen(h)*.08)+')';x.fill();x.strokeStyle='#4fa8ff';x.stroke();}
+    var lw=6+state.cap*7,cy=300;
+    x.strokeStyle='rgba(255,197,61,.25)';x.lineWidth=lw+10;x.beginPath();x.moveTo(400,cy);x.lineTo(1000,cy);x.stroke();
+    x.strokeStyle=flash>0?'#fff':'#ffc53d';x.lineWidth=lw;x.shadowColor='#ffc53d';x.shadowBlur=18;x.beginPath();x.moveTo(400,cy);x.lineTo(1000,cy);x.stroke();x.shadowBlur=0;flash=Math.max(0,flash-.03);
+    x.fillStyle='#0b1622';x.strokeStyle='#2ef2ff';x.lineWidth=2;x.beginPath();x.roundRect(1010,230,150,140,14);x.fill();x.stroke();
+    x.fillStyle='#e8f3ff';x.font='700 15px Unbounded, sans-serif';x.fillText('CIUDAD',1040,262);for(var b=0;b<4;b++){x.fillStyle=state.ok>0?'#ffc53d':'#24384e';x.fillRect(1030+b*30,290,20,60-b%2*16);}
+    x.fillStyle='#9fb6cc';x.font='600 13px JetBrains Mono, monospace';x.fillText('CAPACIDAD DE LA LÍNEA · nivel '+state.cap,420,cy-lw/2-16);
+    var gnow=gen(h),cnow=capV(),over=gnow>cnow;
+    x.fillStyle=over?'#ff4d6d':'#3dffb0';x.fillText(over?'¡SATURADA! SE RECORTA ENERGÍA':'FLUYE SIN RECORTES',420,cy+lw/2+28);
+    /* medidores */
+    x.fillStyle='#132436';x.fillRect(420,440,560,14);x.fillStyle='#3dffb0';x.fillRect(420,440,560*Math.min(1,gnow/3.2),14);x.fillStyle='#fff';x.fillRect(420+560*Math.min(1,cnow/3.2)-2,432,4,30);
+    x.fillStyle='#9fb6cc';x.fillText('Producción solar',420,430);x.fillText('▲ límite de la línea',420+560*Math.min(1,cnow/3.2)-60,480);
+    /* partículas */
+    if(state.run&&Math.random()<gnow/3.2*1.4){var w=Math.random()*gnow>cnow;parts.push({x:400,y:cy+(Math.random()-.5)*lw*.6,w:w,vy:0});}
+    for(var p=parts.length-1;p>=0;p--){var q=parts[p];if(q.w){q.x+=3;q.vy+=.25;q.y+=q.vy;x.fillStyle='#ff4d6d';x.shadowColor='#ff4d6d';}else{q.x+=6;x.fillStyle='#ffe28a';x.shadowColor='#ffc53d';}
+      x.shadowBlur=10;x.beginPath();x.arc(q.x,q.y,3,0,6.283);x.fill();x.shadowBlur=0;if(q.x>1005||q.y>H)parts.splice(p,1);}
+  }
+  var last=0;
+  function loop(t){var dt=Math.min(50,t-last)/1000;last=t;
+    if(state.run&&!state.done){state.h+=dt*.9;var gn=gen(state.h),cp=capV();state.ok+=Math.min(gn,cp)*dt;state.ko+=Math.max(0,gn-cp)*dt;
+      if(state.h>=20){state.done=true;state.run=false;up.disabled=true;var tot=state.ok+state.ko,pk=tot?state.ko/tot*100:0;
+        msg.innerHTML=(pk<3?'<b>¡Red a la altura!</b> ':'<b>Fin del día.</b> ')+'Has recortado el '+fmt(pk,1)+' % de la producción.'+(hiLim?'':' Con el límite actual no hay refuerzos suficientes: prueba a <b>subir el límite de inversión</b>.');}}
+    var tot2=state.ok+state.ko;document.getElementById('gok').textContent=fmt(tot2?state.ok/tot2*100:0)+' %';document.getElementById('gko').textContent=fmt(tot2?state.ko/tot2*100:0)+' %';
+    var hh=Math.min(20,state.h);document.getElementById('gh').textContent=String(Math.floor(hh)).padStart(2,'0')+':'+String(Math.floor(hh%1*60)).padStart(2,'0');
+    if(vis)draw(t);requestAnimationFrame(loop);}
+  var vis=true;watch(cv,function(v){vis=v;});reset();requestAnimationFrame(function(t){last=t;loop(t);});
+})();
+
+/* ===== TENSIÓN ===== */
+(function(){var arc=document.getElementById('garc'),nd=document.getElementById('gneedle'),tx=document.getElementById('gtxt'),bs=document.querySelectorAll('#gyrs button');
+  function set(v){arc.setAttribute('stroke-dasharray',v+' 100');nd.style.transform='rotate('+(-90+v/100*180)+'deg)';tx.textContent=v+' %';bs.forEach(function(b){b.style.opacity=+b.dataset.y===v?1:.5;});}
+  bs.forEach(function(b){b.onclick=function(){set(+b.dataset.y);};});set(0);tx.textContent='0 %';
+  onVis(document.getElementById('gauge'),function(){set(10);setTimeout(function(){set(33);},1700);},.5);
+  onVis(document.getElementById('rings'),function(){document.querySelectorAll('#rings [data-v]').forEach(function(c){c.setAttribute('stroke-dasharray',(c.dataset.v/20*100)+' 100');});},.5);})();
+
+/* ===== NUDOS ===== */
+(function(){var n=document.getElementById('nodes'),h='',tot=200,sat=Math.round(tot*.834),idx=[];for(var i=0;i<tot;i++)idx.push(i);idx.sort(function(){return Math.random()-.5;});var S={};idx.slice(0,sat).forEach(function(i){S[i]=1;});
+  for(var j=0;j<tot;j++)h+='<i class="'+(S[j]?'s':'')+'" style="--dd:'+(j*8)+'ms" title="'+(S[j]?'Nudo saturado':'Nudo con capacidad')+'"></i>';n.innerHTML=h;onVis(n,function(){n.classList.add('on');},.3);})();
+
+/* ===== INVERSIÓN ===== */
+(function(){var Y=[[2027,1020,700],[2028,2550,1850],[2029,3060,2300],[2030,3570,2850]],max=6420,b=document.getElementById('invbars');
+  b.innerHTML=Y.map(function(y,i){return '<div><b>'+fmt(y[1]+y[2])+'</b><span class="stk"><i style="background:var(--mint);box-shadow:0 0 12px var(--mint);--h:'+(y[1]/max*100)+'%;--dd:'+(i*.2)+'s"></i><i style="background:var(--cyan);box-shadow:0 0 12px var(--cyan);--h:'+(y[2]/max*100)+'%;--dd:'+(i*.2+.1)+'s"></i></span>'+y[0]+'</div>';}).join('');
+  
+  onVis(b,function(){b.querySelectorAll('.stk i').forEach(function(i){i.style.height=(parseFloat(i.style.getPropertyValue('--h'))*1.8)+'px';});},.4);})();
+})();
+</script>
+</body>
+</html>
