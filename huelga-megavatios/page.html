@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La huelga en megavatios</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,800;1,6..72,400;1,6..72,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;--bg:#ffffff;--paper:#faf8f4;--ink:#101418;--ink2:#2b3238;--soft:#5b646c;--muted:#8a929a;--line:#e3e0da;--line2:#cfcac2;
+--teal:#0b6e5f;--teal2:#16a58c;--tealbg:#e8f3f0;--red:#c8372d;--redbg:#fbeceb;--amber:#b7791f;--gray:#9aa3ab;
+--fs:"Newsreader",Georgia,serif;--f:"Inter",system-ui,sans-serif;--fm:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#ffffff}}
+:root[data-theme="dark"]{--bg:#ffffff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--fs);font-size:20px;line-height:1.62;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:var(--teal)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:3px}
+.col{max-width:680px;margin-inline:auto;padding-inline:20px}
+.wide{max-width:1040px;margin-inline:auto;padding-inline:20px}
+sup.r{font:600 .6em var(--f);margin-left:1px}
+sup.r a{text-decoration:none;color:var(--teal)}
+.reveal{transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.js .reveal.pre{opacity:.001;transform:translateY(16px)}
+
+/* cabecera periódico */
+.mast{border-bottom:1px solid var(--ink);background:var(--bg);position:sticky;top:0;z-index:50}
+.mast-in{max-width:1040px;margin-inline:auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+.logo{font:800 26px var(--fs);letter-spacing:-.02em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:6px}
+.logo svg{width:26px;height:14px}
+.sect{margin-left:auto;font:600 12px var(--f);letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+.prog{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--teal)}
+
+header.art{padding-block:54px 30px}
+.crumb{font:500 13px var(--f);color:var(--muted)}
+.crumb a{color:var(--muted);text-decoration:none}
+.tagline{display:flex;gap:8px;margin-top:18px}
+.tag{font:700 11px var(--f);letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:2px}
+.tag.a{background:var(--ink);color:#fff}
+.tag.b{color:var(--teal);border:1px solid var(--teal)}
+h1{font:800 clamp(38px,5.6vw,64px)/1.04 var(--fs);letter-spacing:-.022em;margin-top:18px;text-wrap:balance}
+.dek{font:400 clamp(20px,2.2vw,24px)/1.45 var(--fs);color:var(--ink2);margin-top:18px;max-width:40ch}
+.byline{display:flex;align-items:center;gap:12px;margin-top:26px;padding-top:18px;border-top:1px solid var(--line);font:500 14px var(--f);color:var(--soft)}
+.byline b{color:var(--ink);font-weight:600}
+.byline .av{width:34px;height:34px;border-radius:50%;background:var(--ink);display:grid;place-items:center}
+.byline .av svg{width:18px;height:10px}
+
+/* cifras clave */
+.keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:1px solid var(--line);margin-block:30px 10px}
+.k{padding:18px 18px 16px;border-left:1px solid var(--line)}
+.k:first-child{border-left:0;padding-left:0}
+.k b{display:block;font:600 clamp(28px,3.4vw,40px)/1 var(--fm);letter-spacing:-.02em}
+.k span{display:block;font:500 13.5px/1.4 var(--f);color:var(--soft);margin-top:8px}
+@media (max-width:760px){.keys{grid-template-columns:repeat(2,minmax(0,1fr))}.k:nth-child(3){border-left:0;padding-left:0}.k:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* texto */
+.body p{margin-bottom:22px;color:var(--ink2)}
+.body p.first::first-letter{float:left;font:800 74px/.82 var(--fs);margin:6px 10px 0 0;color:var(--teal)}
+.body h2{font:800 clamp(28px,3.4vw,36px)/1.12 var(--fs);letter-spacing:-.015em;margin:56px 0 18px;text-wrap:balance}
+.kick{font:700 12px var(--f);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);display:block;margin-top:56px}
+.kick+h2{margin-top:8px}
+blockquote{border-left:3px solid var(--teal);padding:4px 0 4px 22px;margin:30px 0;font:italic 400 24px/1.4 var(--fs);color:var(--ink)}
+blockquote cite{display:block;font:normal 500 13px var(--f);color:var(--soft);margin-top:10px}
+
+/* gráficos */
+figure.chart{margin:36px 0 40px}
+figure.chart .ct{font:700 17px/1.3 var(--f);color:var(--ink)}
+figure.chart .cs{font:400 14.5px/1.45 var(--f);color:var(--soft);margin-top:4px}
+figure.chart figcaption{font:400 12.5px/1.5 var(--f);color:var(--muted);margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.ctrl{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.ctrl button{font:600 13px var(--f);border:1px solid var(--line2);background:#fff;border-radius:3px;padding:6px 11px;cursor:pointer;color:var(--ink2)}
+.ctrl button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.svgwrap{position:relative;margin-top:16px}
+.svgwrap svg{width:100%;height:auto;display:block;overflow:visible}
+.tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--ink);padding:8px 10px;font:500 13px/1.4 var(--f);box-shadow:0 4px 14px rgba(0,0,0,.08);opacity:0;transition:opacity .15s;white-space:nowrap;transform:translate(-50%,-110%);z-index:5}
+.tip b{font-family:var(--fm)}
+.ax text{font:500 12px var(--f);fill:var(--muted)}
+.ax line{stroke:var(--line)}
+.lab{font:600 13px var(--f);fill:var(--ink2)}
+.val{font:600 13px var(--fm)}
+
+/* termómetro comparativo */
+.thermo{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:20px;align-items:end}
+.th{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;background:none;border:0;padding:0}
+.th .tube{position:relative;width:46px;height:220px;border:1.5px solid var(--line2);border-radius:23px 23px 6px 6px;background:var(--paper);overflow:hidden}
+.th .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--c);transition:height 1.2s cubic-bezier(.2,.7,.2,1);transition-delay:var(--dd)}
+.th b{font:600 18px var(--fm);color:var(--c)}
+.th span{font:600 12.5px/1.25 var(--f);color:var(--ink2);text-align:center}
+.th small{font:400 11.5px/1.3 var(--f);color:var(--muted);text-align:center;min-height:30px}
+.th.on .tube{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.thdet{margin-top:16px;padding:14px 16px;background:var(--paper);border-left:3px solid var(--teal);font:400 15px/1.5 var(--f);color:var(--ink2);min-height:72px}
+.thdet b{color:var(--ink)}
+@media (max-width:560px){.th .tube{width:34px;height:170px}.th b{font-size:12.5px;white-space:nowrap}}
+
+/* tabla de versiones */
+table.v{width:100%;border-collapse:collapse;font:400 15px/1.45 var(--f);margin:24px 0 10px}
+table.v th{text-align:left;font:700 11.5px var(--f);letter-spacing:.08em;text-transform:uppercase;color:var(--soft);border-bottom:2px solid var(--ink);padding:8px 10px 8px 0}
+table.v td{border-bottom:1px solid var(--line);padding:12px 10px 12px 0;vertical-align:top;color:var(--ink2)}
+table.v td:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
+table.v td.n{font:600 15px var(--fm);color:var(--ink);white-space:nowrap}
+@media (max-width:600px){table.v{font-size:14px}table.v td:first-child{white-space:normal}}
+
+/* matices */
+.cav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:26px 0}
+@media (max-width:640px){.cav{grid-template-columns:1fr}}
+.cv{border:1px solid var(--line);border-top:3px solid var(--c,var(--teal));padding:16px 18px;background:#fff}
+.cv h3{font:700 16px/1.3 var(--f);color:var(--ink)}
+.cv p{font:400 14.5px/1.5 var(--f);color:var(--soft);margin-top:6px}
+
+/* red: servicios mínimos */
+.grid-ok{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:22px 0 10px}
+@media (max-width:640px){.grid-ok{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ok{border:1px solid var(--line);padding:14px;font:600 14px/1.3 var(--f);color:var(--ink);display:flex;align-items:center;gap:10px;background:#fff;opacity:.35;transition:opacity .5s,border-color .5s;transition-delay:var(--dd)}
+.grid-ok.in .ok{opacity:1;border-color:var(--teal)}
+.ok i{width:10px;height:10px;border-radius:50%;background:var(--teal);flex:none;box-shadow:0 0 0 4px var(--tealbg)}
+
+/* notas */
+.box{background:var(--paper);border:1px solid var(--line);padding:22px 24px;margin:36px 0;font:400 15px/1.6 var(--f);color:var(--ink2)}
+.box h3{font:700 13px var(--f);letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+.box p{margin-bottom:10px}
+footer{border-top:2px solid var(--ink);margin-top:60px;padding-block:24px 60px;font:400 13.5px/1.55 var(--f);color:var(--soft)}
+footer h2{font:800 22px var(--fs);color:var(--ink);margin-bottom:10px}
+footer ol{padding-left:20px}
+footer li{margin-bottom:6px}
+footer a{color:var(--ink2)}
+@media (prefers-reduced-motion:reduce){.js .reveal.pre{opacity:1;transform:none}.th .fill,.ok{transition:none}}
+</style>
+</head>
+<body>
+<div class="mast"><div class="mast-in">
+  <a class="logo" href="https://www.lafrecuenciaenergia.es" target="_blank" rel="noopener">La<svg viewBox="0 0 26 14" aria-hidden="true"><path d="M1 7 Q4.5 0 8 7 T15 7 T22 7 L25 7" fill="none" stroke="#16a58c" stroke-width="2.2" stroke-linecap="round"/></svg>Frecuencia</a>
+  <span class="sect">Análisis · Demanda eléctrica</span>
+  <div class="prog" id="prog"></div>
+</div></div>
+
+<article>
+<header class="art col">
+  <div class="crumb"><a href="https://www.lafrecuenciaenergia.es">Portada</a> / Mercados / Análisis</div>
+  <div class="tagline"><span class="tag a">Datos</span><span class="tag b">Huelga general 11-N</span></div>
+  <h1>La huelga que apenas movió el contador</h1>
+  <p class="dek">La demanda eléctrica cayó un 4,87 % frente a lo previsto el 11 de noviembre. En las cuatro huelgas generales anteriores con datos de Red Eléctrica, la caída estuvo entre el 13,5 % y el 20,5 %.</p>
+  <div class="byline"><div class="av"><svg viewBox="0 0 26 14"><path d="M1 7 Q4.5 0 8 7 T15 7 T22 7 L25 7" fill="none" stroke="#16a58c" stroke-width="2.4" stroke-linecap="round"/></svg></div><div><b>Redacción</b> · Equipo de La Frecuencia<br>14 de noviembre de 2026 · 7 min de lectura</div></div>
+</header>
+
+<div class="wide">
+  <div class="keys reveal">
+    <div class="k"><b style="color:var(--teal)" data-count="4.87" data-dec="2" data-pre="−" data-suf=" %">0</b><span>caída de la demanda frente a la previsión el 11-N, hasta las 18:00</span></div>
+    <div class="k"><b data-count="13.5" data-dec="1" data-pre="−" data-suf=" %">0</b><span>caída en la huelga general del 14 de noviembre de 2012</span></div>
+    <div class="k"><b data-count="20.5" data-dec="1" data-pre="−" data-suf=" %">0</b><span>caída media en la huelga general de 2002, la mayor registrada</span></div>
+    <div class="k"><b data-count="1166" data-suf=" MW">0</b><span>de diferencia entre demanda prevista y real a las 17:50</span></div>
+  </div>
+</div>
+
+<div class="col body">
+  <p class="first">Cada huelga general deja dos relatos: el de los sindicatos, que hablan de seguimiento masivo, y el de la patronal y el Gobierno de turno, que hablan de normalidad. Entre ambos hay un dato que nadie redacta: la demanda de electricidad que registra Red Eléctrica minuto a minuto. Cuando fábricas, oficinas y comercios paran, el consumo baja. Cuando no paran, la curva apenas se mueve.</p>
+  <p>El miércoles 11 de noviembre, CCOO y UGT convocaron la primera huelga general conjunta de 24 horas en catorce años, la octava desde 1985, contra el coste de la vivienda y la pérdida de poder adquisitivo de los salarios.<sup class="r"><a href="#f1">1</a></sup><sup class="r"><a href="#f2">2</a></sup> El contador dejó una cifra clara: la demanda se quedó un <b>4,87 % por debajo de lo previsto</b> hasta las 18:00.<sup class="r"><a href="#f3">3</a></sup></p>
+
+  <span class="kick">La jornada, hora a hora</span>
+  <h2>Un descenso visible a primera hora que se diluyó por la tarde</h2>
+  <p>La mayor caída llegó al arrancar el día laborable. A las 8:30, la demanda estaba casi un 9,5 % por debajo de la del martes. A partir de ahí el efecto se fue diluyendo: un 7,5 % por debajo de la previsión a las 10:00, un 5,3 % a mediodía y un 3,7 % a las 17:50.<sup class="r"><a href="#f4">4</a></sup><sup class="r"><a href="#f5">5</a></sup></p>
+</div>
+
+<div class="col">
+  <figure class="chart reveal" id="chHour">
+    <div class="ct">Demanda prevista y demanda real durante la huelga</div>
+    <div class="cs">Potencia demandada en la península, en megavatios. El eje empieza en cero. Pasa el cursor por las barras.</div>
+    <div class="svgwrap" id="hourWrap"><svg id="hourSvg" viewBox="0 0 640 330" role="img" aria-label="Barras de demanda prevista y real a las 10:00, 12:00 y 17:50"></svg><div class="tip" id="hourTip"></div></div>
+    <figcaption>Fuente: Red Eléctrica, recogido por Energías Renovables y El Español. La previsión de las 10:00 se ha estimado a partir de la demanda real (31.482 MW) y de la desviación publicada (7,5 %).<sup class="r"><a href="#f4">4</a></sup><sup class="r"><a href="#f5">5</a></sup></figcaption>
+  </figure>
+</div>
+
+<div class="col body">
+  <p>El propio operador del sistema no esperaba un parón. Su previsión para el día era la de una jornada laborable normal, con picos de entre 32.000 y 34.000 MW. Y la demanda programada en el mercado, la que compran por adelantado comercializadoras y grandes consumidores, coincidió casi al megavatio con el consumo real: 30.363 MW programados frente a 30.351 MW consumidos a las 17:50.<sup class="r"><a href="#f5">5</a></sup> Quien compra electricidad para el día siguiente tampoco esperaba un parón.</p>
+
+  <span class="kick">La comparación histórica</span>
+  <h2>Casi tres veces menos impacto que en 2012</h2>
+  <p>Red Eléctrica dispone de datos comparables desde 2002. En las cuatro huelgas generales anteriores con registro, la demanda cayó entre el 13,5 % y el 20,5 % frente a lo que habría correspondido a un día laborable. La del 11-N se queda en menos de un 5 %.<sup class="r"><a href="#f2">2</a></sup></p>
+</div>
+
+<div class="col">
+  <figure class="chart reveal" id="chHist">
+    <div class="ct">Caída de la demanda eléctrica en las huelgas generales</div>
+    <div class="cs">Diferencia frente a la demanda prevista para un día laborable normal. Elige una huelga.</div>
+    <div class="thermo" id="thermo"></div>
+    <div class="thdet" id="thdet" aria-live="polite"></div>
+    <figcaption>Fuentes: Red Eléctrica, recogido por Vozpópuli (2002-2012) y Telemadrid (2026). Para noviembre de 2012, Europa Press estimó una caída cercana al 11 % en el conjunto del día. Las cifras de 2002 son medias diarias; las de 2026, acumuladas hasta las 18:00.<sup class="r"><a href="#f2">2</a></sup><sup class="r"><a href="#f3">3</a></sup><sup class="r"><a href="#f4">4</a></sup></figcaption>
+  </figure>
+</div>
+
+<div class="col body">
+  <p>Incluso con la estimación más baja para noviembre de 2012, la de Europa Press, el impacto de entonces duplicó al de este 11-N. Frente a 2002, cuando la demanda cayó un 20,5 % de media y casi un 28 % entre las 8:00 y las 9:00, la diferencia es de cuatro a uno.<sup class="r"><a href="#f2">2</a></sup><sup class="r"><a href="#f4">4</a></sup></p>
+
+  <span class="kick">Las versiones</span>
+  <h2>Cada parte, su cifra</h2>
+  <p>No existe un recuento oficial del seguimiento de una huelga general. Sindicatos y patronal publican sus propias estimaciones con metodologías distintas.<sup class="r"><a href="#f6">6</a></sup></p>
+</div>
+
+<div class="col">
+  <table class="v reveal">
+    <thead><tr><th>Fuente</th><th>Indicador</th><th>Cifra</th></tr></thead>
+    <tbody>
+      <tr><td>CCOO y UGT</td><td>Seguimiento por comunidades, con datos hacia las 7:00 sin Administración, educación, comercio ni finanzas</td><td class="n">41-75 %</td></tr>
+      <tr><td>CEOE y Cepyme</td><td>Reducción del consumo hasta las 12:00 y «normalidad en la mayoría de sectores»</td><td class="n">≈ −5 %</td></tr>
+      <tr><td>Red Eléctrica</td><td>Demanda frente a la previsión, acumulado hasta las 18:00</td><td class="n">−4,87 %</td></tr>
+      <tr><td>Red Eléctrica</td><td>Demanda frente a la previsión a las 17:50</td><td class="n">−3,7 %</td></tr>
+    </tbody>
+  </table>
+  <p style="font:400 12.5px/1.5 var(--f);color:var(--muted);margin-bottom:10px">Fuentes: Energías Renovables, Telemadrid y El Español.<sup class="r"><a href="#f3">3</a></sup><sup class="r"><a href="#f4">4</a></sup><sup class="r"><a href="#f5">5</a></sup></p>
+</div>
+
+<div class="col body">
+  <blockquote>La caída eléctrica no equivale a una tasa de participación laboral, porque los sectores tienen necesidades energéticas distintas.<cite>Energías Renovables, sobre la lectura de los datos del 11-N<sup class="r"><a href="#f4">4</a></sup></cite></blockquote>
+
+  <span class="kick">Lo que matiza los datos</span>
+  <h2>Un termómetro objetivo, no perfecto</h2>
+  <p>La demanda eléctrica es el indicador más neutral disponible, pero tiene límites que conviene tener presentes antes de comparar épocas.</p>
+</div>
+
+<div class="col">
+  <div class="cav reveal">
+    <div class="cv" style="--c:var(--teal)"><h3>Mide mejor la industria que la oficina</h3><p>Una fábrica parada se nota en la curva. Una oficina o un comercio cerrados, mucho menos. La industria redujo su consumo un 25,6 % durante la mañana del 11-N.<sup class="r"><a href="#f5">5</a></sup></p></div>
+    <div class="cv" style="--c:var(--amber)"><h3>El autoconsumo resta visibilidad</h3><p>Los paneles en tejados de empresas y hogares producen electricidad que no pasa por la red. Parte del consumo ya no aparece en los datos de Red Eléctrica, y eso dificulta comparar con 2012.<sup class="r"><a href="#f3">3</a></sup></p></div>
+    <div class="cv" style="--c:var(--gray)"><h3>Una economía más de servicios</h3><p>Con más peso del sector servicios y del teletrabajo, un mismo seguimiento produce hoy una caída eléctrica algo menor que hace veinte años.<sup class="r"><a href="#f2">2</a></sup></p></div>
+    <div class="cv" style="--c:var(--red)"><h3>Pero la brecha es demasiado grande</h3><p>Ninguno de estos factores explica pasar de caídas del 13,5 %-20,5 % a menos del 5 %. La propia previsión de Red Eléctrica y la demanda programada en el mercado contaban con un día laborable.<sup class="r"><a href="#f5">5</a></sup></p></div>
+  </div>
+</div>
+
+<div class="col body">
+  <span class="kick">El sistema eléctrico</span>
+  <h2>La red que no se detuvo</h2>
+  <p>Mientras el debate se centraba en los porcentajes, el sistema eléctrico siguió operando. Los servicios mínimos, fijados por orden ministerial a partir de un informe de Red Eléctrica, obligaban a mantener disponibles:<sup class="r"><a href="#f4">4</a></sup></p>
+</div>
+<div class="col">
+  <div class="grid-ok" id="gridOk">
+    <div class="ok" style="--dd:.0s"><i></i>Centrales nucleares</div>
+    <div class="ok" style="--dd:.12s"><i></i>Hidráulicas y bombeo</div>
+    <div class="ok" style="--dd:.24s"><i></i>Térmicas de gas y carbón</div>
+    <div class="ok" style="--dd:.36s"><i></i>Centros de control y brigadas de averías</div>
+  </div>
+</div>
+<div class="col body">
+  <p>Las crónicas consultadas no recogen incidencias en el suministro eléctrico, y la producción siguió los resultados del mercado y las órdenes del operador. Es la otra lectura de la jornada: en un país cada vez más electrificado, la red es un servicio esencial que tiene que funcionar el día de la huelga igual que cualquier otro.</p>
+  <p>Y queda una conclusión más incómoda para los convocantes. Por primera vez desde que hay registros, el contador eléctrico, el indicador más objetivo de cuánto se para un país, apenas reflejó la huelga. Las cifras de seguimiento de unos y otros pueden discutirse. Los megavatios, mucho menos.</p>
+
+  <div class="box">
+    <h3>Cómo se ha hecho este análisis</h3>
+    <p>Las caídas de demanda comparan el consumo real peninsular con la previsión de Red Eléctrica para una jornada laboral normal. Los datos de 2026 proceden de lo publicado por Red Eléctrica y recogido por los medios citados durante y después de la jornada. Los de 2002, 2010 y 2012, de la serie recopilada por Vozpópuli a partir de Red Eléctrica.</p>
+    <p>Las cifras no son una tasa de participación. Sirven para comparar jornadas entre sí, con las salvedades descritas. Cuando dos fuentes dan cifras distintas para la misma huelga, lo indicamos.</p>
+  </div>
+</div>
+</article>
+
+<footer><div class="col">
+  <h2>Fuentes</h2>
+  <ol>
+    <li id="f1"><a href="https://www.merca2.es/2026/11/12/huelga-general-11-noviembre-seguimiento-2503254/" target="_blank" rel="noopener">Merca2 – Huelga general del 11 de noviembre: motivos y seguimiento (12/11/2026)</a></li>
+    <li id="f2"><a href="https://www.vozpopuli.com/economia/empleo/ccoo-y-ugt-se-enfrentan-a-la-prueba-de-la-luz-el-consumo-electrico-dara-una-pista-de-si-la-huelga-general-es-un-fiasco.html" target="_blank" rel="noopener">Vozpópuli – La prueba de la luz: el consumo eléctrico en las huelgas generales (08/11/2026)</a></li>
+    <li id="f3"><a href="https://www.telemadrid.es/noticias/nacional/consumo-electrico-evidencia-menor-impacto_1_2811380.html" target="_blank" rel="noopener">Telemadrid – El consumo eléctrico evidencia el menor impacto de la huelga general (11/11/2026)</a></li>
+    <li id="f4"><a href="https://www.energias-renovables.com/panorama/la-huelga-general-en-megavatios-la-demanda-20261111" target="_blank" rel="noopener">Energías Renovables – La huelga general en megavatios (11/11/2026)</a></li>
+    <li id="f5"><a href="https://www.elespanol.com/invertia/empresas/energia/20261112/red-electrica-confiaba-exito-huelga-general-prevision-consumo-dia-laborable/1003744454537_0.html" target="_blank" rel="noopener">El Español – La previsión de Red Eléctrica era un consumo de día laborable (12/11/2026)</a></li>
+    <li id="f6"><a href="https://www.merca2.es/2026/11/12/huelga-general-11-noviembre-seguimiento-2503254/" target="_blank" rel="noopener">Merca2 – Sobre la ausencia de un recuento oficial del seguimiento</a></li>
+  </ol>
+</div></footer>
+
+<script>
+(function(){
+document.documentElement.classList.add('js');
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function fmt(n,d){d=d||0;var s=Math.abs(n).toFixed(d).split('.');s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return s.join(',');}
+function onVis(el,fn,th){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fn(el);io.unobserve(el);}});},{threshold:th||.3});io.observe(el);}
+document.querySelectorAll('.reveal').forEach(function(el){if(el.getBoundingClientRect().top>innerHeight*.92)el.classList.add('pre');onVis(el,function(){el.classList.remove('pre');},.1);});
+document.querySelectorAll('[data-count]').forEach(function(el){var to=+el.dataset.count,d=+el.dataset.dec||0,pre=el.dataset.pre||'',suf=el.dataset.suf||'';el.textContent=pre+fmt(0,d)+suf;onVis(el,function(){if(RM){el.textContent=pre+fmt(to,d)+suf;return;}var t0=performance.now();(function f(t){var q=Math.min(1,(t-t0)/1300),e=1-Math.pow(1-q,3);el.textContent=pre+fmt(to*e,d)+suf;if(q<1)requestAnimationFrame(f);})(t0);},.6);});
+var prog=document.getElementById('prog');addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true});
+var NS='http://www.w3.org/2000/svg';function E(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+
+/* ===== gráfico horario ===== */
+(function(){var D=[{h:'10:00',p:34035,r:31482,d:-7.5,est:true},{h:'12:00',p:34678,r:32823,d:-5.3},{h:'17:50',p:31517,r:30351,d:-3.7}];
+  var svg=document.getElementById('hourSvg'),tip=document.getElementById('hourTip'),wrap=document.getElementById('hourWrap');
+  var L=60,R=630,T=36,B=290,y0=0,y1=36000,Y=function(v){return B-(v-y0)/(y1-y0)*(B-T);};
+  var ax=E('g',{class:'ax'},svg);[0,6000,12000,18000,24000,30000,36000].forEach(function(v){E('line',{x1:L,x2:R,y1:Y(v),y2:Y(v)},ax);var t=E('text',{x:L-8,y:Y(v)+4,'text-anchor':'end'},ax);t.textContent=fmt(v);});
+  var lg=E('g',{},svg);E('rect',{x:L,y:4,width:12,height:12,fill:'#cfcac2'},lg);var t1=E('text',{x:L+18,y:14,class:'lab'},lg);t1.textContent='Prevista';E('rect',{x:L+96,y:4,width:12,height:12,fill:'#0b6e5f'},lg);var t2=E('text',{x:L+114,y:14,class:'lab'},lg);t2.textContent='Real';
+  var gw=(R-L)/3,bw=Math.min(62,gw*.3),bars=[];
+  D.forEach(function(d,i){var cx=L+gw*i+gw/2;var g=E('g',{style:'cursor:pointer'},svg);
+    var bp=E('rect',{x:cx-bw-4,width:bw,y:B,height:0,fill:d.est?'url(#hatch)':'#cfcac2'},g),br=E('rect',{x:cx+4,width:bw,y:B,height:0,fill:'#0b6e5f'},g);
+    var lb=E('text',{x:cx,y:B+22,'text-anchor':'middle',class:'lab'},g);lb.textContent=d.h;
+    var dv=E('text',{x:cx+4+bw/2,y:Y(d.r)-10,'text-anchor':'middle',class:'val',fill:'#c8372d',opacity:0},g);dv.textContent='−'+fmt(-d.d,1)+' %';
+    bars.push({bp:bp,br:br,dv:dv,d:d});
+    g.addEventListener('mousemove',function(e){var r=wrap.getBoundingClientRect();tip.style.left=(e.clientX-r.left)+'px';tip.style.top=(e.clientY-r.top)+'px';tip.style.opacity=1;tip.innerHTML='<b>'+d.h+'</b><br>Prevista: <b>'+fmt(d.p)+' MW</b>'+(d.est?' (estimada)':'')+'<br>Real: <b>'+fmt(d.r)+' MW</b><br>Diferencia: <b style="color:#c8372d">−'+fmt(d.p-d.r)+' MW</b>';});
+    g.addEventListener('mouseleave',function(){tip.style.opacity=0;});});
+  var defs=E('defs',{},svg);var pt=E('pattern',{id:'hatch',width:6,height:6,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);E('rect',{width:6,height:6,fill:'#e7e3dc'},pt);E('line',{x1:0,y1:0,x2:0,y2:6,stroke:'#b9b3a9','stroke-width':2},pt);
+  onVis(document.getElementById('chHour'),function(){var t0=performance.now();(function f(t){var q=RM?1:Math.min(1,(t-t0)/1100),e=1-Math.pow(1-q,3);bars.forEach(function(b,i){var hp=(b.d.p-y0)/(y1-y0)*(B-T)*e,hr=(b.d.r-y0)/(y1-y0)*(B-T)*e;b.bp.setAttribute('y',B-hp);b.bp.setAttribute('height',hp);b.br.setAttribute('y',B-hr);b.br.setAttribute('height',hr);b.dv.setAttribute('opacity',q>.85?1:0);});if(q<1)requestAnimationFrame(f);})(t0);},.4);})();
+
+/* ===== termómetros ===== */
+(function(){var D=[{y:'20 jun. 2002',v:20.5,c:'#5b646c',t:'Huelga contra la reforma del desempleo. Caída media del 20,5 %, con un máximo del 27,8 % entre las 8:00 y las 9:00. Sindicatos: 84 % de seguimiento. Gobierno: 17 %.'},
+ {y:'29 sep. 2010',v:14,c:'#5b646c',t:'Huelga contra la reforma laboral. La demanda cayó un 14 % respecto a las previsiones. Sindicatos: 70 % de seguimiento.'},
+ {y:'29 mar. 2012',v:14.84,c:'#5b646c',t:'Huelga contra la reforma laboral de 2012. Caída del 14,84 % respecto a la previsión. Sindicatos: 77 %. Patronal: 15 %.'},
+ {y:'14 nov. 2012',v:13.5,c:'#5b646c',t:'Última huelga general antes de la de 2026. Caída del 13,5 % (Europa Press estimó cerca del 11 %). Sindicatos: 76,7 %. Patronal: 12 %.'},
+ {y:'11 nov. 2026',v:4.87,c:'#0b6e5f',t:'Huelga por la vivienda y los salarios. La demanda quedó un 4,87 % por debajo de la previsión hasta las 18:00. Sindicatos: 41-75 % por comunidades. Patronal: consumo −5 % hasta las 12:00.'}];
+  var box=document.getElementById('thermo'),det=document.getElementById('thdet'),els=[];
+  D.forEach(function(d,i){var b=document.createElement('button');b.className='th';b.style.setProperty('--c',d.c);b.innerHTML='<b>−'+fmt(d.v,d.v%1?(String(d.v).split('.')[1].length):0)+' %</b><div class="tube"><div class="fill" style="--dd:'+(i*.12)+'s"></div></div><span>'+d.y+'</span>';box.appendChild(b);els.push(b);b.addEventListener('click',function(){sel(i);});b.addEventListener('mouseenter',function(){sel(i);});});
+  function sel(i){els.forEach(function(e,k){e.classList.toggle('on',k===i);});det.innerHTML='<b>'+D[i].y+'.</b> '+D[i].t;}
+  sel(4);onVis(box,function(){els.forEach(function(e,i){e.querySelector('.fill').style.height=(D[i].v/22*100)+'%';});},.4);})();
+
+onVis(document.getElementById('gridOk'),function(el){el.classList.add('in');},.5);
+})();
+</script>
+</body>
+</html>
