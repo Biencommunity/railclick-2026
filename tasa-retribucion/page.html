@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La cifra que decide la red</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:dark;--bg:#06080c;--bg2:#0a0e14;--panel:#0c1118;--panel2:#111823;--line:#1a2430;--ink:#f4efe9;--soft:#aab3bd;--muted:#6b7783;
+--cu:#ff8a3d;--cu2:#ffc08a;--volt:#59c8ff;--red:#ff4a5a;--gold:#ffd27a;--mint:#3ee0b0;
+--fd:"Archivo",system-ui,sans-serif;--fm:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:light){:root:not([data-theme="light"]){--bg:#06080c}}
+:root[data-theme="dark"]{--bg:#06080c}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font-family:var(--fd);font-size:18px;line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-stretch:125%;letter-spacing:-.02em;line-height:1;font-weight:900;text-wrap:balance}
+h2{font-size:clamp(32px,4.8vw,64px);margin-bottom:22px;max-width:17ch}
+a{color:var(--cu)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cu);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1100px;margin-inline:auto;padding-inline:20px}
+.kick{display:flex;align-items:center;gap:12px;font:600 13px var(--fm);color:var(--cu);margin-bottom:18px}
+.kick::before{content:"";width:22px;height:1.5px;background:var(--cu)}
+.lede{color:var(--soft);font-size:19px;max-width:60ch}
+sup.r{font:500 .62em var(--fm);margin-left:2px}
+sup.r a{color:var(--muted);text-decoration:none}
+.sec{padding-block:120px;position:relative}
+.reveal{transition:transform .9s cubic-bezier(.2,.7,.2,1),opacity .9s;transition-delay:var(--d,0ms)}
+.js .reveal.pre{transform:translateY(28px);opacity:.001}
+.glow-cu{color:var(--cu);text-shadow:0 0 22px rgba(255,138,61,.6)}
+.glow-v{color:var(--volt);text-shadow:0 0 22px rgba(89,200,255,.6)}
+.glow-r{color:var(--red);text-shadow:0 0 22px rgba(255,74,90,.65)}
+.glow-g{color:var(--gold);text-shadow:0 0 22px rgba(255,210,122,.55)}
+
+/* subnav */
+.sub{position:sticky;top:0;z-index:60;background:rgba(6,8,12,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.sub-in{max-width:1100px;margin-inline:auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;font:800 15px var(--fd);font-stretch:110%;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand svg{width:24px;height:13px}
+.chap{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.chap::-webkit-scrollbar{display:none}
+.chap a{font-size:13px;font-weight:600;color:var(--soft);text-decoration:none;padding:6px 11px;border-radius:999px;white-space:nowrap;transition:.25s}
+.chap a.on{color:var(--ink);background:rgba(255,138,61,.16)}
+.prog{position:absolute;left:0;bottom:-1px;height:1.5px;width:0;background:linear-gradient(90deg,var(--volt),var(--cu));box-shadow:0 0 10px var(--cu)}
+@media (max-width:820px){.chap{display:none}}
+
+/* hero */
+.hero{position:relative;min-height:clamp(680px,96vh,1000px);display:flex;align-items:flex-end;overflow:hidden}
+#heroCv{position:absolute;inset:0;width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,8,12,.92) 28%,rgba(6,8,12,.1) 75%),linear-gradient(0deg,var(--bg),transparent 35%);pointer-events:none}
+.hero-in{position:relative;z-index:2;padding-block:120px 64px;width:100%}
+.live{display:inline-flex;align-items:center;gap:9px;font:600 12px var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--cu2);border:1px solid rgba(255,138,61,.4);padding:5px 11px;border-radius:999px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--cu);box-shadow:0 0 10px var(--cu);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.2}}
+.hero h1{font-size:clamp(50px,9.6vw,150px);line-height:.88;letter-spacing:-.045em;margin-top:22px;max-width:10ch}
+.hero h1 .t{display:inline-block;color:var(--red);text-shadow:0 0 30px rgba(255,74,90,.8),0 0 90px rgba(255,74,90,.4);animation:tube 6s infinite}
+@keyframes tube{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.35}}
+.hero .lede{margin-top:26px}
+.stats{margin-top:40px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:16px;background:rgba(12,17,24,.82);backdrop-filter:blur(6px);max-width:1000px}
+.st{padding:18px 20px;border-left:1px solid var(--line)}
+.st:first-child{border-left:0}
+.st b{display:block;font:600 clamp(24px,2.8vw,36px) var(--fm)}
+.st span{font-size:13.5px;color:var(--muted);line-height:1.4;display:block;margin-top:4px}
+.cue{margin-top:30px;font:500 12px var(--fm);color:var(--muted);display:flex;align-items:center;gap:10px}
+.cue i{width:1.5px;height:26px;background:linear-gradient(var(--cu),transparent);animation:cue 1.8s infinite}
+@keyframes cue{0%{transform:scaleY(.2);transform-origin:top}50%{transform:scaleY(1)}100%{transform:scaleY(.2);transform-origin:bottom}}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.st:nth-child(3){border-left:0}.st:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* decisión */
+.dec{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+@media (max-width:900px){.dec{grid-template-columns:1fr}}
+.dec p{color:var(--soft);margin-bottom:16px}
+.dec p b{color:var(--ink)}
+.bigfig{font:600 clamp(72px,11vw,150px) var(--fm);line-height:.9;letter-spacing:-.04em}
+.bigfig small{font-size:.32em;letter-spacing:0;color:var(--soft)}
+.steps3{display:flex;align-items:flex-end;gap:14px;height:260px;margin-top:28px}
+.s3{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:8px;height:100%}
+.s3 .bar{border-radius:10px 10px 4px 4px;height:0;transition:height 1.4s cubic-bezier(.2,.7,.2,1);transition-delay:var(--dd);position:relative}
+.s3 .bar b{position:absolute;top:-30px;left:0;right:0;text-align:center;font:600 18px var(--fm)}
+.s3 span{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.3;min-height:34px}
+
+/* fórmula */
+.fx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:30px}
+@media (max-width:860px){.fx{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pc{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px;text-align:left;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
+.pc small{font:500 11.5px var(--fm);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.pc h3{font-size:19px;font-stretch:112%;margin-top:8px;line-height:1.1}
+.pc p{font-size:13.5px;color:var(--soft);margin-top:6px;line-height:1.45}
+.pc:hover,.pc.on{border-color:var(--c);background:var(--panel2);box-shadow:0 0 0 1px var(--c),0 0 26px color-mix(in srgb,var(--c) 28%,transparent)}
+.pc.on::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 45%,transparent),transparent 70%)}
+.fdet{margin-top:16px;border:1px solid var(--line);border-radius:16px;background:var(--bg2);padding:22px 24px;min-height:110px;color:var(--soft)}
+.fdet b{color:var(--ink)}
+.fdet-anim{animation:fin .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes fin{from{opacity:0;transform:translateY(10px)}}
+.calc{margin-top:28px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--panel),var(--bg2));display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+@media (max-width:860px){.calc{grid-template-columns:1fr}}
+.calc>div{padding:26px}
+.calc>div+div{border-left:1px solid var(--line)}
+@media (max-width:860px){.calc>div+div{border-left:0;border-top:1px solid var(--line)}}
+.calc h3{font-size:22px;font-stretch:112%;margin-bottom:6px}
+.calc .note{font-size:13px;color:var(--muted)}
+.rng{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;margin-top:20px}
+.rng label{font-weight:600;font-size:15px}
+.rng output{font:600 20px var(--fm);color:var(--cu)}
+.rng input{grid-column:1/-1}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:5px;background:#1a2430}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#f4efe9;box-shadow:0 0 0 4px rgba(255,138,61,.28),0 0 14px var(--cu);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border:none;border-radius:50%;background:#f4efe9;box-shadow:0 0 14px var(--cu)}
+.marks{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.marks button{font:600 12px var(--fm);border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 10px;cursor:pointer;color:var(--soft)}
+.marks button:hover{border-color:var(--cu);color:var(--ink)}
+.out-big{font:600 clamp(46px,6vw,72px) var(--fm);line-height:1;margin-top:8px}
+.out-sub{color:var(--soft);font-size:15px;margin-top:8px}
+.coins{display:flex;flex-wrap:wrap;gap:5px;margin-top:20px;max-width:420px}
+.coins i{width:16px;height:16px;border-radius:50%;background:#1a2430;transition:background .3s,box-shadow .3s}
+.coins i.on{background:var(--gold);box-shadow:0 0 8px rgba(255,210,122,.7)}
+
+/* viaje 3D */
+.vj{height:520vh;position:relative}
+.vj-st{position:sticky;top:0;height:100vh;overflow:hidden}
+#vjCv{position:absolute;inset:0;width:100%;height:100%}
+.vj-head{position:absolute;top:84px;left:0;right:0;z-index:2;pointer-events:none}
+.vj-head h2{font-size:clamp(26px,3.4vw,44px);margin:0}
+.vj-lbl{position:absolute;font:900 clamp(16px,1.8vw,24px) var(--fd);font-stretch:125%;white-space:nowrap;transform:translate(-50%,-100%);pointer-events:none;transition:opacity .3s}
+.vj-card{position:absolute;left:max(20px,calc(50% - 530px));bottom:40px;z-index:3;width:min(380px,calc(100% - 40px));background:rgba(10,14,20,.84);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.vj-card small{font:500 12px var(--fm);color:var(--muted)}
+.vj-card h3{font-size:clamp(30px,4vw,50px);margin:6px 0 10px;color:var(--c);text-shadow:0 0 26px var(--c)}
+.vj-card p{font-size:15px;color:var(--soft);line-height:1.5}
+.vj-anim{animation:fin .5s cubic-bezier(.2,.7,.2,1)}
+.vj-dots{position:absolute;right:max(20px,calc(50% - 530px));top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:3}
+.vj-dots i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--muted);transition:.3s}
+.vj-dots i.on{background:var(--cu);border-color:var(--cu);box-shadow:0 0 10px var(--cu)}
+
+/* 3D chart */
+.c3{display:grid;grid-template-columns:1.35fr .65fr;gap:22px;margin-top:30px}
+@media (max-width:900px){.c3{grid-template-columns:1fr}}
+.c3-stage{position:relative;border:1px solid var(--line);border-radius:22px;background:radial-gradient(ellipse at 50% 75%,#10202e,var(--bg) 72%);overflow:hidden;min-height:450px;cursor:grab}
+#c3cv{position:absolute;inset:0;width:100%;height:100%}
+.c3-hud{position:absolute;left:16px;top:14px;right:16px;display:flex;justify-content:space-between;font:500 11.5px var(--fm);color:var(--muted);pointer-events:none}
+.c3-tip{position:absolute;pointer-events:none;background:rgba(6,8,12,.92);border:1px solid var(--cu);border-radius:10px;padding:7px 12px;font:600 14px var(--fm);transform:translate(-50%,-125%);opacity:0;transition:opacity .2s;white-space:nowrap}
+.lbl3{position:absolute;font:600 11px var(--fm);color:var(--soft);transform:translate(-50%,0);pointer-events:none;white-space:nowrap;text-align:center;line-height:1.25}
+.c3-side{display:flex;flex-direction:column;gap:9px}
+.cb{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:12px 15px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;cursor:pointer;transition:.25s}
+.cb:hover,.cb.on{border-color:var(--c);background:var(--panel2);box-shadow:0 0 16px color-mix(in srgb,var(--c) 28%,transparent)}
+.cb b{font:600 21px var(--fm);color:var(--c);grid-row:1/3;grid-column:2}
+.cb span{font-weight:700;font-size:15px}
+.cb em{font-style:normal;font-size:12px;color:var(--muted)}
+
+/* dominó */
+.domino-wrap{height:330vh;position:relative}
+.dsticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.dstage{perspective:1100px;height:290px;position:relative;margin-top:18px}
+.drow{position:absolute;left:0;right:0;bottom:24px;height:250px;transform-style:preserve-3d;transform:rotateX(18deg)}
+.dom{position:absolute;bottom:0;width:clamp(62px,10vw,118px);height:clamp(150px,22vw,226px);transform-origin:right bottom;transition:transform .7s cubic-bezier(.6,.05,.4,1)}
+.dom .face{position:absolute;inset:0;border-radius:12px;background:linear-gradient(160deg,#111823,#06080c);border:1.5px solid var(--c);box-shadow:0 0 18px var(--c),inset 0 0 22px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:8px}
+.dom .face b{font:600 clamp(13px,1.6vw,18px) var(--fm);color:var(--c);text-shadow:0 0 12px var(--c);text-align:center;line-height:1.2}
+.dom .face i{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.dom.fall{transform:rotateZ(62deg)}
+@media (max-width:600px){.dom{width:13vw;height:36vw}.dom .face b{font-size:10px;writing-mode:vertical-rl;transform:rotate(180deg)}.dom .face{padding:4px}}
+.dfloor{position:absolute;left:-10%;right:-10%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--cu),transparent);opacity:.4}
+.dcap{max-width:680px;min-height:150px;margin-top:22px}
+.dcap h3{font-size:clamp(24px,3vw,38px);margin:8px 0}
+.dcap p{color:var(--soft)}
+.dcap-anim{animation:fin .55s cubic-bezier(.2,.7,.2,1)}
+.dprog{display:flex;gap:6px;margin-top:18px;max-width:680px}
+.dprog i{flex:1;height:3px;border-radius:2px;background:#1a2430;transition:background .3s}
+.dprog i.on{background:var(--cu);box-shadow:0 0 10px var(--cu)}
+
+/* calendario */
+.cal-top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.cal-num{text-align:right}
+.cal-num b{font:600 clamp(60px,8vw,110px) var(--fm);line-height:.9;display:block}
+.cal-num span{font-size:13px;color:var(--muted)}
+.cal{display:grid;grid-template-columns:repeat(40,minmax(0,1fr));gap:3px;margin-top:30px}
+.cal i{aspect-ratio:1/3.2;border-radius:2px;background:#0f151d;border:1px solid #18212c;transition:background .25s,box-shadow .25s,border-color .25s}
+.cal i.a{background:var(--cu);border-color:var(--cu);box-shadow:0 0 8px rgba(255,138,61,.6)}
+.cal i.b{background:#123049;border-color:#1d4a6e}
+.cal-ax{display:flex;justify-content:space-between;font:500 12px var(--fm);color:var(--muted);margin-top:8px}
+.cal-leg{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:13px;color:var(--soft)}
+.cal-leg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* juego */
+.game{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--panel),var(--bg2));overflow:hidden;margin-top:30px}
+.g-top{display:grid;grid-template-columns:.9fr 1.1fr}
+@media (max-width:900px){.g-top{grid-template-columns:1fr}}
+.g-ctl{padding:26px;border-right:1px solid var(--line)}
+@media (max-width:900px){.g-ctl{border-right:0;border-bottom:1px solid var(--line)}}
+.g-ctl h3{font-size:22px;font-stretch:112%}
+.tog{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tog button{font:600 13px var(--fd);border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 13px;cursor:pointer;color:var(--soft)}
+.tog button.on{border-color:var(--cu);color:var(--ink);background:rgba(255,138,61,.14)}
+.g-viz{position:relative;min-height:380px}
+#gCv{position:absolute;inset:0;width:100%;height:100%}
+.g-meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.gm{padding:16px 20px;border-left:1px solid var(--line)}
+.gm:first-child{border-left:0}
+.gm small{font:500 11.5px var(--fm);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.gm b{display:block;font:600 26px var(--fm);margin-top:4px}
+.gm .mb{height:5px;border-radius:5px;background:#1a2430;margin-top:8px;overflow:hidden}
+.gm .mb i{display:block;height:100%;width:0;border-radius:5px;transition:width .5s}
+@media (max-width:600px){.g-meters{grid-template-columns:1fr}.gm{border-left:0;border-top:1px solid var(--line)}.gm:first-child{border-top:0}}
+.g-msg{padding:14px 26px 22px;color:var(--soft);font-size:15px;border-top:1px solid var(--line)}
+.g-msg b{color:var(--ink)}
+
+/* factura */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+@media (max-width:860px){.duo{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:24px;transition:border-color .3s,transform .3s}
+.card:hover{border-color:var(--c,var(--cu));transform:translateY(-3px)}
+.card small{font:500 12px var(--fm);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.card .num{font:600 clamp(40px,5vw,58px) var(--fm);line-height:1;margin:10px 0}
+.card p{color:var(--soft);font-size:15px}
+.pie{display:flex;align-items:center;gap:22px;margin-top:6px}
+.pie svg{width:130px;height:130px;flex:none}
+
+/* por qué importa */
+.why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:30px}
+@media (max-width:860px){.why{grid-template-columns:1fr}}
+.wc{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:22px}
+.wc svg{width:38px;height:38px;filter:drop-shadow(0 0 8px var(--cu))}
+.wc h3{font-size:19px;font-stretch:112%;margin:16px 0 8px;line-height:1.15}
+.wc p{font-size:14.5px;color:var(--soft)}
+.scrub{font-size:clamp(32px,5vw,64px);font-weight:900;font-stretch:125%;letter-spacing:-.02em;line-height:1.08;margin-top:100px}
+.scrub span{color:#1f2833;transition:color .3s}
+.scrub span.on{color:var(--ink)}
+.scrub span.on.k{color:var(--cu);text-shadow:0 0 24px rgba(255,138,61,.55)}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:40px;border:1px solid var(--cu);color:var(--ink);text-decoration:none;padding:13px 22px;border-radius:999px;box-shadow:0 0 22px rgba(255,138,61,.3);font-weight:700}
+.cta:hover{background:rgba(255,138,61,.14)}
+footer{border-top:1px solid var(--line);padding-block:30px 50px;font-size:13px;color:var(--muted);margin-top:90px}
+footer h2{font-size:24px;margin-bottom:8px}
+footer ol{columns:2;column-gap:40px;padding-left:20px;margin-top:10px}
+footer li{break-inside:avoid;margin-bottom:6px}
+footer a{color:var(--soft)}
+@media (max-width:760px){footer ol{columns:1}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .reveal.pre{transform:none;opacity:1}.hero h1 .t,.live i,.cue i{animation:none}.dom{transition:none}}
+</style>
+</head>
+<body>
+<nav class="sub" aria-label="Capítulos"><div class="sub-in">
+  <a class="brand" href="https://www.lafrecuenciaenergia.es" target="_blank" rel="noopener"><svg viewBox="0 0 26 14" aria-hidden="true"><path d="M1 7 Q4.5 0 8 7 T15 7 T22 7 L25 7" fill="none" stroke="#ff8a3d" stroke-width="2.2" stroke-linecap="round"/></svg>La Frecuencia</a>
+  <div class="chap"><a href="#decision">La decisión</a><a href="#formula">La fórmula</a><a href="#viaje">El viaje</a><a href="#europa">Europa</a><a href="#cadena">La cadena</a><a href="#plazo">El plazo</a><a href="#juego">El juego</a><a href="#factura">Tu factura</a><a href="#importa">Por qué importa</a></div>
+  <div class="prog" id="prog"></div>
+</div></nav>
+
+<header class="hero" id="top">
+  <canvas id="heroCv" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <span class="live"><i></i>Especial · Redes · Regulación</span>
+    <h1>La cifra que decide la <span class="t">red</span></h1>
+    <p class="lede">La CNMC ha fijado en el 6,58 % la tasa que retribuye la inversión en redes eléctricas hasta 2031. De esa cifra depende cuánto capital llega a los cables, las subestaciones y los transformadores que tienen que conectar coches eléctricos, bombas de calor, industria y centros de datos.<sup class="r"><a href="#f1">1</a></sup></p>
+    <div class="stats">
+      <div class="st"><b class="glow-cu" data-count="6.58" data-dec="2" data-suf=" %">0</b><span>tasa de retribución financiera 2026-2031</span></div>
+      <div class="st"><b class="glow-v" data-count="100" data-pre="+" data-suf=" pb">0</b><span>sobre el 5,58 % del periodo 2020-2025</span></div>
+      <div class="st"><b class="glow-g">7-7,5 %</b><span>lo que pedían las distribuidoras para invertir más</span></div>
+      <div class="st"><b class="glow-r" data-count="12" data-suf=" %">0</b><span>de solicitudes de acceso concedidas en 2025, según aelec</span></div>
+    </div>
+    <div class="cue"><i></i>Baja para recorrer la red</div>
+  </div>
+</header>
+
+<section class="sec" id="decision">
+  <div class="wrap">
+    <div class="kick reveal">Qué se ha decidido</div>
+    <h2 class="reveal">Seis años de red con una sola cifra</h2>
+    <div class="dec">
+      <div class="reveal">
+        <p>El 22 de diciembre de 2025, la CNMC aprobó las circulares que fijan cómo se paga a quienes construyen y mantienen las redes eléctricas entre 2026 y 2031. La pieza central es la <b>tasa de retribución financiera</b>: el rendimiento que se reconoce sobre cada euro invertido en la red.<sup class="r"><a href="#f1">1</a></sup></p>
+        <p>La tasa sube del 5,58 % al <b>6,58 %</b>. La propuesta inicial, de julio de 2025, era del 6,46 %. El sector pedía entre el 7 % y el 7,5 %.<sup class="r"><a href="#f2">2</a></sup><sup class="r"><a href="#f3">3</a></sup></p>
+        <p>La decisión salió con <b>dos votos particulares</b> en el Consejo de la CNMC tras 69 debates. Las distribuidoras advierten que la cifra deja a España por debajo de la media europea justo cuando más red hace falta.<sup class="r"><a href="#f1">1</a></sup><sup class="r"><a href="#f4">4</a></sup></p>
+      </div>
+      <div class="reveal" style="--d:120ms">
+        <div class="bigfig glow-cu"><span data-count="6.58" data-dec="2">0</span><small> %</small></div>
+        <p style="color:var(--soft);margin-top:10px">tasa fijada para 2026-2031</p>
+        <div class="steps3" id="steps3">
+          <div class="s3"><div class="bar" style="--dd:0s;background:#24323f" data-h="74"><b style="color:var(--soft)">5,58 %</b></div><span>2020-2025</span></div>
+          <div class="s3"><div class="bar" style="--dd:.2s;background:linear-gradient(180deg,#ff8a3d,#a3461a);box-shadow:0 0 22px rgba(255,138,61,.45)" data-h="87.7"><b class="glow-cu">6,58 %</b></div><span>2026-2031 (CNMC)</span></div>
+          <div class="s3"><div class="bar" style="--dd:.4s;background:linear-gradient(180deg,#ffd27a,#8a6a24)" data-h="100"><b class="glow-g">7,5 %</b></div><span>lo que pedía el sector</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="formula" style="padding-top:40px">
+  <div class="wrap">
+    <div class="kick reveal">Cómo funciona</div>
+    <h2 class="reveal">No es un regalo: es el precio del capital</h2>
+    <p class="lede reveal">Las distribuidoras no ganan más si la luz sube. Cobran por fórmula, según lo que han invertido y operan. La tasa es el rendimiento que necesita ese dinero para no irse a otro sitio. Toca cada pieza.<sup class="r"><a href="#f1">1</a></sup></p>
+    <div class="fx reveal" id="fx">
+      <button class="pc on" style="--c:var(--volt)" data-k="0"><small>Pieza 1</small><h3>Lo invertido</h3><p>Líneas, subestaciones y contadores en servicio</p></button>
+      <button class="pc" style="--c:var(--cu)" data-k="1"><small>Pieza 2</small><h3>La tasa</h3><p>El rendimiento que se reconoce</p></button>
+      <button class="pc" style="--c:var(--gold)" data-k="2"><small>Pieza 3</small><h3>Operar y mantener</h3><p>Los costes de explotar la red</p></button>
+      <button class="pc" style="--c:var(--mint)" data-k="3"><small>Pieza 4</small><h3>Incentivos</h3><p>Calidad, pérdidas y electrificación</p></button>
+    </div>
+    <div class="fdet reveal" id="fdet" aria-live="polite"></div>
+    <div class="calc reveal">
+      <div>
+        <h3>Prueba la tasa</h3>
+        <p class="note">Cálculo simplificado: retribución financiera anual de una inversión. Sin amortización, operación ni incentivos.</p>
+        <div class="rng"><label for="rInv">Inversión en red</label><output id="oInv">1.000 M€</output><input type="range" id="rInv" min="100" max="5000" step="100" value="1000"></div>
+        <div class="rng"><label for="rTasa">Tasa de retribución</label><output id="oTasa">6,58 %</output><input type="range" id="rTasa" min="4" max="9" step="0.01" value="6.58"></div>
+        <div class="marks"><button data-v="5.58">2020-25: 5,58 %</button><button data-v="6.58">CNMC: 6,58 %</button><button data-v="6.70">Portugal: 6,70 %</button><button data-v="7.5">Sector: 7,5 %</button></div>
+      </div>
+      <div>
+        <small style="font:500 12px var(--fm);color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Retribución financiera al año</small>
+        <div class="out-big glow-g" id="oRet">65,8 M€</div>
+        <div class="out-sub" id="oCmp">—</div>
+        <div class="coins" id="coins"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vj" id="viaje">
+  <div class="vj-st">
+    <canvas id="vjCv" aria-label="Recorrido 3D del dinero invertido hasta la red"></canvas>
+    <div class="vj-head"><div class="wrap"><div class="kick">Del euro al enchufe</div><h2>El viaje de cada euro invertido</h2></div></div>
+    <div class="vj-card" id="vjCard" aria-live="polite"></div>
+    <div class="vj-dots" id="vjDots"></div>
+  </div>
+</section>
+
+<section class="sec" id="europa">
+  <div class="wrap">
+    <div class="kick reveal">La competencia por el capital</div>
+    <h2 class="reveal">El dinero para redes elige país</h2>
+    <p class="lede reveal">Los fondos que financian redes comparan rentabilidad y estabilidad entre países. España ha subido su tasa, pero sigue por debajo de Portugal y del rango europeo que cita el sector. Arrastra para girar.</p>
+    <div class="c3 reveal">
+      <div class="c3-stage" id="c3stage"><canvas id="c3cv" aria-label="Gráfico 3D de tasas de retribución de redes"></canvas><div class="c3-hud"><span>TASA DE RETRIBUCIÓN DE REDES · %</span><span>↻ arrastra</span></div><div class="c3-tip" id="c3tip"></div></div>
+      <div class="c3-side" id="c3side"></div>
+    </div>
+    <p class="reveal" style="color:var(--soft);margin-top:20px;max-width:82ch;font-size:15.5px">Portugal fija el 6,70 % para 2026-2029 y lo indexa cada año al bono a 10 años, con suelo del 5,90 % y techo del 8,90 %. La CNMC fija una cifra cerrada para seis años.<sup class="r"><a href="#f5">5</a></sup> El rango europeo de 6,8 %-7,5 % es el que cita la patronal aelec.<sup class="r"><a href="#f3">3</a></sup></p>
+  </div>
+</section>
+
+<section class="domino-wrap" id="cadena">
+  <div class="dsticky"><div class="wrap" style="width:100%">
+    <div class="kick">Haz scroll · La cadena</div>
+    <div class="dstage"><div class="drow" id="drow"><div class="dfloor"></div></div></div>
+    <div class="dcap" id="dcap" aria-live="polite"></div>
+    <div class="dprog" id="dprog"></div>
+  </div></div>
+</section>
+
+<section class="sec" id="plazo">
+  <div class="wrap">
+    <div class="cal-top">
+      <div><div class="kick reveal">El plazo</div><h2 class="reveal" style="margin:0">Se invierte para décadas, se decide para seis años</h2></div>
+      <div class="cal-num reveal"><b class="glow-cu" id="calN">0</b><span>años de servicio</span></div>
+    </div>
+    <div class="cal" id="cal" aria-label="Cuarenta años de vida de una instalación frente a seis años de periodo regulatorio"></div>
+    <div class="cal-ax"><span>2026</span><span>2031</span><span>2045</span><span>2065</span></div>
+    <div class="cal-leg"><span><i style="background:var(--cu)"></i>Periodo con la tasa fijada (2026-2031)</span><span><i style="background:#123049;border:1px solid #1d4a6e"></i>La instalación sigue en servicio</span></div>
+    <p class="reveal" style="color:var(--soft);margin-top:22px;max-width:76ch">Una línea o una subestación se construyen para funcionar durante décadas (aquí, 40 años a modo ilustrativo). Quien invierte hoy tiene que recuperar ese dinero mucho después de 2031. Por eso un marco <b style="color:var(--ink)">suficiente y previsible</b> pesa tanto como la cifra. El periodo de seis años es de los más largos de la UE.<sup class="r"><a href="#f1">1</a></sup></p>
+  </div>
+</section>
+
+<section class="sec" id="juego" style="padding-top:40px">
+  <div class="wrap">
+    <div class="kick reveal">Juego · Ponte en el lugar del regulador</div>
+    <h2 class="reveal">Atrae la inversión sin disparar la factura</h2>
+    <p class="lede reveal">Elige la tasa y la estabilidad del marco. Los puntos son capital que busca dónde invertir en redes: si España le ofrece menos que sus vecinos, se va. Mira qué pasa con la red y con el recibo.</p>
+    <div class="game reveal">
+      <div class="g-top">
+        <div class="g-ctl">
+          <h3>Tus decisiones</h3>
+          <div class="rng"><label for="gT">Tasa de retribución</label><output id="gTo">6,58 %</output><input type="range" id="gT" min="5" max="8.5" step="0.01" value="6.58"></div>
+          <p style="font-weight:600;font-size:15px;margin-top:22px">Estabilidad del marco</p>
+          <div class="tog" id="gS"><button data-v="0">Cambios frecuentes</button><button data-v="1" class="on">Estable 6 años</button><button data-v="2">Estable e indexado</button></div>
+          <p style="font-size:13px;color:var(--muted);margin-top:18px">Juego ilustrativo: muestra la lógica de la competencia por el capital, no un modelo del sistema real. Referencias: Portugal 6,70 %, rango europeo 6,8 %-7,5 % según aelec.</p>
+        </div>
+        <div class="g-viz"><canvas id="gCv" aria-label="Simulación de flujos de capital"></canvas></div>
+      </div>
+      <div class="g-meters">
+        <div class="gm"><small>Capital que llega a España</small><b id="gm1">—</b><div class="mb"><i id="gb1" style="background:var(--cu)"></i></div></div>
+        <div class="gm"><small>Red lista para conectar demanda</small><b id="gm2">—</b><div class="mb"><i id="gb2" style="background:var(--volt)"></i></div></div>
+        <div class="gm"><small>Impacto en peajes</small><b id="gm3">—</b><div class="mb"><i id="gb3" style="background:var(--red)"></i></div></div>
+      </div>
+      <div class="g-msg" id="gMsg">—</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="factura" style="padding-top:40px">
+  <div class="wrap">
+    <div class="kick reveal">Cuánto pagas tú</div>
+    <h2 class="reveal">Un punto de tasa no es un punto de factura</h2>
+    <p class="lede reveal">La red se paga con los peajes de cada recibo. La pregunta es qué cuesta más: una tasa algo más alta o una red que no llega a tiempo.</p>
+    <div class="duo">
+      <div class="card reveal" style="--c:var(--cu)"><small>Impacto de la subida de la tasa</small>
+        <div class="pie"><svg viewBox="0 0 120 120" id="pie"><circle cx="60" cy="60" r="48" fill="none" stroke="#1a2430" stroke-width="18"/><circle id="pieA" cx="60" cy="60" r="48" fill="none" stroke="#ff8a3d" stroke-width="18" stroke-dasharray="0 302" transform="rotate(-90 60 60)" style="filter:drop-shadow(0 0 6px #ff8a3d);transition:stroke-dasharray 1.6s cubic-bezier(.2,.7,.2,1)"/></svg>
+        <div><div class="num glow-cu">0,9-1,1 %</div><p>de los costes anuales del sistema, según la propia CNMC, en función del nivel de inversión.<sup class="r"><a href="#f6">6</a></sup></p></div></div></div>
+      <div class="card reveal" style="--c:var(--volt);--d:120ms"><small>Lo que hay que construir</small>
+        <div class="num glow-v"><span data-count="17900" data-suf=" M€">0</span></div>
+        <p>de inversión adicional en redes hasta 2030 que permite el Real Decreto de planes de inversión, por encima de los límites ordinarios del 0,13 % del PIB en distribución.<sup class="r"><a href="#f7">7</a></sup></p></div>
+      <div class="card reveal" style="--c:var(--red)"><small>La red, al límite</small>
+        <div class="num glow-r"><span data-count="83" data-suf=" %">0</span></div>
+        <p>de los nudos de la red de distribución están saturados para nueva demanda.<sup class="r"><a href="#f8">8</a></sup></p></div>
+      <div class="card reveal" style="--c:var(--gold);--d:120ms"><small>El coste de conectar</small>
+        <div class="num glow-g">257 <span style="font-size:.45em;color:var(--soft)">vs</span> 375 €/kW</div>
+        <p>Valor que reconoce la CNMC para conectar nueva demanda frente al coste real que estiman las empresas.<sup class="r"><a href="#f6">6</a></sup></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="importa" style="padding-top:40px">
+  <div class="wrap">
+    <div class="kick reveal">Por qué importa</div>
+    <h2 class="reveal">La red llega antes que la electrificación, o no llega</h2>
+    <div class="why">
+      <div class="wc reveal"><svg viewBox="0 0 40 40" fill="none" stroke="#ff8a3d" stroke-width="2"><path d="M20 4v32M10 10h20M8 18h24M12 10l-6 26M28 10l6 26"/></svg><h3>Sin red no hay enchufe</h3><p>Coches eléctricos, bombas de calor, industria y centros de datos necesitan potencia nueva. Con la mayoría de nudos saturados, cada inversión que no se hace es una conexión que espera.<sup class="r"><a href="#f8">8</a></sup></p></div>
+      <div class="wc reveal" style="--d:100ms"><svg viewBox="0 0 40 40" fill="none" stroke="#ff8a3d" stroke-width="2"><circle cx="20" cy="22" r="13"/><path d="M20 22V14M16 4h8"/></svg><h3>El capital no espera</h3><p>Portugal indexa su tasa al bono y Europa ofrece rangos más altos según el sector. Un inversor que duda entre países elige el que paga mejor y cambia menos.<sup class="r"><a href="#f5">5</a></sup></p></div>
+      <div class="wc reveal" style="--d:200ms"><svg viewBox="0 0 40 40" fill="none" stroke="#ff8a3d" stroke-width="2"><path d="M22 4L8 23h11l-2 13 15-20H21z"/></svg><h3>Coste contenido, beneficio grande</h3><p>Según la CNMC, la subida de la tasa supone alrededor del 1 % de los costes del sistema. Una red que no llega a tiempo supone renovables desperdiciadas, industria que no se instala y electrificación que se retrasa.<sup class="r"><a href="#f6">6</a></sup></p></div>
+    </div>
+    <p class="scrub" id="scrub">Una red que llega tarde sale más cara que una tasa que llega a tiempo.</p>
+    <a class="cta reveal" href="https://www.lafrecuenciaenergia.es" target="_blank" rel="noopener">Más especiales en La Frecuencia →</a>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <h2>Fuentes</h2>
+  <p>Análisis de La Frecuencia. Esquemas, recorrido 3D y juego simplificados e ilustrativos.</p>
+  <ol>
+    <li id="f1"><a href="https://www.cnmc.es/prensa/circulares-retribucion-electrica-20251222" target="_blank" rel="noopener">CNMC – Circulares de retribución de las redes eléctricas y tasa del 6,58 % (22/12/2025)</a></li>
+    <li id="f2"><a href="https://www.araozyrueda.com/trf-2026-2031-cnmc-redes-electricas/" target="_blank" rel="noopener">Araoz & Rueda – TRF 2026-2031: de la propuesta inicial al valor definitivo</a></li>
+    <li id="f3"><a href="https://www.xataka.com/energia/no-vas-a-notar-nada-tu-proxima-factura-decision-cnmc-marcara-precio-proximos-cinco-anos" target="_blank" rel="noopener">Xataka – Lo que pedían las eléctricas y el rango europeo según aelec (03/11/2025)</a></li>
+    <li id="f4"><a href="https://forbes.es/economia/849992/electricas-alertan-que-cnmc-pone-a-espana-a-la-cola-de-europa-en-seguridad-juridica-y-atractivo-regulatorio/" target="_blank" rel="noopener">Forbes – Las eléctricas alertan de la posición de España en Europa (23/12/2025)</a></li>
+    <li id="f5"><a href="https://edp.com/en/about-us/erse-announces-electricity-tariffs-2026-and-parameters-2026-2029" target="_blank" rel="noopener">EDP – ERSE fija una tasa del 6,70 % para 2026-2029, indexada al bono</a></li>
+    <li id="f6"><a href="https://www.xataka.com/energia/no-vas-a-notar-nada-tu-proxima-factura-decision-cnmc-marcara-precio-proximos-cinco-anos" target="_blank" rel="noopener">Xataka – Impacto en costes del sistema y valor de conexión de 257 €/kW</a></li>
+    <li id="f7"><a href="https://www.miteco.gob.es/en/prensa/ultimas-noticias/2026/julio/el-gobierno-acelera-la-electrificacion-de-la-economia-incrementa.html" target="_blank" rel="noopener">MITECO – Real Decreto de planes de inversión en redes (07/2026)</a></li>
+    <li id="f8"><a href="https://www.energias-renovables.com/panorama/el-83-de-los-nudos-de-la-20260724/" target="_blank" rel="noopener">Energías Renovables – El 83 % de los nudos de distribución, saturados (24/07/2026)</a></li>
+  </ol>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+document.documentElement.classList.add('js');
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches,DPR=Math.min(devicePixelRatio||1,2);
+function fmt(n,d){d=d||0;var s=Math.abs(n).toFixed(d).split('.');s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return (n<0?'−':'')+s.join(',');}
+function onVis(el,fn,th){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fn(el);io.unobserve(el);}});},{threshold:th||.25});io.observe(el);}
+function watch(el,cb){new IntersectionObserver(function(es){es.forEach(function(e){cb(e.isIntersecting);});},{threshold:.01}).observe(el);}
+document.querySelectorAll('.reveal').forEach(function(el){if(el.getBoundingClientRect().top>innerHeight*.9)el.classList.add('pre');onVis(el,function(){el.classList.remove('pre');},.12);});
+document.querySelectorAll('[data-count]').forEach(function(el){var to=+el.dataset.count,d=+el.dataset.dec||0,pre=el.dataset.pre||'',suf=el.dataset.suf||'';el.textContent=pre+fmt(0,d)+suf;onVis(el,function(){if(RM){el.textContent=pre+fmt(to,d)+suf;return;}var t0=performance.now();(function f(t){var q=Math.min(1,(t-t0)/1600),e=1-Math.pow(1-q,3);el.textContent=pre+fmt(to*e,d)+suf;if(q<1)requestAnimationFrame(f);})(t0);},.5);});
+var chA=document.querySelectorAll('.chap a');chA.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){chA.forEach(function(x){x.classList.remove('on');});a.classList.add('on');}});},{rootMargin:'-45% 0px -50% 0px'}).observe(t);});
+var prog=document.getElementById('prog');addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true});
+
+/* ===== HERO: red en perspectiva con flujo ===== */
+(function(){var cv=document.getElementById('heroCv'),c=cv.getContext('2d'),W,H,vis=true;
+  function rs(){W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;c.setTransform(DPR,0,0,DPR,0,0);}rs();addEventListener('resize',rs);watch(cv,function(v){vis=v;});
+  function P(x,z){var hz=H*.52,f=420/(z+420);return [W*.62+(x)*f,hz+(H*.9-hz)*(1-f)*1.2+ (220*f)];}
+  var towers=[];for(var i=0;i<9;i++)towers.push(i*260);
+  var parts=[];for(var k=0;k<70;k++)parts.push({u:Math.random(),l:k%3,s:.0009+Math.random()*.0012});
+  function proj(x,y,z){var f=520/(z+520);return [W*.6+x*f,H*.5+y*f+ (1-f)*H*.08];}
+  function draw(t){requestAnimationFrame(draw);if(!vis)return;c.clearRect(0,0,W,H);
+    var off=(t*.03)%260;
+    /* suelo */
+    c.strokeStyle='rgba(89,200,255,.07)';c.lineWidth=1;
+    for(var gx=-1600;gx<=1600;gx+=120){var a=proj(gx,260,0),b=proj(gx,260,2400);c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke();}
+    for(var gz=0;gz<2400;gz+=120){var zz=gz-(off*120/260)%120;if(zz<0)continue;var a2=proj(-1600,260,zz),b2=proj(1600,260,zz);c.beginPath();c.moveTo(a2[0],a2[1]);c.lineTo(b2[0],b2[1]);c.stroke();}
+    /* torres */
+    var wires=[[],[],[]];
+    for(var j=0;j<towers.length;j++){var z=towers[j]-off+40;if(z<-200)continue;var col=z<700?'rgba(255,138,61,':'rgba(89,200,255,';var al=Math.max(0,Math.min(.85,1-(z/2200)));
+      var base=proj(-120,260,z),top=proj(-120,-160,z),la=proj(-260,-120,z),ra=proj(20,-120,z),bl=proj(-180,260,z),br=proj(-60,260,z);
+      c.strokeStyle=col+al+')';c.lineWidth=1.2;c.beginPath();c.moveTo(bl[0],bl[1]);c.lineTo(top[0],top[1]);c.lineTo(br[0],br[1]);c.moveTo(la[0],la[1]);c.lineTo(ra[0],ra[1]);
+      var mid1=proj(-150,60,z),mid2=proj(-90,60,z);c.moveTo(mid1[0],mid1[1]);c.lineTo(mid2[0],mid2[1]);c.moveTo(bl[0],bl[1]);c.lineTo(mid2[0],mid2[1]);c.moveTo(br[0],br[1]);c.lineTo(mid1[0],mid1[1]);c.stroke();
+      [-250,-120,10].forEach(function(x,i){wires[i].push(proj(x,-118,z));});}
+    wires.forEach(function(w,i){c.strokeStyle='rgba(255,192,138,.28)';c.beginPath();w.forEach(function(p,k){if(!k)c.moveTo(p[0],p[1]);else{var q=w[k-1];c.quadraticCurveTo((p[0]+q[0])/2,(p[1]+q[1])/2+14,p[0],p[1]);}});c.stroke();});
+    /* partículas */
+    parts.forEach(function(p){p.u=(p.u+p.s*(RM?0:1))%1;var z=2200*(1-p.u),q=proj([-250,-120,10][p.l],-112,z),al=Math.min(1,p.u*2);var col=p.u>.65?'255,138,61':'89,200,255';c.fillStyle='rgba('+col+','+al+')';c.shadowColor='rgba('+col+',1)';c.shadowBlur=10;c.beginPath();c.arc(q[0],q[1],2.2*(520/(z+520))+.6,0,7);c.fill();c.shadowBlur=0;});
+  }requestAnimationFrame(draw);})();
+
+/* ===== decisión ===== */
+onVis(document.getElementById('steps3'),function(el){el.querySelectorAll('.bar').forEach(function(b){b.style.height=b.dataset.h+'%';});},.4);
+
+/* ===== fórmula ===== */
+(function(){var D=[
+ '<b>Lo invertido (la base de activos).</b> La CNMC reconoce el valor de las instalaciones que cada distribuidora tiene en servicio y auditadas: líneas, centros de transformación, contadores. Solo cuenta lo construido. Sobre esa base se aplica la tasa.',
+ '<b>La tasa de retribución financiera: 6,58 %.</b> Refleja el coste de financiar la red: lo que piden bancos y accionistas por prestar su dinero a décadas vista. Si es baja frente a otros países, ese capital se va a otras redes. Para 2026-2031 la CNMC actualizó la tasa libre de riesgo y el coste de la deuda a un entorno de tipos más altos.',
+ '<b>Operar y mantener.</b> Brigadas, revisiones, reparaciones tras temporales, ciberseguridad. Las empresas denuncian que el nuevo marco recorta un 37 % estos costes reconocidos.',
+ '<b>Incentivos.</b> Premian o penalizan la calidad del suministro, las pérdidas de energía y, como novedad, la conexión de nueva demanda para electrificar. Solo las inversiones dentro de los planes aprobados entran en el mecanismo de sostenibilidad.'];
+  var fd=document.getElementById('fdet'),bs=document.querySelectorAll('#fx .pc');function sh(i){bs.forEach(function(b,k){b.classList.toggle('on',k===i);});fd.classList.remove('fdet-anim');void fd.offsetWidth;fd.classList.add('fdet-anim');fd.innerHTML=D[i]+(i===2?'<sup class="r"><a href="#f4">4</a></sup>':'<sup class="r"><a href="#f1">1</a></sup>');}
+  bs.forEach(function(b,i){b.addEventListener('click',function(){sh(i);});b.addEventListener('mouseenter',function(){sh(i);});});sh(0);
+  var ri=document.getElementById('rInv'),rt=document.getElementById('rTasa'),coins=document.getElementById('coins');for(var k=0;k<50;k++)coins.appendChild(document.createElement('i'));
+  function up(){var I=+ri.value,T=+rt.value,R=I*T/100,R0=I*.0558;document.getElementById('oInv').textContent=fmt(I)+' M€';document.getElementById('oTasa').textContent=fmt(T,2)+' %';document.getElementById('oRet').textContent=fmt(R,1)+' M€';
+    var d=R-I*.0658;document.getElementById('oCmp').innerHTML=Math.abs(d)<.05?'Es lo que reconoce la CNMC para 2026-2031.':(d>0?'<b style="color:var(--gold)">+'+fmt(d,1)+' M€</b> al año más que con el 6,58 %.':'<b style="color:var(--red)">'+fmt(d,1)+' M€</b> al año menos que con el 6,58 %.');
+    var n=Math.round(T/9*50);coins.querySelectorAll('i').forEach(function(c,i){c.classList.toggle('on',i<n);});}
+  ri.addEventListener('input',up);rt.addEventListener('input',up);document.querySelectorAll('.marks button').forEach(function(b){b.onclick=function(){rt.value=b.dataset.v;up();};});up();})();
+
+/* ===== viaje 3D wireframe ===== */
+(function(){var st=document.querySelector('.vj-st'),wrap=document.getElementById('viaje'),cv=document.getElementById('vjCv'),card=document.getElementById('vjCard'),dots=document.getElementById('vjDots');
+  var ST=[{x:0,c:'#59c8ff',n:'El capital',t:'Bancos, fondos y accionistas ponen el dinero. Lo prestan a décadas vista y comparan lo que pagan las redes de cada país.'},
+    {x:60,c:'#59c8ff',n:'La subestación',t:'Transforma la alta tensión del transporte en media tensión para repartirla. Cuesta millones y funciona durante décadas.'},
+    {x:120,c:'#ffc08a',n:'Las líneas',t:'Kilómetros de media y baja tensión por calles y pueblos. Es la red de distribución, la que se retribuye con la tasa del 6,58 %.'},
+    {x:180,c:'#ff8a3d',n:'Tu barrio',t:'Centros de transformación y contadores. Aquí se decide si un edificio puede poner cargadores o bombas de calor.'},
+    {x:240,c:'#ff4a5a',n:'Lo que viene',t:'Centros de datos, industria y coches eléctricos piden potencia nueva. Con el 83 % de los nudos saturados, sin inversión no hay conexión.'}];
+  ST.forEach(function(){dots.appendChild(document.createElement('i'));});
+  if(!window.THREE){card.innerHTML='<h3 style="--c:#ff8a3d">'+ST[0].n+'</h3><p>'+ST[0].t+'</p>';return;}
+  var R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(DPR);var S=new THREE.Scene();S.fog=new THREE.Fog(0x06080c,40,150);var C=new THREE.PerspectiveCamera(50,1,.1,400);
+  function L(pts,col,op){var g=new THREE.BufferGeometry().setFromPoints(pts.map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}));return new THREE.Line(g,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op||.9}));}
+  function LS(pairs,col,op){var a=[];pairs.forEach(function(p){a.push(new THREE.Vector3(p[0],p[1],p[2]),new THREE.Vector3(p[3],p[4],p[5]));});return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(a),new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op||.85}));}
+  function box(x,y,z,w,h,d,col,op){var g=new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,d));var m=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op||.85}));m.position.set(x,y+h/2,z);return m;}
+  var G=new THREE.Group();S.add(G);
+  var grid=new THREE.GridHelper(600,120,0x15324a,0x0e1a26);grid.position.set(150,0,0);G.add(grid);
+  /* 1 capital: pilas de monedas (cilindros) */
+  for(var i=0;i<5;i++){var h=2+i*1.6;var cy=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(2.2,2.2,h,20,Math.max(1,Math.round(h/0.8)))),new THREE.LineBasicMaterial({color:0x59c8ff,transparent:true,opacity:.8}));cy.position.set(-10+i*5,h/2,-4+(i%2)*3);G.add(cy);}
+  G.add(box(-2,0,6,14,7,8,0x59c8ff,.55));
+  /* 2 subestación */
+  G.add(box(55,0,0,22,1,16,0x59c8ff,.6));for(var a=0;a<3;a++){G.add(box(50+a*5,1,-3,2.4,6,2.4,0x59c8ff));G.add(box(50+a*5,1,3,2.4,6,2.4,0x59c8ff));}
+  G.add(LS([[46,9,-6,66,9,-6],[46,9,6,66,9,6],[46,0,-6,46,9,-6],[66,0,-6,66,9,-6],[46,0,6,46,9,6],[66,0,6,66,9,6]],0x59c8ff,.7));
+  /* 3 torres y líneas */
+  var towerX=[80,100,120,140,160];function tower(x,col){var hgt=16;G.add(LS([[x-3,0,-2,x,hgt,0],[x+3,0,-2,x,hgt,0],[x-3,0,2,x,hgt,0],[x+3,0,2,x,hgt,0],[x-6,hgt-3,0,x+6,hgt-3,0],[x-4,hgt-7,0,x+4,hgt-7,0],[x-3,0,-2,x+2,hgt-7,0],[x+3,0,-2,x-2,hgt-7,0]],col,.8));}
+  towerX.forEach(function(x,i){tower(x,i<3?0xffc08a:0xff8a3d);});
+  [-6,6,-4,4].forEach(function(o,k){var hgt=k<2?13:9;var pts=[];for(var x=62;x<=165;x+=1){var seg=(x-62)%20/20;pts.push([x,hgt-Math.sin(seg*Math.PI)*1.6*(x>78?1:0),o*.8]);}G.add(L(pts,0xffc08a,.35));});
+  /* 4 barrio */
+  for(var hx=0;hx<7;hx++){var x0=172+hx*7,z0=(hx%2?-7:7);G.add(box(x0,0,z0,4,3.2,4,0xff8a3d,.75));G.add(LS([[x0-2,3.2,z0-2,x0,5.2,z0-2],[x0+2,3.2,z0-2,x0,5.2,z0-2],[x0-2,3.2,z0+2,x0,5.2,z0+2],[x0+2,3.2,z0+2,x0,5.2,z0+2],[x0,5.2,z0-2,x0,5.2,z0+2]],0xff8a3d,.75));}
+  G.add(L([[165,7,0],[222,4,0]],0xff8a3d,.5));
+  /* 5 lo que viene: centro de datos, cargadores, fábrica */
+  for(var r=0;r<4;r++)G.add(box(236+r*4.5,0,-8,3.4,8,6,0xff4a5a,.8));
+  G.add(box(244,0,-8,22,9,10,0xff4a5a,.35));
+  for(var ch=0;ch<4;ch++){G.add(box(232+ch*4,0,8,1.2,3.4,1,0xff4a5a,.9));}
+  G.add(box(256,0,6,10,6,8,0xff4a5a,.6));G.add(box(258,6,8,1.6,6,1.6,0xff4a5a,.6));
+  /* partículas viajando */
+  var NP=140,pg=new THREE.BufferGeometry(),pos=new Float32Array(NP*3),col=new Float32Array(NP*3),ph=[];for(var p=0;p<NP;p++){ph.push(Math.random());}
+  pg.setAttribute('position',new THREE.BufferAttribute(pos,3));pg.setAttribute('color',new THREE.BufferAttribute(col,3));
+  var tex=(function(){var c=document.createElement('canvas');c.width=c.height=64;var x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.3,'rgba(255,255,255,.6)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c);})();
+  var pts=new THREE.Points(pg,new THREE.PointsMaterial({size:1.6,map:tex,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));G.add(pts);
+  var cA=new THREE.Color(0x59c8ff),cB=new THREE.Color(0xff8a3d),cC=new THREE.Color(0xff4a5a);
+  function size(){var w=st.clientWidth,h=st.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix();}size();addEventListener('resize',size);
+  var lbls=ST.map(function(s){var d=document.createElement('div');d.className='vj-lbl';d.style.color=s.c;d.style.textShadow='0 0 18px '+s.c;d.textContent=s.n;st.appendChild(d);return d;});
+  var vis=false,prog=0,cur=-1,camX=0;watch(wrap,function(v){vis=v;});
+  function upd(){var r=wrap.getBoundingClientRect(),tot=r.height-innerHeight;prog=Math.min(1,Math.max(0,-r.top/tot));var f5=Math.min(4.999,prog*5),i5=Math.floor(f5),q5=(f5-i5-.6)/.4;var i=Math.min(ST.length-1,i5+(q5>.5?1:0));if(i!==cur){cur=i;var s=ST[i];card.classList.remove('vj-anim');void card.offsetWidth;card.classList.add('vj-anim');card.style.setProperty('--c',s.c);card.innerHTML='<small>Tramo '+(i+1)+' de '+ST.length+'</small><h3>'+s.n+'</h3><p>'+s.t+'</p>';dots.querySelectorAll('i').forEach(function(d,k){d.classList.toggle('on',k===i);});}}
+  addEventListener('scroll',upd,{passive:true});upd();
+  (function loop(t){requestAnimationFrame(loop);if(!vis)return;var ff=Math.min(4.999,prog*5),ii=Math.floor(ff),fr=Math.min(1,Math.max(0,(ff-ii-.6)/.4));fr=fr*fr*(3-2*fr);var target=Math.min(4,ii+fr)*60-6;camX+=(target-camX)*.08;var mob=innerWidth<700;
+    C.position.set(camX-(mob?6:14),mob?24:20,mob?46:36);C.lookAt(camX+12,mob?11:9,0);document.querySelector('.vj-head').style.opacity=Math.max(0,1-prog*14);
+    for(var p=0;p<NP;p++){var u=(ph[p]+t*.00005)%1,x=-10+u*270,y,z=((p%5)-2)*1.4;
+      if(x<55)y=6+Math.sin(u*40+p)*1.5;else if(x<165)y=12-((x-62)%20/20<1?Math.sin(((x-62)%20/20)*Math.PI)*1.6:0)+((p%2)?-3:0);else y=5+Math.sin(u*30+p);
+      pos[p*3]=x;pos[p*3+1]=y;pos[p*3+2]=z;var cc=x<110?cA:(x<220?cB:cC);col[p*3]=cc.r;col[p*3+1]=cc.g;col[p*3+2]=cc.b;}
+    pg.attributes.position.needsUpdate=true;pg.attributes.color.needsUpdate=true;
+    var w=st.clientWidth,h=st.clientHeight;ST.forEach(function(s,i){var v=new THREE.Vector3(s.x+[0,0,10,22,10][i],[16,14,22,10,15][i],0).project(C);var ok=v.z<1&&v.x>-1.1&&v.x<1.1;lbls[i].style.left=((v.x+1)/2*w)+'px';lbls[i].style.top=((1-v.y)/2*h)+'px';lbls[i].style.opacity=ok?(i===cur?1:.35):0;});
+    R.render(S,C);})(0);
+})();
+
+/* ===== 3D chart ===== */
+(function(){var DATA=[{n:'España 2020-2025',e:'periodo anterior',v:5.58,c:0x5a6b7c,h:'#8a9bab'},{n:'España 2026-2031',e:'CNMC',v:6.58,c:0xff8a3d,h:'#ff8a3d'},{n:'Portugal 2026-2029',e:'ERSE, indexada',v:6.70,c:0x59c8ff,h:'#59c8ff'},{n:'Europa, mínimo',e:'según aelec',v:6.8,c:0xffd27a,h:'#ffd27a'},{n:'Europa, máximo',e:'según aelec',v:7.5,c:0xffd27a,h:'#ffd27a'}];
+  var side=document.getElementById('c3side');DATA.forEach(function(d,i){var b=document.createElement('div');b.className='cb';b.style.setProperty('--c',d.h);b.dataset.i=i;b.innerHTML='<span>'+d.n+'</span><b>'+fmt(d.v,2)+' %</b><em>'+d.e+'</em>';side.appendChild(b);});
+  var stage=document.getElementById('c3stage'),cv=document.getElementById('c3cv'),tip=document.getElementById('c3tip');if(!window.THREE)return;
+  var R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(DPR);var S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,100);
+  S.add(new THREE.AmbientLight(0x8090a0,.7));var dl=new THREE.DirectionalLight(0xffffff,.8);dl.position.set(4,8,6);S.add(dl);var G=new THREE.Group();S.add(G);G.add(new THREE.GridHelper(14,28,0x1d4a6e,0x111c27));
+  /* plano de referencia 6,58 */
+  var bars=[],lbls=[],K=.9;DATA.forEach(function(d,i){var h=(d.v-4)*K*1.6,geo=new THREE.BoxGeometry(1.3,1,1.3);geo.translate(0,.5,0);var m=new THREE.MeshStandardMaterial({color:d.c,emissive:d.c,emissiveIntensity:.35,transparent:true,opacity:.9,roughness:.35});var mesh=new THREE.Mesh(geo,m);mesh.position.set(-5+i*2.5,0,0);mesh.scale.y=.001;mesh.userData={i:i,h:h};G.add(mesh);bars.push(mesh);mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:d.c})));var l=document.createElement('div');l.className='lbl3';l.innerHTML=d.n.replace(' ','<br>');stage.appendChild(l);lbls.push(l);});
+  var ref=new THREE.Mesh(new THREE.PlaneGeometry(13,3.4),new THREE.MeshBasicMaterial({color:0xff8a3d,transparent:true,opacity:.06,side:THREE.DoubleSide}));ref.rotation.x=-Math.PI/2;ref.position.y=(6.58-4)*K*1.6;G.add(ref);G.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(13,3.4)),new THREE.LineBasicMaterial({color:0xff8a3d,transparent:true,opacity:.35})).rotateX(-Math.PI/2).translateZ(ref.position.y));
+  var rotY=-.35,tgt=-.35,drag=false,px0=0,grow=0,selI=-1,ray=new THREE.Raycaster(),mv=new THREE.Vector2(-9,-9);
+  function size(){var w=stage.clientWidth,h=stage.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.position.set(0,6.5,w<600?20:15);C.lookAt(0,2.2,0);C.updateProjectionMatrix();}size();addEventListener('resize',size);
+  stage.addEventListener('pointerdown',function(e){drag=true;px0=e.clientX;stage.setPointerCapture(e.pointerId);});stage.addEventListener('pointerup',function(){drag=false;});
+  stage.addEventListener('pointermove',function(e){var r=stage.getBoundingClientRect();mv.x=(e.clientX-r.left)/r.width*2-1;mv.y=-(e.clientY-r.top)/r.height*2+1;if(drag){tgt+=(e.clientX-px0)*.008;px0=e.clientX;}});stage.addEventListener('pointerleave',function(){mv.set(-9,-9);});
+  side.querySelectorAll('.cb').forEach(function(b){b.addEventListener('mouseenter',function(){selI=+b.dataset.i;});b.addEventListener('click',function(){selI=+b.dataset.i;});b.addEventListener('mouseleave',function(){selI=-1;});});
+  var vis=false;watch(stage,function(v){vis=v;});onVis(stage,function(){grow=.0001;},.3);
+  (function loop(){requestAnimationFrame(loop);if(!vis)return;if(grow>0)grow=Math.min(1,grow+.01);if(!drag&&!RM)tgt+=.0012;rotY+=(tgt-rotY)*.08;G.rotation.y=Math.sin(rotY)*.55;
+    ray.setFromCamera(mv,C);var hit=ray.intersectObjects(bars),hi=hit.length?hit[0].object.userData.i:selI;
+    bars.forEach(function(b,i){var e=Math.min(1,Math.max(0,grow*1.8-i*.14));e=1-Math.pow(1-e,3);b.scale.y=Math.max(.001,b.userData.h*e);var on=i===hi;b.material.emissiveIntensity+=((on?.95:.35)-b.material.emissiveIntensity)*.15;b.material.opacity=hi<0||on?.9:.35;});
+    side.querySelectorAll('.cb').forEach(function(b,i){b.classList.toggle('on',i===hi);});var r=stage.getBoundingClientRect();
+    bars.forEach(function(b,i){var p=new THREE.Vector3();b.getWorldPosition(p);p.y=-.3;p.project(C);lbls[i].style.left=((p.x+1)/2*r.width)+'px';lbls[i].style.top=((1-p.y)/2*r.height)+'px';});
+    if(hi>=0){var p2=new THREE.Vector3();bars[hi].getWorldPosition(p2);p2.y=bars[hi].scale.y+.2;p2.project(C);tip.style.left=((p2.x+1)/2*r.width)+'px';tip.style.top=((1-p2.y)/2*r.height)+'px';tip.style.opacity=1;tip.style.borderColor=DATA[hi].h;tip.textContent=DATA[hi].n+' · '+fmt(DATA[hi].v,2)+' %';}else tip.style.opacity=0;
+    R.render(S,C);})();})();
+
+/* ===== dominó ===== */
+(function(){var D=[
+  {v:'Tasa baja',c:'#ffd27a',t:'Ficha 1',h:'Una tasa por debajo de los vecinos',p:'España fija el 6,58 %. Portugal, el 6,70 % indexado. El sector cita un rango europeo del 6,8 % al 7,5 %.'},
+  {v:'Capital',c:'#ffc08a',t:'Ficha 2',h:'El capital mira a otro sitio',p:'Los fondos que financian redes comparan países. Si aquí rinde menos y el marco cambia, invierten en otra red.'},
+  {v:'Menos red',c:'#ff8a3d',t:'Ficha 3',h:'Se construye menos red de la que hace falta',p:'Las empresas avisan de que el valor reconocido para conectar demanda (257 €/kW) no cubre el coste real (375 €/kW).'},
+  {v:'Saturación',c:'#ff4a5a',t:'Ficha 4',h:'Los nudos se llenan',p:'El 83 % de los nudos de distribución ya no admite más demanda.'},
+  {v:'Sin acceso',c:'#ff4a5a',t:'Ficha 5',h:'Las solicitudes se quedan fuera',p:'Según aelec, en 2025 solo se concedió el 12 % de las solicitudes de acceso a la red.'},
+  {v:'Marco estable',c:'#3ee0b0',t:'La ficha que frena la caída',h:'Retribución suficiente y previsible',p:'Una tasa competitiva y un marco que no cambie cada pocos años: lo que pide quien invierte para décadas.'}];
+  var row=document.getElementById('drow'),cap=document.getElementById('dcap'),pr=document.getElementById('dprog'),wrap=document.getElementById('cadena'),doms=[],last=-1;
+  D.forEach(function(d,i){var el=document.createElement('div');el.className='dom';el.style.setProperty('--c',d.c);el.style.left=(4+i*15.5)+'%';el.innerHTML='<div class="face"><i></i><b>'+d.v+'</b><i></i></div>';row.appendChild(el);doms.push(el);pr.appendChild(document.createElement('i'));});
+  function sh(i){if(i===last)return;last=i;var d=D[i];doms.forEach(function(el,k){el.classList.toggle('fall',k<i&&k<D.length-1);});cap.classList.remove('dcap-anim');void cap.offsetWidth;cap.classList.add('dcap-anim');cap.innerHTML='<span class="kick" style="margin:0;color:'+d.c+'">'+d.t+'</span><h3>'+d.h+'</h3><p>'+d.p+'</p>';pr.querySelectorAll('i').forEach(function(p,k){p.classList.toggle('on',k<=i);});}
+  function up(){var r=wrap.getBoundingClientRect(),tot=r.height-innerHeight,p=Math.min(.999,Math.max(0,-r.top/tot));sh(Math.floor(p*D.length));}
+  addEventListener('scroll',up,{passive:true});up();})();
+
+/* ===== calendario ===== */
+(function(){var cal=document.getElementById('cal'),cells=[];for(var y=0;y<40;y++){var i=document.createElement('i');i.title=(2026+y)+'';cal.appendChild(i);cells.push(i);}
+  onVis(cal,function(){var n=document.getElementById('calN'),k=0;(function step(){if(k<40){cells[k].classList.add(k<6?'a':'b');k++;n.textContent=k;setTimeout(step,RM?0:k<6?160:45);}})();},.35);})();
+
+/* ===== juego ===== */
+(function(){var cv=document.getElementById('gCv'),c=cv.getContext('2d'),W,H,tr=document.getElementById('gT'),stab=1,vis=false;
+  function rs(){W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;c.setTransform(DPR,0,0,DPR,0,0);}rs();addEventListener('resize',rs);watch(cv,function(v){vis=v;});
+  document.querySelectorAll('#gS button').forEach(function(b){b.onclick=function(){stab=+b.dataset.v;document.querySelectorAll('#gS button').forEach(function(x){x.classList.toggle('on',x===b);});calc();};});
+  var share=.5;
+  function calc(){var T=+tr.value;document.getElementById('gTo').textContent=fmt(T,2)+' %';
+    var bonus=[-.45,0,.25][stab];var comp=6.9;var x=(T-comp+bonus)*2.2;share=1/(1+Math.exp(-x));
+    var grid=Math.round(Math.min(100,share*118));var bill=(T-5.58)*1.0; /* ≈1 % por punto, según CNMC 0,9-1,1 % */
+    document.getElementById('gm1').textContent=Math.round(share*100)+' %';document.getElementById('gb1').style.width=(share*100)+'%';
+    document.getElementById('gm2').textContent=grid+' %';document.getElementById('gb2').style.width=grid+'%';
+    document.getElementById('gm3').textContent=(bill>=0?'+':'')+fmt(bill,1)+' %';document.getElementById('gb3').style.width=Math.max(0,Math.min(100,bill/3*100))+'%';
+    var msg;if(share<.3)msg='<b>El capital se va.</b> Con esta tasa y este marco, la mayor parte del dinero invierte en redes de otros países. La factura apenas baja, pero la red no crece y las conexiones esperan.';
+    else if(share<.6)msg='<b>A medio camino.</b> Llega parte del capital, pero no el suficiente para desatascar los nudos saturados. Un marco más estable atrae más sin subir la tasa.';
+    else if(bill<2.2)msg='<b>Equilibrio.</b> La red atrae el capital que necesita con un impacto contenido en los costes del sistema: alrededor de un 1 % por punto de tasa, según la CNMC.';
+    else msg='<b>Mucho capital, más coste.</b> La red crece rápido, pero el impacto en peajes ya pesa. La clave es competir con los vecinos, no superarlos de largo.';
+    document.getElementById('gMsg').innerHTML=msg;}
+  tr.addEventListener('input',calc);calc();
+  var P=[];for(var i=0;i<90;i++)P.push({u:Math.random(),y:Math.random(),go:Math.random(),sp:.002+Math.random()*.003});
+  function draw(t){requestAnimationFrame(draw);if(!vis)return;c.clearRect(0,0,W,H);
+    var sx=W*.08,ex=W*.8;
+    /* destinos */
+    function node(x,y,r,col,txt,sub){c.strokeStyle=col;c.lineWidth=1.5;c.shadowColor=col;c.shadowBlur=14;c.beginPath();c.arc(x,y,r,0,7);c.stroke();c.shadowBlur=0;c.fillStyle=col;c.font='700 '+(W<500?11:13)+'px Archivo, sans-serif';c.textAlign='center';c.fillText(txt,x,y+r+18);c.fillStyle='#6b7783';c.font='500 11px IBM Plex Mono, monospace';c.fillText(sub,x,y+r+33);}
+    var es={x:ex,y:H*.42},ot={x:ex,y:H*.82},src={x:sx+20,y:H*.5};
+    node(src.x,src.y,22,'#59c8ff','Capital','busca destino');
+    node(es.x,es.y,26+share*14,'#ff8a3d','Redes en España',fmt(+tr.value,2)+' %');
+    node(ot.x,ot.y,26+(1-share)*14,'#6b7783','Otros países','6,7-7,5 %');
+    P.forEach(function(p){p.u+=p.sp*(RM?0:1);if(p.u>1){p.u=0;p.go=Math.random();p.y=Math.random();}var toES=p.go<share,tg=toES?es:ot,u=p.u,cx=(src.x+tg.x)/2,cy=src.y+(p.y-.5)*H*.5;
+      var x=(1-u)*(1-u)*src.x+2*(1-u)*u*cx+u*u*tg.x,y=(1-u)*(1-u)*src.y+2*(1-u)*u*cy+u*u*tg.y,col=toES?'255,138,61':'107,119,131';
+      c.fillStyle='rgba('+col+','+Math.min(1,u*3)+')';c.shadowColor='rgba('+col+',1)';c.shadowBlur=toES?8:0;c.beginPath();c.arc(x,y,2.6,0,7);c.fill();c.shadowBlur=0;});
+  }requestAnimationFrame(draw);})();
+
+/* ===== factura ===== */
+onVis(document.getElementById('pie'),function(){document.getElementById('pieA').setAttribute('stroke-dasharray',(302*.011).toFixed(1)+' 302')},.5);
+
+/* ===== scrub ===== */
+(function(){var el=document.getElementById('scrub'),K=['tarde','cara','tiempo.'];el.innerHTML=el.textContent.split(' ').map(function(w){return '<span'+(K.indexOf(w)>=0?' class="k"':'')+'>'+w+'</span> ';}).join('');var sp=el.querySelectorAll('span');
+  function up(){var r=el.getBoundingClientRect(),p=Math.min(1,Math.max(0,(innerHeight*.85-r.top)/(innerHeight*.6)));var n=Math.round(p*sp.length);sp.forEach(function(s,i){s.classList.toggle('on',i<n);});}addEventListener('scroll',up,{passive:true});up();})();
+})();
+</script>
+</body>
+</html>
