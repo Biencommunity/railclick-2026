@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ruta de los castillos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;800;900&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500;700&display=swap">
+<style>
+:root{color-scheme:light;--navy:#28285a;--navy2:#1b1b40;--navy3:#12122c;--gold:#e8c731;--gold2:#f5dd6b;--rose:#c36d69;--blue:#5897c5;--olive:#9aa650;--ink:#28285a;--text:#4d4d65;--soft:#7c7c96;--paper:#f7f3ea;--paper2:#efe8d8;--line:#e2dccd;--white:#ffffff;
+--fs:"Roboto Slab",Georgia,serif;--f:"Roboto",system-ui,sans-serif;--fm:"Roboto Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#f7f3ea}}
+:root[data-theme="dark"]{--paper:#f7f3ea}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip;background:var(--paper)}
+body{background:var(--paper);color:var(--text);font-family:var(--f);font-size:18px;line-height:1.65;overflow-x:clip}
+h1,h2,h3{font-family:var(--fs);color:var(--ink);line-height:1.08;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:clamp(32px,4.6vw,56px);font-weight:800;margin-bottom:18px;max-width:18ch}
+a{color:var(--navy)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1140px;margin-inline:auto;padding-inline:20px}
+.kick{display:inline-flex;align-items:center;gap:10px;font:700 12.5px var(--f);letter-spacing:.16em;text-transform:uppercase;color:var(--rose);margin-bottom:14px}
+.kick::before{content:"";width:22px;height:2px;background:currentColor}
+.lede{font-size:19px;max-width:62ch}
+.sec{padding-block:110px;position:relative}
+.dark{background:var(--navy2);color:#c9c9de}
+.dark h2,.dark h3{color:#fff}
+.dark .kick{color:var(--gold)}
+.reveal{transition:transform .9s cubic-bezier(.2,.7,.2,1),opacity .9s;transition-delay:var(--d,0ms)}
+.js .reveal.pre{transform:translateY(26px);opacity:.001}
+
+/* barra */
+.bar{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1140px;margin-inline:auto;padding:10px 20px;display:flex;align-items:center;gap:16px}
+.mast{font:800 22px var(--fs);color:var(--navy);text-decoration:none;letter-spacing:.02em;line-height:1}
+.mast b{color:var(--gold);font-weight:900}
+.mast small{display:block;font:500 10px var(--f);letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-top:2px;text-align:right}
+.navl{margin-left:auto;display:flex;gap:2px}
+.navl a{font:500 13px var(--f);color:var(--text);text-decoration:none;padding:7px 11px;border-radius:999px;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.navl a.on{background:var(--navy);color:#fff}
+.prog{position:absolute;left:0;bottom:-1px;height:3px;width:0;background:var(--gold)}
+.ribbon{background:var(--navy3);color:#b9b9d4;font:500 12px var(--f);text-align:center;padding:6px 12px;letter-spacing:.04em}
+.ribbon b{color:var(--gold)}
+@media (max-width:900px){.navl{display:none}}
+
+/* hero */
+.hero{position:relative;min-height:clamp(680px,96vh,1000px);background:radial-gradient(ellipse at 70% 40%,#2d2d6a,var(--navy3) 70%);overflow:hidden;display:flex;align-items:center}
+.hero-map{position:absolute;right:-4%;top:50%;width:min(720px,70vw);transform:translateY(-50%)}
+.hero-map svg{width:100%;height:auto;display:block;overflow:visible}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,18,44,.96) 30%,rgba(18,18,44,.1) 72%);pointer-events:none}
+.hero-in{position:relative;z-index:2;width:100%;padding-block:110px 70px}
+.tagc{display:inline-flex;gap:8px;align-items:center;font:700 12px var(--f);letter-spacing:.16em;text-transform:uppercase;color:var(--navy3);background:var(--gold);padding:6px 12px;border-radius:3px}
+.hero h1{font-size:clamp(46px,7.4vw,104px);font-weight:900;color:#fff;margin-top:22px;max-width:11ch;line-height:.98}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero .lede{color:#c9c9de;margin-top:22px}
+.hstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:hidden;margin-top:36px;max-width:860px}
+.hs{background:rgba(18,18,44,.78);padding:16px 18px}
+.hs b{display:block;font:800 clamp(26px,3vw,38px) var(--fs);color:var(--gold)}
+.hs span{font-size:13px;color:#a9a9c8;line-height:1.35;display:block}
+@media (max-width:760px){.hstats{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-map{opacity:.35;right:-30%;width:120vw}}
+
+/* mapa base */
+.reg{fill:#f1ead9;stroke:#cfc5ab;stroke-width:1.2}
+.dark .reg,.hero .reg{fill:rgba(255,255,255,.04);stroke:rgba(232,199,49,.45);stroke-width:1.4}
+.munb{fill:none;stroke:#e2d9c3;stroke-width:.6}
+.hero .munb,.dark .munb{stroke:rgba(255,255,255,.07)}
+.mun{fill:rgba(232,199,49,.22);stroke:var(--gold);stroke-width:1}
+.route{fill:none;stroke:var(--gold);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:4000;stroke-dashoffset:4000}
+.route.in{transition:stroke-dashoffset 4s cubic-bezier(.4,0,.2,1);stroke-dashoffset:0}
+.cast{cursor:pointer}
+.cast .halo{fill:var(--gold);opacity:.25;transform-box:fill-box;transform-origin:center;animation:halo 2.4s ease-out infinite;animation-delay:var(--hd)}
+@keyframes halo{0%{transform:scale(.6);opacity:.5}100%{transform:scale(2.6);opacity:0}}
+.cast .num{font:700 13px var(--f);fill:var(--navy3);text-anchor:middle;pointer-events:none}
+.cast .lab{font:700 13px var(--f);fill:#fff;paint-order:stroke;stroke:var(--navy3);stroke-width:4px;pointer-events:none}
+.cast.sel .ic{filter:drop-shadow(0 0 10px var(--gold))}
+
+/* mapa interactivo */
+.mapx{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:start;margin-top:34px}
+@media (max-width:960px){.mapx{grid-template-columns:1fr}}
+.mapbox{position:relative;background:var(--white);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:0 20px 50px rgba(40,40,90,.08)}
+.mapbox svg{width:100%;height:auto;display:block}
+.mapbox .cast .lab{fill:var(--navy);stroke:#fff}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters button{font:600 13px var(--f);border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;cursor:pointer;color:var(--text)}
+.filters button.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.cast.dim{opacity:.2}
+.ccard{background:var(--white);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 20px 50px rgba(40,40,90,.08);position:sticky;top:90px}
+.ccard .top{background:var(--navy);color:#fff;padding:22px 26px;position:relative;overflow:hidden}
+.ccard .top::after{content:"";position:absolute;right:-30px;bottom:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(232,199,49,.35),transparent 70%)}
+.ccard .n{font:900 64px var(--fs);color:var(--gold);line-height:.9}
+.ccard h3{color:#fff;font-size:28px;margin-top:6px}
+.ccard .where{font:500 14px var(--f);color:#b9b9d4;margin-top:4px}
+.ccard .body{padding:22px 26px}
+.ccard p{font-size:15.5px;margin-bottom:12px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.fact{background:var(--paper);border-radius:12px;padding:10px 12px}
+.fact small{font:700 10.5px var(--f);letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.fact b{display:block;font:700 15px var(--f);color:var(--navy)}
+.badge{display:inline-block;font:700 11px var(--f);letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-top:10px}
+.b-in{background:#e6f0d0;color:#5d6a1e}.b-out{background:#fbe9c5;color:#8a6a0c}.b-closed{background:#f6dcda;color:#8e3c38}
+.c-anim{animation:fin .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes fin{from{opacity:0;transform:translateY(10px)}}
+
+/* viaje 3D */
+.vj{height:600vh;position:relative;background:var(--navy3)}
+.vj-st{position:sticky;top:0;height:100vh;overflow:hidden}
+#vjCv{position:absolute;inset:0;width:100%;height:100%}
+.vj-head{position:absolute;top:80px;left:0;right:0;z-index:2;pointer-events:none;transition:opacity .3s}
+.vj-head h2{color:#fff;font-size:clamp(28px,3.6vw,46px);margin:0}
+.vj-head .kick{color:var(--gold)}
+.vj-card{position:absolute;left:max(20px,calc(50% - 550px));bottom:36px;z-index:3;width:min(410px,calc(100% - 40px));background:rgba(255,255,255,.96);border-radius:20px;padding:20px 22px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.vj-card small{font:700 11.5px var(--f);letter-spacing:.12em;text-transform:uppercase;color:var(--rose)}
+.vj-card h3{font-size:clamp(24px,3vw,34px);margin:6px 0 8px}
+.vj-card p{font-size:15px;line-height:1.5}
+.vj-card .tip{display:inline-block;margin-top:10px;font:700 12px var(--f);color:var(--navy);background:var(--gold);padding:4px 10px;border-radius:999px}
+.vj-anim{animation:fin .5s cubic-bezier(.2,.7,.2,1)}
+.vj-dots{position:absolute;right:max(20px,calc(50% - 550px));top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:3}
+.vj-dots i{width:10px;height:10px;border-radius:50%;border:2px solid rgba(255,255,255,.5);transition:.3s}
+.vj-dots i.on{background:var(--gold);border-color:var(--gold);box-shadow:0 0 12px var(--gold)}
+.vj-lbl{position:absolute;font:800 clamp(14px,1.6vw,19px) var(--fs);color:var(--gold);white-space:nowrap;transform:translate(-50%,-100%);pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.6);transition:opacity .3s}
+
+/* cronología */
+.tline{position:relative;margin-top:40px}
+.track{position:relative;height:6px;background:var(--line);border-radius:6px}
+.track i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:6px;transition:width 2.2s cubic-bezier(.4,0,.2,1)}
+.tline.in .track i{width:100%}
+.evs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-top:-13px}
+.ev{position:relative;padding-top:34px;opacity:0;transform:translateY(16px);transition:.6s;transition-delay:var(--dd)}
+.tline.in .ev{opacity:1;transform:none}
+.ev::before{content:"";position:absolute;top:0;left:0;width:20px;height:20px;border-radius:50%;background:var(--white);border:4px solid var(--rose)}
+.ev b{font:900 26px var(--fs);color:var(--navy);display:block}
+.ev h3{font:700 15px var(--f);color:var(--navy);margin:4px 0}
+.ev p{font-size:14px;line-height:1.45}
+@media (max-width:900px){.evs{grid-template-columns:1fr 1fr;row-gap:28px}.track{display:none}.ev{padding-top:28px}}
+
+/* dominó */
+.domino-wrap{height:330vh;position:relative;background:var(--paper2)}
+.dsticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.dstage{perspective:1100px;height:290px;position:relative;margin-top:18px}
+.drow{position:absolute;left:0;right:0;bottom:24px;height:250px;transform-style:preserve-3d;transform:rotateX(18deg)}
+.dom{position:absolute;bottom:0;width:clamp(62px,10vw,118px);height:clamp(150px,22vw,226px);transform-origin:right bottom;transition:transform .7s cubic-bezier(.6,.05,.4,1)}
+.dom .face{position:absolute;inset:0;border-radius:10px 10px 4px 4px;background:var(--navy);border:3px solid var(--gold);box-shadow:0 14px 26px rgba(40,40,90,.35);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:8px;clip-path:polygon(0 12%,16% 12%,16% 0,34% 0,34% 12%,50% 12%,50% 0,66% 0,66% 12%,84% 12%,84% 0,100% 0,100% 100%,0 100%)}
+.dom .face b{font:800 clamp(12px,1.5vw,17px) var(--fs);color:#fff;text-align:center;line-height:1.15}
+.dom .face i{font-style:normal;font:900 clamp(18px,2.2vw,28px) var(--fs);color:var(--gold)}
+.dom.fall{transform:rotateZ(62deg)}
+.dom.last .face{background:var(--gold)}
+.dom.last .face b{color:var(--navy3)}
+.dom.last .face i{color:var(--navy)}
+@media (max-width:600px){.dom{width:13vw;height:36vw}.dom .face b{font-size:9.5px;writing-mode:vertical-rl;transform:rotate(180deg)}.dom .face{padding:4px}}
+.dfloor{position:absolute;left:-10%;right:-10%;bottom:0;height:3px;background:linear-gradient(90deg,transparent,var(--rose),transparent);opacity:.5}
+.dcap{max-width:700px;min-height:150px;margin-top:22px}
+.dcap h3{font-size:clamp(26px,3.2vw,40px);margin:8px 0}
+.dcap-anim{animation:fin .55s cubic-bezier(.2,.7,.2,1)}
+.dprog{display:flex;gap:6px;margin-top:18px;max-width:700px}
+.dprog i{flex:1;height:4px;border-radius:2px;background:var(--line);transition:background .3s}
+.dprog i.on{background:var(--gold)}
+
+/* juego */
+.game{margin-top:30px;display:grid;grid-template-columns:.9fr 1.1fr;gap:22px}
+@media (max-width:900px){.game{grid-template-columns:1fr}}
+.qbox{background:var(--navy);border-radius:22px;padding:28px;color:#c9c9de;position:relative;overflow:hidden}
+.qbox::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(232,199,49,.25),transparent 70%)}
+.qbox small{font:700 12px var(--f);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.qbox h3{color:#fff;font-size:clamp(24px,3vw,32px);margin:10px 0}
+.qbox .who{font:900 clamp(30px,4vw,44px) var(--fs);color:var(--gold)}
+.qbox p{font-size:15px}
+.score{display:flex;gap:6px;margin-top:20px}
+.score i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.15)}
+.score i.ok{background:var(--olive)}.score i.ko{background:var(--rose)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts button{background:var(--white);border:2px solid var(--line);border-radius:16px;padding:16px;text-align:left;cursor:pointer;transition:.2s;display:flex;gap:12px;align-items:center}
+.opts button:hover{border-color:var(--navy);transform:translateY(-2px)}
+.opts button .k{width:38px;height:38px;border-radius:10px;background:var(--paper);display:grid;place-items:center;font:900 18px var(--fs);color:var(--navy);flex:none}
+.opts button span{font:700 15px var(--f);color:var(--navy);line-height:1.25}
+.opts button.ok{border-color:var(--olive);background:#f1f5e3}
+.opts button.ko{border-color:var(--rose);background:#fbefee}
+.gres{margin-top:14px;font-size:15px;min-height:48px}
+.gbtn{margin-top:10px;border:0;background:var(--gold);color:var(--navy3);font:700 15px var(--f);padding:12px 20px;border-radius:999px;cursor:pointer}
+
+/* estado de visita */
+.vis{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px;align-items:center;margin-top:30px}
+@media (max-width:860px){.vis{grid-template-columns:1fr}}
+.donut{position:relative;max-width:340px;margin:auto}
+.donut svg{width:100%;height:auto;transform:rotate(-90deg)}
+.donut circle{fill:none;stroke-width:22;transition:stroke-dasharray 1.4s cubic-bezier(.2,.7,.2,1);transition-delay:var(--dd)}
+.donut .c{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.donut .c b{font:900 64px var(--fs);color:var(--navy);display:block;line-height:1}
+.donut .c span{font-size:14px}
+.vlist{display:grid;gap:10px}
+.vrow{display:grid;grid-template-columns:34px 1fr auto;gap:14px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.vrow .k{width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--gold);display:grid;place-items:center;font:900 15px var(--fs)}
+.vrow b{color:var(--navy);font-size:15.5px}
+.vrow small{display:block;font-size:13px;color:var(--soft)}
+
+.close{padding-block:130px 90px;text-align:center;background:radial-gradient(ellipse at 50% 100%,#2d2d6a,var(--navy3) 70%);color:#c9c9de;position:relative;overflow:hidden}
+.close h2{color:#fff;margin-inline:auto;font-size:clamp(38px,6vw,78px);max-width:16ch}
+.close h2 em{font-style:normal;color:var(--gold)}
+.cta{display:inline-flex;margin-top:30px;background:var(--gold);color:var(--navy3);text-decoration:none;font:700 16px var(--f);padding:14px 24px;border-radius:999px}
+footer{background:var(--navy3);color:#8f8fae;font-size:13px;padding-block:24px 44px}
+footer a{color:#c9c9de}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .reveal.pre{transform:none;opacity:1}.route{stroke-dashoffset:0}.cast .halo{animation:none}.dom{transition:none}}
+</style>
+</head>
+<body>
+<div class="ribbon">Propuesta interactiva de <b>Biencommunity</b> a partir de un artículo de El Resurgir de Madrid · No oficial</div>
+<nav class="bar" aria-label="Secciones"><div class="bar-in">
+  <a class="mast" href="https://elresurgirdemadrid.com/" target="_blank" rel="noopener">EL <b>¡</b>RESURGIR<small>de Madrid</small></a>
+  <div class="navl"><a href="#mapa">El mapa</a><a href="#ruta">La ruta</a><a href="#historia">La historia</a><a href="#vida">La vida de un castillo</a><a href="#juego">El juego</a><a href="#visita">Planifica</a></div>
+  <div class="prog" id="prog"></div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="hero-map" aria-hidden="true"><svg viewBox="0 0 1000 1000" id="heroMap"><path class="reg" d="M612.9,42L630.4,32.4L654.3,30L653,42L670.6,50.3L683.1,75.5L690.6,81.4L705.7,92.2L717,91L717,104.1L710.7,120.9L728.3,141.2L735.8,151.9L722,161.5L722,171L719.5,177L703.2,216.3L699.4,228.3L709.5,240.2L691.9,252.1L693.2,261.6L689.4,280.7L675.6,302.1L669.3,308.1L676.9,308.1L694.4,311.6L705.7,325.9L703.2,344.9L704.4,349.7L710.7,347.3L712,356.8L694.4,380.6L717,393.7L718.2,386.5L729.5,396L732,379.4L742.1,385.4L745.8,387.7L750.9,409.1L772.2,417.4L778.4,406.7L774.7,425.7L767.2,428.1L775.9,438.8L770.9,445.9L778.4,459L794.8,467.3L797.3,482.7L793.5,496.9L814.8,489.8L826.1,491L831.1,501.7L843.7,510L842.4,521.8L846.2,536L844.9,563.3L868.8,564.4L876.3,584.6L882.6,590.5L871.3,612.9L875,624.8L871.3,641.3L855,656.7L853.7,663.8L855,666.1L852.4,688.6L844.9,698L846.2,705.1L858.7,714.6L870,693.3L892.6,678L893.8,678L906.4,706.3L911.4,733.4L906.4,739.3L911.4,764.1L917.7,771.2L905.1,766.5L901.4,781.8L911.4,786.5L925.2,813.6L902.6,836L888.8,840.7L865,838.3L862.5,819.5L849.9,825.4L842.4,837.1L819.8,846.6L796,847.7L792.2,847.7L786,846.6L772.2,827.7L763.4,827.7L744.6,831.3L744.6,848.9L734.5,859.5L718.2,851.3L705.7,857.2L704.4,850.1L691.9,854.8L669.3,853.6L668.1,853.6L666.8,859.5L665.6,870.1L648,872.4L626.7,876L624.2,884.2L611.6,890.1L599.1,894.8L604.1,908.9L584,912.4L566.5,924.2L559,918.3L540.1,928.9L531.4,944.2L521.3,950L506.3,970L501.3,968.8L490,958.3L467.4,951.2L472.4,935.9L496.2,924.2L503.8,919.5L516.3,926.5L516.3,919.5L532.6,908.9L545.2,913.6L538.9,900.7L556.4,883L565.2,871.3L576.5,873.6L582.8,865.4L591.6,863L599.1,848.9L607.9,846.6L615.4,826.5L616.6,806.5L589.1,794.7L582.8,781.8L574,788.8L557.7,783L555.2,779.4L541.4,787.7L525.1,784.1L508.8,758.2L505,757L505,757L486.2,767.6L478.7,754.7L466.1,746.4L462.4,747.6L444.8,746.4L438.5,739.3L432.3,738.2L424.7,742.9L422.2,740.5L423.5,731.1L402.2,733.4L383.4,713.4L384.6,703.9L368.3,702.7L353.3,690.9L339.5,709.8L324.4,703.9L316.9,707.5L316.9,693.3L304.3,686.2L301.8,675.6L290.5,668.5L284.3,675.6L284.3,689.8L271.7,688.6L268,683.9L260.4,686.2L246.6,713.4L232.8,726.4L224.1,714.6L217.8,720.5L202.7,713.4L205.2,701.6L199,688.6L199,660.2L185.2,653.1L183.9,674.4L155.1,696.8L153.8,713.4L133.8,716.9L120,724L108.7,728.7L106.2,738.2L91.1,739.3L77.3,734.6L74.8,727.5L82.3,726.4L86.1,714.6L79.8,698L87.3,692.1L87.3,683.9L102.4,672L93.6,644.9L92.4,636.6L103.7,634.2L116.2,655.5L133.8,652L143.8,653.1L145,642.5L140,637.8L152.6,629.5L151.3,602.3L162.6,589.3L175.1,585.7L219,585.7L216.5,579.8L209,570.4L216.5,550.2L220.3,551.4L215.3,513.5L217.8,507.6L216.5,486.2L236.6,473.2L241.6,443.5L236.6,442.4L235.4,426.9L246.6,425.7L251.7,443.5L278,442.4L308.1,429.3L300.6,424.5L304.3,411.5L301.8,387.7L308.1,380.6L316.9,377L326.9,355.6L335.7,341.4L343.2,337.8L343.2,325.9L358.3,304.5L385.9,314L393.4,309.3L385.9,328.3L380.8,328.3L378.3,337.8L393.4,330.7L399.7,315.2L395.9,308.1L408.4,311.6L409.7,309.3L408.4,300.9L418.5,283.1L417.2,274.7L427.3,253.3L428.5,223.5L432.3,205.6L442.3,198.5L451.1,184.1L453.6,183L458.6,175.8L463.6,172.2L464.9,171L469.9,173.4L483.7,165.1L492.5,162.7L503.8,161.5L520.1,151.9L525.1,143.6L527.6,137.6L533.9,131.6L542.6,112.5L552.7,104.1L556.4,99.4L561.5,95.8L571.5,89.8L577.8,88.6L591.6,73.1L595.3,62.3L601.6,59.9L609.1,46.8ZM748.3,428.1L743.3,423.4L742.1,424.5ZM448.6,385.4L446.1,383L439.8,390.1ZM244.1,390.1L255.4,402L254.2,409.1L236.6,407.9L219,411.5L221.6,398.4L239.1,387.7Z"/><path class="munb" d="M595.3,62.3L602.8,63.5L620.4,81.4L615.4,95.8L611.6,100.6L605.4,101.8L577.8,88.6M463.6,172.2L478.7,190.1L503.8,235.4L498.7,255.7L487.5,242.6L484.9,218.7L463.6,199.7L453.6,183M384.6,703.9L395.9,699.2L410.9,701.6L414.7,713.4L427.3,721.6L423.5,731.1M676.9,540.8L685.6,570.4L705.7,559.7L718.2,540.8L715.7,512.3L713.2,488.6L723.3,487.4L725.8,498.1L735.8,502.8L759.6,496.9L774.7,505.2L793.5,496.9L796,507.6L783.5,518.2L788.5,524.2L794.8,530.1L775.9,540.8L755.9,558.5L737.1,550.2L727,555L717,555L705.7,559.7M606.6,435.2L619.2,453L606.6,466.1L592.8,463.7L589.1,455.4L579,455.4L590.3,480.3L606.6,491L646.7,496.9L646.7,512.3L636.7,511.1L624.2,519.4L611.6,512.3L587.8,512.3L570.2,469.6L565.2,462.5L579,455.4M429.8,668.5L429.8,667.3L428.5,649.6L433.5,639L463.6,627.1L469.9,628.3L464.9,615.3L471.2,610.6L487.5,591.7L490,596.4L503.8,620L516.3,623.6L498.7,646.1L484.9,649.6L469.9,628.3M268,683.9L255.4,675.6L232.8,650.8L247.9,643.7L265.5,647.2L268,642.5L281.8,630.7L293,639L303.1,653.1L301.8,675.6M853.7,663.8L834.9,657.9L841.2,652L841.2,634.2L856.2,622.4L856.2,612.9L871.3,612.9M788.5,524.2L811.1,532.5L823.6,560.9L806,564.4L775.9,540.8M616.6,806.5L629.2,792.4L644.2,794.7L631.7,813.6L624.2,837.1L627.9,843L656.8,836L658,847.7L668.1,853.6M740.8,787.7L744.6,788.8L765.9,775.9L775.9,755.8L789.7,790L783.5,790L760.9,814.8L763.4,805.3L744.6,788.8M649.3,210.4L641.7,184.1L648,168.6L678.1,156.7L680.6,168.6L670.6,178.2L651.8,185.3L641.7,184.1M596.6,261.6L592.8,241.4L620.4,234.2L619.2,230.7L638,223.5L651.8,222.3L666.8,222.3L669.3,229.5L663.1,243.8L655.5,253.3L636.7,262.8L620.4,234.2M564,299.7L587.8,296.2L591.6,274.7L596.6,261.6L611.6,270L612.9,292.6L601.6,292.6L592.8,298.5L587.8,296.2M636.7,262.8L617.9,268.8L611.6,270M155.1,696.8L147.6,687.4L131.2,679.1L122.5,682.7L114.9,679.1L137.5,660.2L133.8,652M145,642.5L163.9,643.7L185.2,653.1M466.1,746.4L471.2,739.3L497.5,735.8L505,757M87.3,692.1L108.7,688.6L122.5,682.7M858.7,714.6L871.3,722.8L865,732.3L870,744L871.3,767.6L866.2,772.3L844.9,772.3L833.6,766.5L831.1,751.1L817.3,752.3L804.8,739.3L804.8,728.7L823.6,729.9L833.6,712.2L846.2,705.1M823.6,560.9L837.4,568L832.4,591.7L812.3,598.8L799.8,597.6L794.8,579.8L806,564.4M432.3,703.9L428.5,694.5L429.8,673.2L429.8,672L429.8,668.5L452.3,663.8L466.1,675.6L451.1,695.7L428.5,694.5M703.2,216.3L678.1,218.7L674.3,208L685.6,179.4L719.5,177M427.3,721.6L424.7,702.7L432.3,703.9L451.1,714.6L456.1,732.3L454.8,742.9L438.5,739.3M432.3,738.2L424.7,742.9M591.6,274.7L581.5,274.7L574,248.5L567.7,240.2L567.7,240.2L579,231.8L592.8,241.4M236.6,473.2L246.6,475.6L254.2,486.2L251.7,498.1L250.4,511.1L239.1,518.2L234.1,559.7L209,570.4M555.2,779.4L565.2,768.8L560.2,755.8L565.2,740.5L577.8,725.2L596.6,718.1L625.4,742.9L619.2,767.6L600.3,755.8L599.1,765.3L582.8,781.8M681.9,428.1L685.6,397.2L685.6,394.9L695.7,398.4L713.2,413.9L720.8,413.9L708.2,434L701.9,441.2M467.4,404.4L467.4,387.7L487.5,383L492.5,387.7L491.2,390.1L486.2,398.4L478.7,400.8L472.4,413.9L464.9,409.1L467.4,404.4L453.6,396L449.8,407.9L442.3,411.5L437.3,405.5L442.3,411.5M471.2,610.6L458.6,595.2L432.3,582.2L426,583.4L428.5,553.8L439.8,563.3L453.6,552.6L473.7,560.9L487.5,591.7M449.8,393.7L448.6,390.1M451.1,387.7L467.4,387.7M437.3,405.5L442.3,393.7M491.2,390.1L486.2,398.4M439.8,390.1L426,380.6L431,364L434.8,354.5L424.7,356.8M414.7,324.7L419.7,329.5L419.7,348.5L424.7,356.8L426,361.6L419.7,368.7L408.4,368.7L398.4,380.6L394.6,366.3L404.7,349.7L407.2,333L414.7,324.7L424.7,327.1L449.8,344.9L457.4,369.9L446.1,383M605.4,101.8L607.9,114.9L600.3,130.4L580.3,120.9L561.5,95.8M268,642.5L265.5,620L270.5,602.3L266.7,598.8L276.7,590.5L298.1,594L289.3,599.9L293,608.2L286.8,617.7L295.6,631.9L293,639M644.2,794.7L648,781.8L656.8,777.1L650.5,762.9L641.7,760.6L653,753.5L643,747.6L663.1,741.7L676.9,727.5L696.9,729.9L701.9,738.2L719.5,741.7L727,749.9L740.8,787.7L724.5,798.3L703.2,799.5L685.6,785.3L664.3,786.5L649.3,811.2L631.7,813.6M906.4,739.3L895.1,738.2L871.3,722.8M543.9,194.9L543.9,171L576.5,157.9L584,155.5L590.3,147.1L600.3,150.7L601.6,136.4L610.4,142.4L631.7,159.1L604.1,180.6L595.3,186.5L589.1,169.8L584,155.5M503.8,235.4L516.3,216.3L543.9,194.9L550.2,200.8L556.4,229.5L567.7,240.2M686.9,474.4L695.7,450.7M708.2,434L708.2,450.7L734.5,466.1L732,477.9L723.3,487.4M715.7,512.3L712,513.5M325.7,504L331.9,488.6L353.3,470.8L370.8,468.5L368.3,493.4L382.1,500.5L387.1,523L397.2,531.3L400.9,540.8L389.6,541.9L374.6,558.5L353.3,563.3L331.9,527.7L325.7,504L323.1,506.4L311.9,496.9L314.4,480.3L308.1,474.4L319.4,464.9L324.4,448.3L345.7,424.5L365.8,419.8L379.6,424.5L374.6,437.6L378.3,448.3L373.3,459L370.8,468.5M888.8,840.7L895.1,815.9L886.3,806.5L871.3,767.6M266.7,598.8L256.7,589.3L265.5,570.4L278,558.5L275.5,551.4L281.8,521.8L298.1,514.7L319.4,515.9L306.8,544.3L300.6,549L303.1,566.8L285.5,553.8L278,558.5M734.5,466.1L742.1,457.8L742.1,441.2L765.9,449.5L764.6,462.5L752.1,475.6L759.6,496.9M720.8,413.9L742.1,424.5M748.3,428.1L742.1,441.2M498.7,646.1L502.5,663.8L530.1,670.9L533.9,683.9L542.6,688.6L541.4,700.4L508.8,702.7L502.5,683.9L487.5,683.9L486.2,676.8L484.9,649.6M717,630.7L745.8,620L757.1,621.2L781,646.1M760.9,686.2L769.7,655.5L781,646.1L794.8,642.5L814.8,663.8L806,670.9L796,694.5L768.4,693.3L760.9,686.2L749.6,692.1M515.1,265.2L510,264L498.7,255.7M814.8,663.8L844.9,698M804.8,728.7L796,694.5M814.8,663.8L834.9,657.9M385.9,314L380.8,328.3M378.3,337.8L374.6,359.2L369.6,362.8L364.5,362.8L343.2,337.8M651.8,222.3L649.3,210.4L656.8,200.8L674.3,208M678.1,218.7L666.8,222.3M625.4,742.9L643,747.6M641.7,760.6L639.2,777.1L629.2,792.4M669.3,492.2L675.6,481.5L686.9,474.4L688.1,487.4L698.2,500.5L698.2,512.3L712,513.5L694.4,525.4L688.1,524.2L669.3,492.2L648,473.2L651.8,469.6L654.3,460.1M303.1,566.8L310.6,586.9L305.6,597.6L315.6,620L313.1,626L295.6,631.9M649.3,811.2L674.3,824.2L688.1,820.7L703.2,799.5M760.9,814.8L763.4,827.7M373.3,459L379.6,459L394.6,475.6L405.9,508.8L397.2,531.3M492.5,387.7L498.7,373.5L508.8,365.2L518.8,369.9L546.4,350.9L559,352.1L577.8,352.1L577.8,356.8L575.3,367.5L597.8,381.8L597.8,394.9L591.6,411.5L599.1,418.6L614.1,410.3L625.4,411.5M629.2,426.9L614.1,425.7L606.6,435.2L599.1,418.6L589.1,415L582.8,425.7L555.2,413.9L541.4,425.7L542.6,438.8L515.1,432.9L503.8,440L506.3,447.1L484.9,453L483.7,437.6L472.4,413.9M646.7,496.9L639.2,479.1L645.5,464.9L651.8,469.6M688.1,524.2L689.4,528.9L676.9,540.8L659.3,541.9L646.7,512.3M541.4,700.4L546.4,732.3L540.1,739.3L520.1,733.4L507.5,725.2L505,718.1L508.8,702.7M693.2,261.6L671.8,266.4L663.1,243.8M577.8,352.1L615.4,315.2L624.2,336.6L625.4,350.9L616.6,362.8L587.8,354.5L577.8,356.8M372.1,400.8L389.6,386.5L399.7,387.7L383.4,423.4L372.1,400.8L363.3,373.5L369.6,362.8M374.6,359.2L394.6,366.3M398.4,380.6L399.7,387.7L400.9,397.2L426,405.5L421,423.4L408.4,431.7L394.6,435.2L380.8,424.5L383.4,423.4M643,410.3L644.2,402L661.8,394.9L685.6,397.2M849.9,825.4L843.7,823L841.2,801.8L844.9,772.3M379.6,424.5L380.8,424.5M421,423.4L423.5,449.5L419.7,463.7L428.5,482.7L431,514.7L416,506.4L405.9,508.8M550.2,200.8L572.7,185.3L584,168.6L589.1,169.8M595.3,186.5L579,231.8M600.3,130.4L601.6,136.4M590.3,147.1L584,144.8L552.7,104.1M530.1,670.9L541.4,648.4L551.4,641.3L569,652L592.8,642.5L604.1,652L621.7,657.9L634.2,655.5L636.7,676.8L622.9,678L622.9,686.2L607.9,690.9L599.1,673.2L592.8,672L579,683.9L559,690.9L542.6,688.6M471.2,739.3L462.4,716.9L471.2,721.6L479.9,713.4L486.2,718.1L505,718.1M507.5,725.2L497.5,735.8M592.8,298.5L606.6,312.8L615.4,310.4L615.4,315.2M559,352.1L540.1,324.7L552.7,302.1M326.9,355.6L336.9,369.9L363.3,373.5M379.6,424.5L377.1,415L364.5,407.9L344.5,410.3L324.4,406.7L304.3,411.5M710.7,120.9L694.4,117.3L684.4,105.3L690.6,81.4M620.4,81.4L639.2,68.3L640.5,68.3L645.5,85L641.7,108.9L627.9,110.1L627.9,119.7L616.6,110.1L615.4,95.8M640.5,68.3L650.5,52.7L661.8,57.5L663.1,88.6L653,114.9L643,116.1L641.7,108.9M799.8,597.6L802.3,608.2L784.7,603.5L781,592.8L770.9,576.3L789.7,575.1L794.8,579.8M484.9,453L462.4,457.8L423.5,449.5L431,431.7L442.3,418.6L464.9,409.1M612.9,292.6L624.2,298.5L622.9,306.9L615.4,310.4M479.9,713.4L478.7,705.1L487.5,683.9M516.3,623.6L532.6,624.8L552.7,618.9L551.4,641.3M701.9,635.4L703.2,624.8L695.7,602.3L709.5,584.6L715.7,573.9L725.8,575.1L748.3,611.8L758.4,617.7L757.1,621.2M525.1,143.6L543.9,171M516.3,216.3L492.5,188.9L483.7,165.1M643,116.1L644.2,130.4L634.2,134L627.9,119.7M490,596.4L518.8,597.6L520.1,581L525.1,560.9L515.1,563.3L506.3,547.9L490,546.7L488.7,538.4L488.7,515.9L479.9,513.5L478.7,502.8L461.1,466.1L462.4,457.8M503.8,440L507.5,448.3L521.3,445.9L553.9,460.1L566.5,454.2L571.5,442.4L582.8,432.9L582.8,425.7M659.3,541.9L659.3,559.7M659.3,578.6L654.3,585.7L631.7,581L631.7,569.2L659.3,559.7L659.3,578.6L665.6,586.9L665.6,599.9L653,598.8L646.7,626L630.4,647.2L634.2,655.5M428.5,553.8L432.3,531.3L434.8,520.6L447.3,519.4L466.1,532.5L488.7,538.4M490,546.7L482.4,560.9L473.7,560.9M431,364L426,361.6M409.7,309.3L474.9,289L487.5,291.4L492.5,304.5L498.7,344.9L508.8,365.2M449.8,386.5L451.1,387.7L444.8,391.3L444.8,391.3L448.6,390.1L449.8,393.7L442.3,393.7L444.8,391.3L449.8,386.5L448.6,385.4M414.7,324.7L408.4,311.6M765.9,449.5L770.9,445.9M695.7,602.3L675.6,609.4L674.3,588.1L704.4,577.5L709.5,584.6M546.4,350.9L542.6,339L531.4,328.3L505,317.6L492.5,290.2L492.5,277.1L510,264M624.2,336.6L635.5,337.8L651.8,347.3L661.8,349.7L658,369.9L648,380.6L644.2,402M624.2,406.7L629.2,413.9L643,410.3L643,437.6L660.5,437.6L681.9,428.1L689.4,443.5L701.9,441.2L695.7,450.7L681.9,457.8L654.3,460.1L644.2,457.8L633,441.2L629.2,426.9L625.4,411.5L624.2,406.7L617.9,387.7L616.6,362.8M650.5,52.7L653,42M684.4,105.3L663.1,116.1L653,114.9M466.1,675.6L486.2,676.8M462.4,716.9L451.1,714.6M676.9,727.5L673.1,711L685.6,698M719.5,700.4L732,711L735.8,726.4L719.5,741.7M429.8,673.2L429.8,672M758.4,617.7L777.2,605.9L781,592.8M802.3,608.2L804.8,622.4L799.8,633L794.8,642.5M694.4,117.3L688.1,120.9L680.6,143.6L669.3,136.4L644.2,130.4M678.1,156.7L680.6,143.6M685.6,179.4L680.6,168.6M372.1,602.3L383.4,572.7L389.6,568L408.4,566.8L414.7,581L427.3,588.1L426,616.5L408.4,615.3L394.6,623.6L378.3,609.4L372.1,602.3L355.8,595.2L334.4,591.7L343.2,582.2L358.3,576.3L353.3,563.3M374.6,558.5L383.4,572.7M319.4,515.9L323.1,506.4M334.4,591.7L335.7,601.1L321.9,615.3L315.6,620M353.3,690.9L349.5,667.3L358.3,641.3L383.4,642.5L393.4,637.8L429.8,667.3M492.5,290.2L487.5,291.4M533.9,131.6L537.6,125.7L557.7,132.8L576.5,157.9M216.5,579.8L245.4,572.7L256.7,589.3M265.5,647.2L227.8,617.7L217.8,634.2L205.2,627.1L210.3,611.8L227.8,617.7L227.8,592.8L219,585.7M832.4,591.7L828.6,604.7L824.9,624.8L799.8,633M828.6,604.7L842.4,599.9L856.2,612.9M841.2,634.2L824.9,624.8M768.4,693.3L768.4,712.2L782.2,726.4L788.5,746.4L775.9,755.8L759.6,741.7L748.3,740.5L735.8,726.4M837.4,568L844.9,563.3M607.9,690.9L602.8,696.8L596.6,718.1M565.2,740.5L546.4,732.3M610.4,142.4L614.1,134L607.9,114.9L611.6,100.6M634.2,134L631.7,159.1M617.9,268.8L635.5,284.3L635.5,306.9L622.9,306.9M750.9,409.1L743.3,423.4M665.6,586.9L674.3,588.1M675.6,609.4L671.8,622.4L684.4,621.2L691.9,639M665.6,670.9L673.1,661.4L670.6,653.1L693.2,653.1L691.9,639L701.9,635.4L717,630.7L715.7,654.3L743.3,668.5L740.8,680.3L749.6,692.1L734.5,705.1L719.5,700.4L685.6,698L665.6,670.9L648,668.5L636.7,676.8M251.7,498.1L268,496.9L278,480.3L288,476.8L279.2,506.4L299.3,498.1L311.9,496.9M612.9,42L622.9,39.6L626.7,63.5L639.2,68.3M428.5,482.7L442.3,477.9L461.1,466.1M434.8,520.6L431,514.7M717,555L725.8,575.1M308.1,474.4L304.3,468.5L286.8,470.8L289.3,459L306.8,436.4L308.1,429.3M232.8,650.8L216.5,648.4L199,660.2M304.3,468.5L288,476.8M811.1,532.5L829.9,517.1L842.4,521.8M804.8,728.7L788.5,746.4M358.3,641.3L355.8,635.4L354.5,624.8L364.5,611.8L378.3,609.4M394.6,623.6L393.4,637.8M676.9,308.1L673.1,315.2L681.9,323.5L686.9,339L703.2,344.9M704.4,349.7L710.7,347.3M685.6,394.9L694.4,396L694.4,380.6L693.2,368.7L678.1,362.8L661.8,349.7M520.1,733.4L508.8,758.2M655.5,253.3L670.6,272.4L673.1,286.6L668.1,297.4L675.6,302.1M651.8,347.3L671.8,312.8L669.3,308.1L635.5,306.9M727,555L759.6,575.1L770.9,576.3M796,847.7L802.3,811.2L811.1,804.2L827.4,823L832.4,834.8L843.7,823M303.1,653.1L305.6,646.1L328.2,650.8L340.7,640.1L355.8,635.4M321.9,615.3L330.7,620L340.7,640.1M400.9,540.8L412.2,551.4L432.3,531.3M426,583.4L427.3,588.1M604.1,180.6L612.9,196.1L629.2,190.1L638,202L634.2,212.8L638,223.5M478.7,754.7L505,757M581.5,274.7L564,281.9L564,299.7L552.7,302.1L523.8,280.7L515.1,265.2L523.8,250.9L542.6,245L552.7,247.3L567.7,240.2"/></svg></div>
+  <div class="wrap hero-in">
+    <span class="tagc">Planes · Rutas por Madrid</span>
+    <h1>Siete castillos a <em>un paso</em> de la Puerta del Sol</h1>
+    <p class="lede">Murallas, torres del homenaje y fortalezas que sirvieron de prisión a nobles y princesas. Recorre la historia medieval de la Comunidad de Madrid de norte a sureste, castillo a castillo.</p>
+    <div class="hstats">
+      <div class="hs"><b data-count="7">0</b><span>castillos y fortalezas en la ruta</span></div>
+      <div class="hs"><b data-count="22" data-suf=" m">0</b><span>de altura tiene la Torre del Homenaje de Villarejo</span></div>
+      <div class="hs"><b data-count="8000" data-suf=" m²">0</b><span>de recinto amurallado en Torremocha</span></div>
+      <div class="hs"><b data-count="1599" data-plain="1">0</b><span>Margarita de Austria pasa por la Alameda</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="mapa">
+  <div class="wrap">
+    <span class="kick reveal">El mapa</span>
+    <h2 class="reveal">Toca un castillo y descubre qué se puede visitar</h2>
+    <p class="lede reveal">Filtra por tipo de visita: unos abren su interior, otros solo se pueden ver desde fuera y alguno está cerrado temporalmente.</p>
+    <div class="mapx">
+      <div class="mapbox reveal">
+        <div class="filters" id="filters"><button class="on" data-f="all">Todos</button><button data-f="in">Visita interior</button><button data-f="out">Solo exterior</button><button data-f="free">Gratis</button></div>
+        <svg viewBox="0 0 1000 1000" id="mainMap" role="img" aria-label="Mapa de la Comunidad de Madrid con los siete castillos"><path class="reg" d="M612.9,42L630.4,32.4L654.3,30L653,42L670.6,50.3L683.1,75.5L690.6,81.4L705.7,92.2L717,91L717,104.1L710.7,120.9L728.3,141.2L735.8,151.9L722,161.5L722,171L719.5,177L703.2,216.3L699.4,228.3L709.5,240.2L691.9,252.1L693.2,261.6L689.4,280.7L675.6,302.1L669.3,308.1L676.9,308.1L694.4,311.6L705.7,325.9L703.2,344.9L704.4,349.7L710.7,347.3L712,356.8L694.4,380.6L717,393.7L718.2,386.5L729.5,396L732,379.4L742.1,385.4L745.8,387.7L750.9,409.1L772.2,417.4L778.4,406.7L774.7,425.7L767.2,428.1L775.9,438.8L770.9,445.9L778.4,459L794.8,467.3L797.3,482.7L793.5,496.9L814.8,489.8L826.1,491L831.1,501.7L843.7,510L842.4,521.8L846.2,536L844.9,563.3L868.8,564.4L876.3,584.6L882.6,590.5L871.3,612.9L875,624.8L871.3,641.3L855,656.7L853.7,663.8L855,666.1L852.4,688.6L844.9,698L846.2,705.1L858.7,714.6L870,693.3L892.6,678L893.8,678L906.4,706.3L911.4,733.4L906.4,739.3L911.4,764.1L917.7,771.2L905.1,766.5L901.4,781.8L911.4,786.5L925.2,813.6L902.6,836L888.8,840.7L865,838.3L862.5,819.5L849.9,825.4L842.4,837.1L819.8,846.6L796,847.7L792.2,847.7L786,846.6L772.2,827.7L763.4,827.7L744.6,831.3L744.6,848.9L734.5,859.5L718.2,851.3L705.7,857.2L704.4,850.1L691.9,854.8L669.3,853.6L668.1,853.6L666.8,859.5L665.6,870.1L648,872.4L626.7,876L624.2,884.2L611.6,890.1L599.1,894.8L604.1,908.9L584,912.4L566.5,924.2L559,918.3L540.1,928.9L531.4,944.2L521.3,950L506.3,970L501.3,968.8L490,958.3L467.4,951.2L472.4,935.9L496.2,924.2L503.8,919.5L516.3,926.5L516.3,919.5L532.6,908.9L545.2,913.6L538.9,900.7L556.4,883L565.2,871.3L576.5,873.6L582.8,865.4L591.6,863L599.1,848.9L607.9,846.6L615.4,826.5L616.6,806.5L589.1,794.7L582.8,781.8L574,788.8L557.7,783L555.2,779.4L541.4,787.7L525.1,784.1L508.8,758.2L505,757L505,757L486.2,767.6L478.7,754.7L466.1,746.4L462.4,747.6L444.8,746.4L438.5,739.3L432.3,738.2L424.7,742.9L422.2,740.5L423.5,731.1L402.2,733.4L383.4,713.4L384.6,703.9L368.3,702.7L353.3,690.9L339.5,709.8L324.4,703.9L316.9,707.5L316.9,693.3L304.3,686.2L301.8,675.6L290.5,668.5L284.3,675.6L284.3,689.8L271.7,688.6L268,683.9L260.4,686.2L246.6,713.4L232.8,726.4L224.1,714.6L217.8,720.5L202.7,713.4L205.2,701.6L199,688.6L199,660.2L185.2,653.1L183.9,674.4L155.1,696.8L153.8,713.4L133.8,716.9L120,724L108.7,728.7L106.2,738.2L91.1,739.3L77.3,734.6L74.8,727.5L82.3,726.4L86.1,714.6L79.8,698L87.3,692.1L87.3,683.9L102.4,672L93.6,644.9L92.4,636.6L103.7,634.2L116.2,655.5L133.8,652L143.8,653.1L145,642.5L140,637.8L152.6,629.5L151.3,602.3L162.6,589.3L175.1,585.7L219,585.7L216.5,579.8L209,570.4L216.5,550.2L220.3,551.4L215.3,513.5L217.8,507.6L216.5,486.2L236.6,473.2L241.6,443.5L236.6,442.4L235.4,426.9L246.6,425.7L251.7,443.5L278,442.4L308.1,429.3L300.6,424.5L304.3,411.5L301.8,387.7L308.1,380.6L316.9,377L326.9,355.6L335.7,341.4L343.2,337.8L343.2,325.9L358.3,304.5L385.9,314L393.4,309.3L385.9,328.3L380.8,328.3L378.3,337.8L393.4,330.7L399.7,315.2L395.9,308.1L408.4,311.6L409.7,309.3L408.4,300.9L418.5,283.1L417.2,274.7L427.3,253.3L428.5,223.5L432.3,205.6L442.3,198.5L451.1,184.1L453.6,183L458.6,175.8L463.6,172.2L464.9,171L469.9,173.4L483.7,165.1L492.5,162.7L503.8,161.5L520.1,151.9L525.1,143.6L527.6,137.6L533.9,131.6L542.6,112.5L552.7,104.1L556.4,99.4L561.5,95.8L571.5,89.8L577.8,88.6L591.6,73.1L595.3,62.3L601.6,59.9L609.1,46.8ZM748.3,428.1L743.3,423.4L742.1,424.5ZM448.6,385.4L446.1,383L439.8,390.1ZM244.1,390.1L255.4,402L254.2,409.1L236.6,407.9L219,411.5L221.6,398.4L239.1,387.7Z"/><path class="munb" d="M595.3,62.3L602.8,63.5L620.4,81.4L615.4,95.8L611.6,100.6L605.4,101.8L577.8,88.6M463.6,172.2L478.7,190.1L503.8,235.4L498.7,255.7L487.5,242.6L484.9,218.7L463.6,199.7L453.6,183M384.6,703.9L395.9,699.2L410.9,701.6L414.7,713.4L427.3,721.6L423.5,731.1M676.9,540.8L685.6,570.4L705.7,559.7L718.2,540.8L715.7,512.3L713.2,488.6L723.3,487.4L725.8,498.1L735.8,502.8L759.6,496.9L774.7,505.2L793.5,496.9L796,507.6L783.5,518.2L788.5,524.2L794.8,530.1L775.9,540.8L755.9,558.5L737.1,550.2L727,555L717,555L705.7,559.7M606.6,435.2L619.2,453L606.6,466.1L592.8,463.7L589.1,455.4L579,455.4L590.3,480.3L606.6,491L646.7,496.9L646.7,512.3L636.7,511.1L624.2,519.4L611.6,512.3L587.8,512.3L570.2,469.6L565.2,462.5L579,455.4M429.8,668.5L429.8,667.3L428.5,649.6L433.5,639L463.6,627.1L469.9,628.3L464.9,615.3L471.2,610.6L487.5,591.7L490,596.4L503.8,620L516.3,623.6L498.7,646.1L484.9,649.6L469.9,628.3M268,683.9L255.4,675.6L232.8,650.8L247.9,643.7L265.5,647.2L268,642.5L281.8,630.7L293,639L303.1,653.1L301.8,675.6M853.7,663.8L834.9,657.9L841.2,652L841.2,634.2L856.2,622.4L856.2,612.9L871.3,612.9M788.5,524.2L811.1,532.5L823.6,560.9L806,564.4L775.9,540.8M616.6,806.5L629.2,792.4L644.2,794.7L631.7,813.6L624.2,837.1L627.9,843L656.8,836L658,847.7L668.1,853.6M740.8,787.7L744.6,788.8L765.9,775.9L775.9,755.8L789.7,790L783.5,790L760.9,814.8L763.4,805.3L744.6,788.8M649.3,210.4L641.7,184.1L648,168.6L678.1,156.7L680.6,168.6L670.6,178.2L651.8,185.3L641.7,184.1M596.6,261.6L592.8,241.4L620.4,234.2L619.2,230.7L638,223.5L651.8,222.3L666.8,222.3L669.3,229.5L663.1,243.8L655.5,253.3L636.7,262.8L620.4,234.2M564,299.7L587.8,296.2L591.6,274.7L596.6,261.6L611.6,270L612.9,292.6L601.6,292.6L592.8,298.5L587.8,296.2M636.7,262.8L617.9,268.8L611.6,270M155.1,696.8L147.6,687.4L131.2,679.1L122.5,682.7L114.9,679.1L137.5,660.2L133.8,652M145,642.5L163.9,643.7L185.2,653.1M466.1,746.4L471.2,739.3L497.5,735.8L505,757M87.3,692.1L108.7,688.6L122.5,682.7M858.7,714.6L871.3,722.8L865,732.3L870,744L871.3,767.6L866.2,772.3L844.9,772.3L833.6,766.5L831.1,751.1L817.3,752.3L804.8,739.3L804.8,728.7L823.6,729.9L833.6,712.2L846.2,705.1M823.6,560.9L837.4,568L832.4,591.7L812.3,598.8L799.8,597.6L794.8,579.8L806,564.4M432.3,703.9L428.5,694.5L429.8,673.2L429.8,672L429.8,668.5L452.3,663.8L466.1,675.6L451.1,695.7L428.5,694.5M703.2,216.3L678.1,218.7L674.3,208L685.6,179.4L719.5,177M427.3,721.6L424.7,702.7L432.3,703.9L451.1,714.6L456.1,732.3L454.8,742.9L438.5,739.3M432.3,738.2L424.7,742.9M591.6,274.7L581.5,274.7L574,248.5L567.7,240.2L567.7,240.2L579,231.8L592.8,241.4M236.6,473.2L246.6,475.6L254.2,486.2L251.7,498.1L250.4,511.1L239.1,518.2L234.1,559.7L209,570.4M555.2,779.4L565.2,768.8L560.2,755.8L565.2,740.5L577.8,725.2L596.6,718.1L625.4,742.9L619.2,767.6L600.3,755.8L599.1,765.3L582.8,781.8M681.9,428.1L685.6,397.2L685.6,394.9L695.7,398.4L713.2,413.9L720.8,413.9L708.2,434L701.9,441.2M467.4,404.4L467.4,387.7L487.5,383L492.5,387.7L491.2,390.1L486.2,398.4L478.7,400.8L472.4,413.9L464.9,409.1L467.4,404.4L453.6,396L449.8,407.9L442.3,411.5L437.3,405.5L442.3,411.5M471.2,610.6L458.6,595.2L432.3,582.2L426,583.4L428.5,553.8L439.8,563.3L453.6,552.6L473.7,560.9L487.5,591.7M449.8,393.7L448.6,390.1M451.1,387.7L467.4,387.7M437.3,405.5L442.3,393.7M491.2,390.1L486.2,398.4M439.8,390.1L426,380.6L431,364L434.8,354.5L424.7,356.8M414.7,324.7L419.7,329.5L419.7,348.5L424.7,356.8L426,361.6L419.7,368.7L408.4,368.7L398.4,380.6L394.6,366.3L404.7,349.7L407.2,333L414.7,324.7L424.7,327.1L449.8,344.9L457.4,369.9L446.1,383M605.4,101.8L607.9,114.9L600.3,130.4L580.3,120.9L561.5,95.8M268,642.5L265.5,620L270.5,602.3L266.7,598.8L276.7,590.5L298.1,594L289.3,599.9L293,608.2L286.8,617.7L295.6,631.9L293,639M644.2,794.7L648,781.8L656.8,777.1L650.5,762.9L641.7,760.6L653,753.5L643,747.6L663.1,741.7L676.9,727.5L696.9,729.9L701.9,738.2L719.5,741.7L727,749.9L740.8,787.7L724.5,798.3L703.2,799.5L685.6,785.3L664.3,786.5L649.3,811.2L631.7,813.6M906.4,739.3L895.1,738.2L871.3,722.8M543.9,194.9L543.9,171L576.5,157.9L584,155.5L590.3,147.1L600.3,150.7L601.6,136.4L610.4,142.4L631.7,159.1L604.1,180.6L595.3,186.5L589.1,169.8L584,155.5M503.8,235.4L516.3,216.3L543.9,194.9L550.2,200.8L556.4,229.5L567.7,240.2M686.9,474.4L695.7,450.7M708.2,434L708.2,450.7L734.5,466.1L732,477.9L723.3,487.4M715.7,512.3L712,513.5M325.7,504L331.9,488.6L353.3,470.8L370.8,468.5L368.3,493.4L382.1,500.5L387.1,523L397.2,531.3L400.9,540.8L389.6,541.9L374.6,558.5L353.3,563.3L331.9,527.7L325.7,504L323.1,506.4L311.9,496.9L314.4,480.3L308.1,474.4L319.4,464.9L324.4,448.3L345.7,424.5L365.8,419.8L379.6,424.5L374.6,437.6L378.3,448.3L373.3,459L370.8,468.5M888.8,840.7L895.1,815.9L886.3,806.5L871.3,767.6M266.7,598.8L256.7,589.3L265.5,570.4L278,558.5L275.5,551.4L281.8,521.8L298.1,514.7L319.4,515.9L306.8,544.3L300.6,549L303.1,566.8L285.5,553.8L278,558.5M734.5,466.1L742.1,457.8L742.1,441.2L765.9,449.5L764.6,462.5L752.1,475.6L759.6,496.9M720.8,413.9L742.1,424.5M748.3,428.1L742.1,441.2M498.7,646.1L502.5,663.8L530.1,670.9L533.9,683.9L542.6,688.6L541.4,700.4L508.8,702.7L502.5,683.9L487.5,683.9L486.2,676.8L484.9,649.6M717,630.7L745.8,620L757.1,621.2L781,646.1M760.9,686.2L769.7,655.5L781,646.1L794.8,642.5L814.8,663.8L806,670.9L796,694.5L768.4,693.3L760.9,686.2L749.6,692.1M515.1,265.2L510,264L498.7,255.7M814.8,663.8L844.9,698M804.8,728.7L796,694.5M814.8,663.8L834.9,657.9M385.9,314L380.8,328.3M378.3,337.8L374.6,359.2L369.6,362.8L364.5,362.8L343.2,337.8M651.8,222.3L649.3,210.4L656.8,200.8L674.3,208M678.1,218.7L666.8,222.3M625.4,742.9L643,747.6M641.7,760.6L639.2,777.1L629.2,792.4M669.3,492.2L675.6,481.5L686.9,474.4L688.1,487.4L698.2,500.5L698.2,512.3L712,513.5L694.4,525.4L688.1,524.2L669.3,492.2L648,473.2L651.8,469.6L654.3,460.1M303.1,566.8L310.6,586.9L305.6,597.6L315.6,620L313.1,626L295.6,631.9M649.3,811.2L674.3,824.2L688.1,820.7L703.2,799.5M760.9,814.8L763.4,827.7M373.3,459L379.6,459L394.6,475.6L405.9,508.8L397.2,531.3M492.5,387.7L498.7,373.5L508.8,365.2L518.8,369.9L546.4,350.9L559,352.1L577.8,352.1L577.8,356.8L575.3,367.5L597.8,381.8L597.8,394.9L591.6,411.5L599.1,418.6L614.1,410.3L625.4,411.5M629.2,426.9L614.1,425.7L606.6,435.2L599.1,418.6L589.1,415L582.8,425.7L555.2,413.9L541.4,425.7L542.6,438.8L515.1,432.9L503.8,440L506.3,447.1L484.9,453L483.7,437.6L472.4,413.9M646.7,496.9L639.2,479.1L645.5,464.9L651.8,469.6M688.1,524.2L689.4,528.9L676.9,540.8L659.3,541.9L646.7,512.3M541.4,700.4L546.4,732.3L540.1,739.3L520.1,733.4L507.5,725.2L505,718.1L508.8,702.7M693.2,261.6L671.8,266.4L663.1,243.8M577.8,352.1L615.4,315.2L624.2,336.6L625.4,350.9L616.6,362.8L587.8,354.5L577.8,356.8M372.1,400.8L389.6,386.5L399.7,387.7L383.4,423.4L372.1,400.8L363.3,373.5L369.6,362.8M374.6,359.2L394.6,366.3M398.4,380.6L399.7,387.7L400.9,397.2L426,405.5L421,423.4L408.4,431.7L394.6,435.2L380.8,424.5L383.4,423.4M643,410.3L644.2,402L661.8,394.9L685.6,397.2M849.9,825.4L843.7,823L841.2,801.8L844.9,772.3M379.6,424.5L380.8,424.5M421,423.4L423.5,449.5L419.7,463.7L428.5,482.7L431,514.7L416,506.4L405.9,508.8M550.2,200.8L572.7,185.3L584,168.6L589.1,169.8M595.3,186.5L579,231.8M600.3,130.4L601.6,136.4M590.3,147.1L584,144.8L552.7,104.1M530.1,670.9L541.4,648.4L551.4,641.3L569,652L592.8,642.5L604.1,652L621.7,657.9L634.2,655.5L636.7,676.8L622.9,678L622.9,686.2L607.9,690.9L599.1,673.2L592.8,672L579,683.9L559,690.9L542.6,688.6M471.2,739.3L462.4,716.9L471.2,721.6L479.9,713.4L486.2,718.1L505,718.1M507.5,725.2L497.5,735.8M592.8,298.5L606.6,312.8L615.4,310.4L615.4,315.2M559,352.1L540.1,324.7L552.7,302.1M326.9,355.6L336.9,369.9L363.3,373.5M379.6,424.5L377.1,415L364.5,407.9L344.5,410.3L324.4,406.7L304.3,411.5M710.7,120.9L694.4,117.3L684.4,105.3L690.6,81.4M620.4,81.4L639.2,68.3L640.5,68.3L645.5,85L641.7,108.9L627.9,110.1L627.9,119.7L616.6,110.1L615.4,95.8M640.5,68.3L650.5,52.7L661.8,57.5L663.1,88.6L653,114.9L643,116.1L641.7,108.9M799.8,597.6L802.3,608.2L784.7,603.5L781,592.8L770.9,576.3L789.7,575.1L794.8,579.8M484.9,453L462.4,457.8L423.5,449.5L431,431.7L442.3,418.6L464.9,409.1M612.9,292.6L624.2,298.5L622.9,306.9L615.4,310.4M479.9,713.4L478.7,705.1L487.5,683.9M516.3,623.6L532.6,624.8L552.7,618.9L551.4,641.3M701.9,635.4L703.2,624.8L695.7,602.3L709.5,584.6L715.7,573.9L725.8,575.1L748.3,611.8L758.4,617.7L757.1,621.2M525.1,143.6L543.9,171M516.3,216.3L492.5,188.9L483.7,165.1M643,116.1L644.2,130.4L634.2,134L627.9,119.7M490,596.4L518.8,597.6L520.1,581L525.1,560.9L515.1,563.3L506.3,547.9L490,546.7L488.7,538.4L488.7,515.9L479.9,513.5L478.7,502.8L461.1,466.1L462.4,457.8M503.8,440L507.5,448.3L521.3,445.9L553.9,460.1L566.5,454.2L571.5,442.4L582.8,432.9L582.8,425.7M659.3,541.9L659.3,559.7M659.3,578.6L654.3,585.7L631.7,581L631.7,569.2L659.3,559.7L659.3,578.6L665.6,586.9L665.6,599.9L653,598.8L646.7,626L630.4,647.2L634.2,655.5M428.5,553.8L432.3,531.3L434.8,520.6L447.3,519.4L466.1,532.5L488.7,538.4M490,546.7L482.4,560.9L473.7,560.9M431,364L426,361.6M409.7,309.3L474.9,289L487.5,291.4L492.5,304.5L498.7,344.9L508.8,365.2M449.8,386.5L451.1,387.7L444.8,391.3L444.8,391.3L448.6,390.1L449.8,393.7L442.3,393.7L444.8,391.3L449.8,386.5L448.6,385.4M414.7,324.7L408.4,311.6M765.9,449.5L770.9,445.9M695.7,602.3L675.6,609.4L674.3,588.1L704.4,577.5L709.5,584.6M546.4,350.9L542.6,339L531.4,328.3L505,317.6L492.5,290.2L492.5,277.1L510,264M624.2,336.6L635.5,337.8L651.8,347.3L661.8,349.7L658,369.9L648,380.6L644.2,402M624.2,406.7L629.2,413.9L643,410.3L643,437.6L660.5,437.6L681.9,428.1L689.4,443.5L701.9,441.2L695.7,450.7L681.9,457.8L654.3,460.1L644.2,457.8L633,441.2L629.2,426.9L625.4,411.5L624.2,406.7L617.9,387.7L616.6,362.8M650.5,52.7L653,42M684.4,105.3L663.1,116.1L653,114.9M466.1,675.6L486.2,676.8M462.4,716.9L451.1,714.6M676.9,727.5L673.1,711L685.6,698M719.5,700.4L732,711L735.8,726.4L719.5,741.7M429.8,673.2L429.8,672M758.4,617.7L777.2,605.9L781,592.8M802.3,608.2L804.8,622.4L799.8,633L794.8,642.5M694.4,117.3L688.1,120.9L680.6,143.6L669.3,136.4L644.2,130.4M678.1,156.7L680.6,143.6M685.6,179.4L680.6,168.6M372.1,602.3L383.4,572.7L389.6,568L408.4,566.8L414.7,581L427.3,588.1L426,616.5L408.4,615.3L394.6,623.6L378.3,609.4L372.1,602.3L355.8,595.2L334.4,591.7L343.2,582.2L358.3,576.3L353.3,563.3M374.6,558.5L383.4,572.7M319.4,515.9L323.1,506.4M334.4,591.7L335.7,601.1L321.9,615.3L315.6,620M353.3,690.9L349.5,667.3L358.3,641.3L383.4,642.5L393.4,637.8L429.8,667.3M492.5,290.2L487.5,291.4M533.9,131.6L537.6,125.7L557.7,132.8L576.5,157.9M216.5,579.8L245.4,572.7L256.7,589.3M265.5,647.2L227.8,617.7L217.8,634.2L205.2,627.1L210.3,611.8L227.8,617.7L227.8,592.8L219,585.7M832.4,591.7L828.6,604.7L824.9,624.8L799.8,633M828.6,604.7L842.4,599.9L856.2,612.9M841.2,634.2L824.9,624.8M768.4,693.3L768.4,712.2L782.2,726.4L788.5,746.4L775.9,755.8L759.6,741.7L748.3,740.5L735.8,726.4M837.4,568L844.9,563.3M607.9,690.9L602.8,696.8L596.6,718.1M565.2,740.5L546.4,732.3M610.4,142.4L614.1,134L607.9,114.9L611.6,100.6M634.2,134L631.7,159.1M617.9,268.8L635.5,284.3L635.5,306.9L622.9,306.9M750.9,409.1L743.3,423.4M665.6,586.9L674.3,588.1M675.6,609.4L671.8,622.4L684.4,621.2L691.9,639M665.6,670.9L673.1,661.4L670.6,653.1L693.2,653.1L691.9,639L701.9,635.4L717,630.7L715.7,654.3L743.3,668.5L740.8,680.3L749.6,692.1L734.5,705.1L719.5,700.4L685.6,698L665.6,670.9L648,668.5L636.7,676.8M251.7,498.1L268,496.9L278,480.3L288,476.8L279.2,506.4L299.3,498.1L311.9,496.9M612.9,42L622.9,39.6L626.7,63.5L639.2,68.3M428.5,482.7L442.3,477.9L461.1,466.1M434.8,520.6L431,514.7M717,555L725.8,575.1M308.1,474.4L304.3,468.5L286.8,470.8L289.3,459L306.8,436.4L308.1,429.3M232.8,650.8L216.5,648.4L199,660.2M304.3,468.5L288,476.8M811.1,532.5L829.9,517.1L842.4,521.8M804.8,728.7L788.5,746.4M358.3,641.3L355.8,635.4L354.5,624.8L364.5,611.8L378.3,609.4M394.6,623.6L393.4,637.8M676.9,308.1L673.1,315.2L681.9,323.5L686.9,339L703.2,344.9M704.4,349.7L710.7,347.3M685.6,394.9L694.4,396L694.4,380.6L693.2,368.7L678.1,362.8L661.8,349.7M520.1,733.4L508.8,758.2M655.5,253.3L670.6,272.4L673.1,286.6L668.1,297.4L675.6,302.1M651.8,347.3L671.8,312.8L669.3,308.1L635.5,306.9M727,555L759.6,575.1L770.9,576.3M796,847.7L802.3,811.2L811.1,804.2L827.4,823L832.4,834.8L843.7,823M303.1,653.1L305.6,646.1L328.2,650.8L340.7,640.1L355.8,635.4M321.9,615.3L330.7,620L340.7,640.1M400.9,540.8L412.2,551.4L432.3,531.3M426,583.4L427.3,588.1M604.1,180.6L612.9,196.1L629.2,190.1L638,202L634.2,212.8L638,223.5M478.7,754.7L505,757M581.5,274.7L564,281.9L564,299.7L552.7,302.1L523.8,280.7L515.1,265.2L523.8,250.9L542.6,245L552.7,247.3L567.7,240.2"/><path class="mun" d="M584,155.5L590.3,147.1L600.3,150.7L601.6,136.4L610.4,142.4L631.7,159.1L604.1,180.6L595.3,186.5L589.1,169.8Z"/><path class="mun" d="M431,364L426,361.6L424.7,356.8L434.8,354.5ZM409.7,309.3L474.9,289L487.5,291.4L492.5,304.5L498.7,344.9L508.8,365.2L498.7,373.5L492.5,387.7L487.5,383L467.4,387.7L451.1,387.7L449.8,386.5L448.6,385.4L446.1,383L457.4,369.9L449.8,344.9L424.7,327.1L414.7,324.7L408.4,311.6Z"/><path class="mun" d="M811.1,532.5L829.9,517.1L842.4,521.8L846.2,536L844.9,563.3L837.4,568L823.6,560.9Z"/><path class="mun" d="M760.9,814.8L783.5,790L789.7,790L775.9,755.8L788.5,746.4L804.8,728.7L804.8,739.3L817.3,752.3L831.1,751.1L833.6,766.5L844.9,772.3L841.2,801.8L843.7,823L832.4,834.8L827.4,823L811.1,804.2L802.3,811.2L796,847.7L792.2,847.7L786,846.6L772.2,827.7L763.4,827.7Z"/><path class="mun" d="M843.7,823L841.2,801.8L844.9,772.3L866.2,772.3L871.3,767.6L886.3,806.5L895.1,815.9L888.8,840.7L865,838.3L862.5,819.5L849.9,825.4Z"/><path class="mun" d="M631.7,813.6L644.2,794.7L648,781.8L656.8,777.1L650.5,762.9L641.7,760.6L653,753.5L643,747.6L663.1,741.7L676.9,727.5L696.9,729.9L701.9,738.2L719.5,741.7L727,749.9L740.8,787.7L724.5,798.3L703.2,799.5L685.6,785.3L664.3,786.5L649.3,811.2Z"/></svg>
+      </div>
+      <div class="ccard reveal" id="ccard" style="--d:120ms" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="vj" id="ruta">
+  <div class="vj-st">
+    <canvas id="vjCv" aria-label="Recorrido 3D por los siete castillos"></canvas>
+    <div class="vj-head" id="vjHead"><div class="wrap"><span class="kick">Haz scroll · La ruta</span><h2>Siete paradas entre murallas</h2></div></div>
+    <div class="vj-card" id="vjCard" aria-live="polite"></div>
+    <div class="vj-dots" id="vjDots"></div>
+  </div>
+</section>
+
+<section class="sec" id="historia">
+  <div class="wrap">
+    <span class="kick reveal">La historia</span>
+    <h2 class="reveal">Ocho siglos escritos en piedra</h2>
+    <p class="lede reveal">De la época musulmana a la recuperación de las ruinas: los momentos que marcaron estos castillos.</p>
+    <div class="tline" id="tline">
+      <div class="track"><i></i></div>
+      <div class="evs">
+        <div class="ev" style="--dd:.1s"><b>Al-Ándalus</b><h3>Fuentidueña de Tajo</h3><p>El castillo se construye durante la época de dominación musulmana.</p></div>
+        <div class="ev" style="--dd:.4s"><b>1480</b><h3>Chinchón</h3><p>Los Reyes Católicos autorizan su primera fortaleza, arrasada en 1521.</p></div>
+        <div class="ev" style="--dd:.7s"><b>Siglo XVI</b><h3>Torremocha</h3><p>Prisión de nobles: por allí pasan la princesa de Éboli y el cardenal Cisneros.</p></div>
+        <div class="ev" style="--dd:1s"><b>1599</b><h3>La Alameda</h3><p>Margarita de Austria pasa por la fortaleza tras casarse con Felipe III.</p></div>
+        <div class="ev" style="--dd:1.3s"><b>2010</b><h3>La Alameda</h3><p>Se recupera y abre como parque arqueológico y museo al aire libre.</p></div>
+        <div class="ev" style="--dd:1.6s"><b>2025</b><h3>Manzanares El Real</h3><p>Cierra al público en enero mientras tramita su reapertura.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="domino-wrap" id="vida">
+  <div class="dsticky"><div class="wrap" style="width:100%">
+    <span class="kick">Haz scroll · La vida de un castillo</span>
+    <div class="dstage"><div class="drow" id="drow"><div class="dfloor"></div></div></div>
+    <div class="dcap" id="dcap" aria-live="polite"></div>
+    <div class="dprog" id="dprog"></div>
+  </div></div>
+</section>
+
+<section class="sec dark" id="juego">
+  <div class="wrap">
+    <span class="kick reveal">El juego</span>
+    <h2 class="reveal">¿Quién pasó por estos muros?</h2>
+    <p class="lede reveal" style="color:#c9c9de">Estos muros guardaron a reinas, nobles y cardenales. Adivina en qué castillo estuvo cada personaje.</p>
+    <div class="game reveal">
+      <div class="qbox"><small id="qn">Pregunta 1 de 4</small><h3>¿En qué castillo estuvo…</h3><div class="who" id="qwho">—</div><p id="qhint">—</p><div class="score" id="score"><i></i><i></i><i></i><i></i></div></div>
+      <div><div class="opts" id="opts"></div><div class="gres" id="gres" aria-live="polite"></div><button class="gbtn" id="gnext" hidden>Siguiente →</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="visita">
+  <div class="wrap">
+    <span class="kick reveal">Planifica tu visita</span>
+    <h2 class="reveal">Qué puedes ver hoy en cada castillo</h2>
+    <div class="vis">
+      <div class="donut reveal" id="donut"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" stroke="#ece5d3"/><circle id="dIn" cx="100" cy="100" r="80" stroke="#9aa650" stroke-dasharray="0 503" style="--dd:.1s"/><circle id="dOut" cx="100" cy="100" r="80" stroke="#e8c731" stroke-dasharray="0 503" style="--dd:.5s"/><circle id="dCl" cx="100" cy="100" r="80" stroke="#c36d69" stroke-dasharray="0 503" style="--dd:.9s"/></svg><div class="c"><div><b>3 de 7</b><span>con visita al interior</span></div></div></div>
+      <div class="vlist reveal" id="vlist" style="--d:120ms"></div>
+    </div>
+  </div>
+</section>
+
+<section class="close">
+  <div class="wrap">
+    <span class="kick reveal" style="color:var(--gold)">El lado bueno de las noticias</span>
+    <h2 class="reveal">Una escapada para <em>descubrir</em> la Madrid medieval</h2>
+    <p class="reveal" style="max-width:56ch;margin:18px auto 0">Lee el artículo original con todos los detalles, horarios y enlaces de cada castillo.</p>
+    <a class="cta reveal" href="https://elresurgirdemadrid.com/ruta-por-los-castillos-de-madrid/" target="_blank" rel="noopener">Leer en El Resurgir de Madrid →</a>
+  </div>
+</section>
+<footer><div class="wrap">Contenido: <a href="https://elresurgirdemadrid.com/ruta-por-los-castillos-de-madrid/" target="_blank" rel="noopener">«Ruta por los castillos de Madrid», Ainhoa Álvarez, El Resurgir de Madrid (17/11/2026)</a>. Diseño interactivo: Biencommunity, propuesta no oficial. Mapa: es-atlas (IGN). Ilustraciones y recorrido 3D esquemáticos. Comprueba horarios y precios antes de ir.</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+document.documentElement.classList.add('js');
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches,DPR=Math.min(devicePixelRatio||1,2),P={"buitrago": [604.9, 161.2], "manzanares": [465.8, 336.1], "madrid": [627, 551.6], "santorcaz": [831.4, 541.8], "villarejo": [805.5, 791], "fuentiduena": [866.3, 805.5], "chinchon": [689.5, 767.8], "capital": [562.7, 581.4]};
+function fmt(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function onVis(el,fn,th){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fn(el);io.unobserve(el);}});},{threshold:th||.25});io.observe(el);}
+function watch(el,cb){new IntersectionObserver(function(es){es.forEach(function(e){cb(e.isIntersecting);});},{threshold:.01}).observe(el);}
+document.querySelectorAll('.reveal').forEach(function(el){if(el.getBoundingClientRect().top>innerHeight*.9)el.classList.add('pre');onVis(el,function(){el.classList.remove('pre');},.12);});
+document.querySelectorAll('[data-count]').forEach(function(el){var to=+el.dataset.count,suf=el.dataset.suf||'',plain=!!el.dataset.plain;el.textContent=(plain?'0':fmt(0))+suf;onVis(el,function(){if(RM){el.textContent=(plain?to:fmt(to))+suf;return;}var t0=performance.now();(function f(t){var q=Math.min(1,(t-t0)/1600),e=1-Math.pow(1-q,3),v=to*e;el.textContent=(plain?Math.round(v):fmt(v))+suf;if(q<1)requestAnimationFrame(f);})(t0);},.5);});
+var navA=document.querySelectorAll('.navl a');navA.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){navA.forEach(function(x){x.classList.remove('on');});a.classList.add('on');}});},{rootMargin:'-45% 0px -50% 0px'}).observe(t);});
+var prog=document.getElementById('prog');addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true});
+
+var C=[
+ {k:'buitrago',n:'Buitrago del Lozoya',s:'Un paseo entre murallas',t:'in',free:false,lab:'Buitrago',p:'Un casco histórico rodeado de muralla junto al río Lozoya. La visita puede empezar en el puente del Arrabal y seguir por la Torre del Reloj, la iglesia de Santa María del Castillo y el tramo visitable de la muralla alta.',f:[['Muralla alta','5 € (4 € reducida)'],['Alcázar','Cerrado temporalmente'],['Gratis','Menores de 10 años y vecinos'],['Extra','Visitas teatralizadas']],b:'Muralla visitable'},
+ {k:'manzanares',n:'Manzanares El Real',s:'El gran conocido',t:'closed',free:false,lab:'Manzanares',p:'El Castillo de los Mendoza, o de los duques del Infantado, es una de las fortalezas mejor conservadas de la Comunidad. Cerró al público en enero de 2025 y sus propietarios tramitan el permiso de reapertura.',f:[['Estado','Cerrado temporalmente'],['Desde','Enero de 2025'],['Mientras tanto','Exterior y alrededores'],['Dentro','Exposición permanente']],b:'Cerrado temporalmente'},
+ {k:'madrid',n:'Castillo de la Alameda',s:'Entre ruinas y la corte',t:'in',free:true,lab:'La Alameda',p:'En Barajas, el único castillo medieval que se conserva dentro de la ciudad de Madrid. Sus ruinas son hoy un museo al aire libre. Por aquí pasó Margarita de Austria en 1599 y fue prisión del duque de Osuna.',f:[['Entrada','Gratuita'],['Horario (oct.-mar.)','Sáb., dom. y festivos, 10-18 h'],['Reabierto','Mayo de 2010'],['Distrito','Barajas']],b:'Visita interior · gratis'},
+ {k:'santorcaz',n:'Castillo de Torremocha',s:'Prisión de nobles',t:'out',free:true,lab:'Torremocha',p:'En Santorcaz, sus murallas se funden con el pueblo. En el siglo XVI fue prisión de nobles: por aquí pasaron la princesa de Éboli y el cardenal Cisneros. El espolón es un mirador natural a la Alcarria madrileña.',f:[['Visita','Exterior, acceso libre'],['Recinto','≈ 8.000 m²'],['Dentro','Iglesia de San Torcuato (BIC)'],['Vistas','Alcarria madrileña']],b:'Exterior · gratis'},
+ {k:'villarejo',n:'Torre del Homenaje de Villarejo',s:'La Orden de Santiago',t:'in',free:false,lab:'Villarejo',p:'De la fortaleza de la Orden de Santiago se alza la Torre del Homenaje, con 22 metros, cuatro plantas y azotea visitables. Alberga el Museo de los Tercios Españoles. Aquí negoció Enrique IV una boda de Isabel la Católica que nunca se celebró.',f:[['Altura','22 metros'],['Horario','Sáb. y dom., 11-13 h y 17-19 h'],['Museo','Tercios Españoles'],['Entorno','Más de 20 yacimientos']],b:'Visita interior'},
+ {k:'fuentiduena',n:'Fuentidueña de Tajo',s:'Ruinas con vistas al valle',t:'out',free:true,lab:'Fuentidueña',p:'Construido en época musulmana, conserva muros y torres en lo alto de un cerro. Doña Urraca permaneció allí recluida. El Mirador de Doña Urraca ofrece vistas panorámicas del pueblo y del valle del Tajo.',f:[['Visita','Exterior, libre y gratuita'],['Estado','Ruina progresiva'],['También llamado','Castillo de los Piquillos'],['Se ve desde','La autovía A-3']],b:'Exterior · gratis'},
+ {k:'chinchon',n:'Castillo de Chinchón',s:'Palacio con alma de fortaleza',t:'out',free:false,lab:'Chinchón',p:'En realidad es un palacio renacentista con elementos de arquitectura militar, residencia de los condes de Chinchón durante doscientos años. Sobrevivió a guerras e incendios y fue fábrica de licores buena parte del siglo XX.',f:[['Visita','Solo exterior'],['Propiedad','Privada'],['Autorizado','1480, Reyes Católicos'],['Residencia','200 años']],b:'Solo exterior'}];
+var NS='http://www.w3.org/2000/svg';
+function castleIcon(x,y,s,i,dark){var g='<g class="cast" data-i="'+i+'" transform="translate('+x+' '+y+')"><circle class="halo" r="'+(s*.9)+'" style="--hd:'+(i*.3)+'s"/><g class="ic"><path d="M'+(-s*.7)+' '+(s*.2)+' V'+(-s*.55)+' h'+(s*.28)+' v'+(s*.22)+' h'+(s*.28)+' v'+(-s*.22)+' h'+(s*.28)+' v'+(s*.22)+' h'+(s*.28)+' v'+(-s*.22)+' h'+(s*.28)+' V'+(s*.2)+' Z" fill="#e8c731" stroke="#12122c" stroke-width="2"/><circle cy="'+(-s*.12)+'" r="'+(s*.24)+'" fill="#12122c"/><text class="num" y="'+(-s*.03)+'" style="fill:#e8c731;font-size:'+(s*.32)+'px">'+(i+1)+'</text></g><text class="lab" x="'+(s*.85)+'" y="'+(s*.05)+'">'+C[i].lab+'</text></g>';return g;}
+function routeD(){var o=['buitrago','manzanares','madrid','santorcaz','villarejo','fuentiduena','chinchon'];return o.map(function(k,i){return (i?'L':'M')+P[k][0]+' '+P[k][1];}).join(' ');}
+['heroMap','mainMap'].forEach(function(id){var svg=document.getElementById(id),g=document.createElementNS(NS,'g');var h='<path class="route" id="r_'+id+'" d="'+routeD()+'"/>';C.forEach(function(c,i){h+=castleIcon(P[c.k][0],P[c.k][1],id==='heroMap'?40:34,i);});h+='<g><circle cx="'+P.capital[0]+'" cy="'+P.capital[1]+'" r="6" fill="#c36d69"/><text x="'+(P.capital[0]-12)+'" y="'+(P.capital[1]+24)+'" text-anchor="end" style="font:700 12px Roboto;fill:'+(id==='heroMap'?'#c9c9de':'#c36d69')+'">Puerta del Sol</text></g>';g.innerHTML=h;svg.appendChild(g);});
+setTimeout(function(){document.getElementById('r_heroMap').classList.add('in');},400);
+onVis(document.getElementById('mainMap'),function(){document.getElementById('r_mainMap').classList.add('in');},.3);
+/* tarjeta */
+var card=document.getElementById('ccard'),main=document.getElementById('mainMap');
+function show(i){var c=C[i];card.classList.remove('c-anim');void card.offsetWidth;card.classList.add('c-anim');var cls=c.t==='in'?'b-in':c.t==='out'?'b-out':'b-closed';
+  card.innerHTML='<div class="top"><div class="n">0'+(i+1)+'</div><h3>'+c.n+'</h3><div class="where">'+c.s+'</div><span class="badge '+cls+'">'+c.b+'</span></div><div class="body"><p>'+c.p+'</p><div class="facts">'+c.f.map(function(x){return '<div class="fact"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>';}).join('')+'</div></div>';
+  main.querySelectorAll('.cast').forEach(function(g){g.classList.toggle('sel',+g.dataset.i===i);});}
+main.querySelectorAll('.cast').forEach(function(g){g.addEventListener('click',function(){show(+g.dataset.i);});});show(1);
+document.querySelectorAll('#filters button').forEach(function(b){b.onclick=function(){document.querySelectorAll('#filters button').forEach(function(x){x.classList.toggle('on',x===b);});var f=b.dataset.f;main.querySelectorAll('.cast').forEach(function(g){var c=C[+g.dataset.i],ok=f==='all'||(f==='in'&&c.t==='in')||(f==='out'&&c.t!=='in')||(f==='free'&&c.free);g.classList.toggle('dim',!ok);});};});
+
+/* viaje 3D */
+(function(){var st=document.querySelector('.vj-st'),wrap=document.getElementById('ruta'),cv=document.getElementById('vjCv'),card=document.getElementById('vjCard'),dots=document.getElementById('vjDots'),head=document.getElementById('vjHead');
+  var TIP=['Muralla alta: 5 €','Exterior mientras sigue cerrado','Entrada gratuita','Mirador a la Alcarria','22 m de torre visitable','Mirador de Doña Urraca','Exterior y casco histórico'];
+  C.forEach(function(){dots.appendChild(document.createElement('i'));});var cur=-1,prog=0;
+  function setCard(i){var c=C[i];card.classList.remove('vj-anim');void card.offsetWidth;card.classList.add('vj-anim');card.innerHTML='<small>Parada '+(i+1)+' de 7</small><h3>'+c.n+'</h3><p>'+c.p.split('. ').slice(0,2).join('. ')+(c.p.split('. ').length>2?'.':'')+'</p><span class="tip">'+TIP[i]+'</span>';dots.querySelectorAll('i').forEach(function(d,k){d.classList.toggle('on',k===i);});}
+  function upd(){var r=wrap.getBoundingClientRect(),tot=r.height-innerHeight;prog=Math.min(1,Math.max(0,-r.top/tot));var f=Math.min(6.999,prog*7),i=Math.floor(f),q=(f-i-.6)/.4,idx=Math.min(6,i+(q>.5?1:0));if(idx!==cur){cur=idx;setCard(idx);}head.style.opacity=Math.max(0,1-prog*16);}
+  addEventListener('scroll',upd,{passive:true});upd();
+  if(!window.THREE)return;
+  var R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(DPR);var S=new THREE.Scene();S.fog=new THREE.Fog(0x12122c,40,150);var Cm=new THREE.PerspectiveCamera(50,1,.1,500);
+  var GOLD=0xe8c731,WH=0xf3eedf,G=new THREE.Group();S.add(G);
+  function mat(c,o){return new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o||.9});}
+  function E(geo,c,o){return new THREE.LineSegments(new THREE.EdgesGeometry(geo),mat(c,o));}
+  var grid=new THREE.GridHelper(700,140,0x2d2d6a,0x1b1b40);grid.position.set(180,0,0);G.add(grid);
+  /* camino */
+  var road=[];for(var x=-20;x<=400;x+=2)road.push(new THREE.Vector3(x,.05,Math.sin(x/30)*6));G.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(road),mat(0xc36d69,.7)));
+  function merlons(w,d,y,g){var arr=[];var n=Math.max(3,Math.round(w/1.6));for(var i=0;i<n;i++){var m=E(new THREE.BoxGeometry(.8,1,.8),GOLD);m.position.set(-w/2+.4+i*(w-.8)/(n-1),y+.5,d/2);g.add(m);var m2=m.clone();m2.position.z=-d/2;g.add(m2);}}
+  function tower(r,h,col,g,x,z,cone){var t=E(new THREE.CylinderGeometry(r,r*1.08,h,12),col||GOLD);t.position.set(x,h/2,z);g.add(t);if(cone){var c=E(new THREE.ConeGeometry(r*1.25,r*2.2,12),WH,.8);c.position.set(x,h+r*1.1,z);g.add(c);}else{for(var k=0;k<8;k++){var a=k/8*Math.PI*2,m=E(new THREE.BoxGeometry(.6,.9,.6),GOLD);m.position.set(x+Math.cos(a)*r,h+.45,z+Math.sin(a)*r);g.add(m);}}}
+  function castle(type){var g=new THREE.Group();
+    if(type===0){/* muralla de Buitrago */for(var i=0;i<5;i++){var w=E(new THREE.BoxGeometry(6,4,1.2),GOLD);w.position.set(-12+i*6,2,4-Math.abs(i-2)*1.5);w.rotation.y=(i-2)*.25;g.add(w);tower(1.3,6,GOLD,g,-15+i*6,4-Math.abs(i-2)*1.5);}tower(1.6,9,WH,g,0,-5,true);}
+    if(type===1){/* Manzanares: patio + 4 torres redondas + torre homenaje */g.add(E(new THREE.BoxGeometry(14,7,14),GOLD,.8));[[-7,-7],[7,-7],[-7,7],[7,7]].forEach(function(p){tower(1.8,10,GOLD,g,p[0],p[1]);});tower(2.6,14,WH,g,0,-7);g.children[0].position.y=3.5;}
+    if(type===2){/* ruinas Alameda */var w1=E(new THREE.BoxGeometry(10,3,1),GOLD,.7);w1.position.set(0,1.5,5);g.add(w1);var w2=E(new THREE.BoxGeometry(1,2,10),GOLD,.6);w2.position.set(-5,1,0);g.add(w2);tower(1.8,7,WH,g,5,5);for(var j=0;j<6;j++){var b=E(new THREE.BoxGeometry(1,1,1),GOLD,.5);b.position.set(-3+j*1.3,.5,-3+Math.sin(j)*2);g.add(b);}}
+    if(type===3){/* Torremocha: recinto + iglesia */var w=E(new THREE.BoxGeometry(18,3,12),GOLD,.75);w.position.y=1.5;g.add(w);var ch=E(new THREE.BoxGeometry(5,5,8),WH,.85);ch.position.set(2,2.5,0);g.add(ch);var bt=E(new THREE.BoxGeometry(2,9,2),WH,.85);bt.position.set(2,4.5,-5);g.add(bt);tower(1.2,5,GOLD,g,-9,-6);tower(1.2,5,GOLD,g,9,6);}
+    if(type===4){/* Torre del Homenaje 22 m */var t=E(new THREE.BoxGeometry(6,22,6),WH);t.position.y=11;g.add(t);merlons(6,6,22,g);for(var f=1;f<4;f++){var fl=E(new THREE.BoxGeometry(6.2,.2,6.2),GOLD,.6);fl.position.y=f*5.5;g.add(fl);}var base=E(new THREE.BoxGeometry(14,1,10),GOLD,.5);base.position.y=.5;g.add(base);}
+    if(type===5){/* Fuentidueña en un cerro */var hill=E(new THREE.ConeGeometry(14,7,10,1,true),0x9aa650,.5);hill.position.y=3.5;g.add(hill);var w=E(new THREE.BoxGeometry(8,3,1),GOLD,.75);w.position.set(-1,8,1);g.add(w);tower(1.5,6,WH,g,3,0);g.children[g.children.length-1].position.y+=7;}
+    if(type===6){/* Chinchón: palacio cuadrado con torres esquineras */var b=E(new THREE.BoxGeometry(14,6,14),GOLD);b.position.y=3;g.add(b);[[-7,-7],[7,-7],[-7,7],[7,7]].forEach(function(p){tower(1.6,7.5,WH,g,p[0],p[1]);});var moat=E(new THREE.BoxGeometry(20,.2,20),0x5897c5,.6);moat.position.y=.1;g.add(moat);}
+    return g;}
+  var XS=[0,60,120,180,240,300,360],castles=[];XS.forEach(function(x,i){var c=castle(i);c.position.set(x,0,Math.sin(x/30)*6-14);G.add(c);castles.push(c);});
+  /* antorchas: partículas */
+  var NP=150,pg=new THREE.BufferGeometry(),pos=new Float32Array(NP*3),ph=[];for(var p=0;p<NP;p++)ph.push(Math.random());pg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  var tex=(function(){var c=document.createElement('canvas');c.width=c.height=64;var x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,240,180,1)');g.addColorStop(.35,'rgba(232,199,49,.6)');g.addColorStop(1,'rgba(232,199,49,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c);})();
+  G.add(new THREE.Points(pg,new THREE.PointsMaterial({size:1.4,map:tex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));
+  function size(){var w=st.clientWidth,h=st.clientHeight;R.setSize(w,h,false);Cm.aspect=w/h;Cm.updateProjectionMatrix();}size();addEventListener('resize',size);
+  var lbls=C.map(function(c){var d=document.createElement('div');d.className='vj-lbl';d.textContent=c.lab;st.appendChild(d);return d;});
+  var vis=false,camX=-6;watch(wrap,function(v){vis=v;});
+  (function loop(t){requestAnimationFrame(loop);if(!vis)return;var ff=Math.min(6.999,prog*7),ii=Math.floor(ff),fr=Math.min(1,Math.max(0,(ff-ii-.6)/.4));fr=fr*fr*(3-2*fr);var target=Math.min(6,ii+fr)*60-6;camX+=(target-camX)*.07;var mob=innerWidth<700;
+    Cm.position.set(camX-(mob?6:16),mob?26:20,mob?50:34);Cm.lookAt(camX+12,mob?10:7,-10);
+    castles.forEach(function(c,i){c.rotation.y=Math.sin(t/3000+i)*.15;});
+    for(var p=0;p<NP;p++){var u=(ph[p]+t*.00003)%1;pos[p*3]=-15+u*400;pos[p*3+1]=2+Math.abs(Math.sin(u*40+p))*16;pos[p*3+2]=((p%9)-4)*4-8;}pg.attributes.position.needsUpdate=true;
+    var w=st.clientWidth,h=st.clientHeight;C.forEach(function(c,i){var v=new THREE.Vector3(XS[i],[11,18,10,12,27,17,11][i],Math.sin(XS[i]/30)*6-14).project(Cm);var ok=v.z<1&&v.x>-1.1&&v.x<1.1;lbls[i].style.left=((v.x+1)/2*w)+'px';lbls[i].style.top=((1-v.y)/2*h)+'px';lbls[i].style.opacity=ok?(i===cur?1:.35):0;});
+    R.render(S,Cm);})(0);})();
+
+/* cronología */
+onVis(document.getElementById('tline'),function(el){el.classList.add('in');},.3);
+
+/* dominó */
+(function(){var D=[
+  {v:'Fortaleza',i:'I',h:'Nace como fortaleza',p:'Murallas y torres para defender el territorio, como el castillo de Fuentidueña en la época musulmana.'},
+  {v:'Residencia',i:'II',h:'Se convierte en residencia señorial',p:'Los condes de Chinchón vivieron doscientos años en su castillo-palacio.'},
+  {v:'Prisión',i:'III',h:'Encierra a nobles',p:'La princesa de Éboli y el cardenal Cisneros en Torremocha; el duque de Osuna en la Alameda; doña Urraca en Fuentidueña.'},
+  {v:'Guerras',i:'IV',h:'Sobrevive a guerras e incendios',p:'Chinchón ardió en la Guerra de Sucesión y sufrió nuevos daños en la Guerra de la Independencia.'},
+  {v:'Ruina',i:'V',h:'Cae en el olvido',p:'La Alameda llegó a quedar casi oculta entre escombros tras un largo abandono.'},
+  {v:'Patrimonio',i:'★',h:'Vuelve a la vida',p:'Hoy son museos, parques arqueológicos y miradores. La Alameda reabrió en 2010; Villarejo alberga el Museo de los Tercios.'}];
+  var row=document.getElementById('drow'),cap=document.getElementById('dcap'),pr=document.getElementById('dprog'),wrap=document.getElementById('vida'),doms=[],last=-1;
+  D.forEach(function(d,i){var el=document.createElement('div');el.className='dom'+(i===D.length-1?' last':'');el.style.left=(4+i*15.5)+'%';el.innerHTML='<div class="face"><i>'+d.i+'</i><b>'+d.v+'</b></div>';row.appendChild(el);doms.push(el);pr.appendChild(document.createElement('i'));});
+  function sh(i){if(i===last)return;last=i;var d=D[i];doms.forEach(function(el,k){el.classList.toggle('fall',k<i&&k<D.length-1);});cap.classList.remove('dcap-anim');void cap.offsetWidth;cap.classList.add('dcap-anim');cap.innerHTML='<span class="kick" style="margin:0">Etapa '+(i+1)+' de '+D.length+'</span><h3>'+d.h+'</h3><p>'+d.p+'</p>';pr.querySelectorAll('i').forEach(function(p,k){p.classList.toggle('on',k<=i);});}
+  function up(){var r=wrap.getBoundingClientRect(),tot=r.height-innerHeight,p=Math.min(.999,Math.max(0,-r.top/tot));sh(Math.floor(p*D.length));}
+  addEventListener('scroll',up,{passive:true});up();})();
+
+/* juego */
+(function(){var Q=[{w:'La princesa de Éboli',h:'Prisión de nobles en el siglo XVI, con un espolón que mira a la Alcarria.',a:3},{w:'El duque de Osuna',h:'El único castillo medieval que se conserva dentro de la ciudad de Madrid.',a:2},{w:'Doña Urraca',h:'Hoy hay un mirador con su nombre sobre el valle del Tajo.',a:5},{w:'El Empecinado',h:'Una torre de 22 metros vinculada a la Orden de Santiago.',a:4}];
+  var OPT=[3,2,5,4,0,6],qi=0,sc=[],opts=document.getElementById('opts'),res=document.getElementById('gres'),nx=document.getElementById('gnext');
+  function render(){var q=Q[qi];document.getElementById('qn').textContent='Pregunta '+(qi+1)+' de '+Q.length;document.getElementById('qwho').textContent=q.w+'?';document.getElementById('qhint').textContent='Pista: '+q.h;res.textContent='';nx.hidden=true;
+    opts.innerHTML=OPT.map(function(o){return '<button data-o="'+o+'"><span class="k">'+(o+1)+'</span><span>'+C[o].n+'</span></button>';}).join('');
+    opts.querySelectorAll('button').forEach(function(b){b.onclick=function(){if(!nx.hidden||opts.dataset.done==='1')return;var ok=+b.dataset.o===q.a;b.classList.add(ok?'ok':'ko');if(!ok)opts.querySelector('[data-o="'+q.a+'"]').classList.add('ok');sc[qi]=ok;var bars=document.querySelectorAll('#score i');bars[qi].classList.add(ok?'ok':'ko');res.innerHTML=(ok?'<b>¡Correcto!</b> ':'<b>Casi.</b> ')+'Fue en '+C[q.a].n+'.';if(qi<Q.length-1){nx.hidden=false;nx.textContent='Siguiente →';}else{var n=sc.filter(Boolean).length;res.innerHTML+='<br><b>'+n+' de '+Q.length+'.</b> '+(n===4?'Eres un experto en castillos madrileños.':n>=2?'Buen recorrido: te falta visitarlos en persona.':'Esta ruta te va a encantar.');nx.hidden=false;nx.textContent='Volver a jugar ↺';}};});}
+  nx.onclick=function(){if(qi<Q.length-1){qi++;}else{qi=0;sc=[];document.querySelectorAll('#score i').forEach(function(i){i.className='';});}render();};render();})();
+
+/* estado de visita */
+(function(){var L=document.getElementById('vlist'),T={in:'Visita interior',out:'Solo exterior',closed:'Cerrado temporalmente'};
+  L.innerHTML=C.map(function(c,i){return '<div class="vrow"><span class="k">'+(i+1)+'</span><div><b>'+c.n+'</b><small>'+c.f[0][0]+': '+c.f[0][1]+'</small></div><span class="badge '+(c.t==='in'?'b-in':c.t==='out'?'b-out':'b-closed')+'" style="margin:0">'+T[c.t]+'</span></div>';}).join('');
+  onVis(document.getElementById('donut'),function(){var tot=503,a=3/7*tot,b=3/7*tot,c=1/7*tot;var dIn=document.getElementById('dIn'),dOut=document.getElementById('dOut'),dCl=document.getElementById('dCl');dIn.setAttribute('stroke-dasharray',a+' '+tot);dOut.setAttribute('stroke-dasharray',b+' '+tot);dOut.style.strokeDashoffset=-a;dCl.setAttribute('stroke-dasharray',c+' '+tot);dCl.style.strokeDashoffset=-(a+b);},.4);})();
+})();
+</script>
+</body>
+</html>
