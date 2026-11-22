@@ -177,6 +177,21 @@ button{font:inherit;color:inherit}
 .gres{margin-top:14px;font-size:15px;min-height:48px}
 .gbtn{margin-top:10px;border:0;background:var(--gold);color:var(--navy3);font:700 15px var(--f);padding:12px 20px;border-radius:999px;cursor:pointer}
 
+/* fotos */
+.cph{position:relative;margin:0;aspect-ratio:16/9;overflow:hidden;background:var(--navy3)}
+.cph img{width:100%;height:100%;object-fit:cover;display:block;animation:kb 9s ease-out forwards}
+@keyframes kb{from{transform:scale(1.12)}to{transform:scale(1)}}
+.cph figcaption{position:absolute;right:10px;bottom:8px;font:500 11px var(--f);color:#fff;background:rgba(18,18,44,.6);padding:3px 8px;border-radius:999px}
+.vph{width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:12px;display:block}
+@media (max-height:760px){.vph{height:100px}}
+.vth{width:56px;height:56px;border-radius:12px;object-fit:cover}
+/* galería */
+.gal{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:40px}
+.gal figure{position:relative;margin:0;aspect-ratio:3/4;overflow:hidden;border-radius:16px;cursor:pointer;box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.gal figure:hover img{transform:scale(1.08)}
+.gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:30px 12px 12px;background:linear-gradient(transparent,rgba(18,18,44,.9));color:#fff;font:700 14px var(--fs)}
+@media (max-width:860px){.gal{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* estado de visita */
 .vis{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px;align-items:center;margin-top:30px}
 @media (max-width:860px){.vis{grid-template-columns:1fr}}
@@ -187,7 +202,7 @@ button{font:inherit;color:inherit}
 .donut .c b{font:900 64px var(--fs);color:var(--navy);display:block;line-height:1}
 .donut .c span{font-size:14px}
 .vlist{display:grid;gap:10px}
-.vrow{display:grid;grid-template-columns:34px 1fr auto;gap:14px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.vrow{display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
 .vrow .k{width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--gold);display:grid;place-items:center;font:900 15px var(--fs)}
 .vrow b{color:var(--navy);font-size:15.5px}
 .vrow small{display:block;font-size:13px;color:var(--soft)}
@@ -221,6 +236,7 @@ footer a{color:#c9c9de}
       <div class="hs"><b data-count="8000" data-suf=" m²">0</b><span>de recinto amurallado en Torremocha</span></div>
       <div class="hs"><b data-count="1599" data-plain="1">0</b><span>Margarita de Austria pasa por la Alameda</span></div>
     </div>
+    <div class="gal" id="gal"></div>
   </div>
 </header>
 
@@ -307,7 +323,7 @@ footer a{color:#c9c9de}
     <a class="cta reveal" href="https://elresurgirdemadrid.com/ruta-por-los-castillos-de-madrid/" target="_blank" rel="noopener">Leer en El Resurgir de Madrid →</a>
   </div>
 </section>
-<footer><div class="wrap">Contenido: <a href="https://elresurgirdemadrid.com/ruta-por-los-castillos-de-madrid/" target="_blank" rel="noopener">«Ruta por los castillos de Madrid», Ainhoa Álvarez, El Resurgir de Madrid (17/11/2026)</a>. Diseño interactivo: Biencommunity, propuesta no oficial. Mapa: es-atlas (IGN). Ilustraciones y recorrido 3D esquemáticos. Comprueba horarios y precios antes de ir.</div></footer>
+<footer><div class="wrap">Contenido: <a href="https://elresurgirdemadrid.com/ruta-por-los-castillos-de-madrid/" target="_blank" rel="noopener">«Ruta por los castillos de Madrid», Ainhoa Álvarez, El Resurgir de Madrid (17/11/2026)</a>. Diseño interactivo: Biencommunity, propuesta no oficial. Fotos: las indicadas en cada imagen, según el artículo original. Mapa: es-atlas (IGN). Ilustraciones y recorrido 3D esquemáticos. Comprueba horarios y precios antes de ir.</div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -323,13 +339,13 @@ var navA=document.querySelectorAll('.navl a');navA.forEach(function(a){var t=doc
 var prog=document.getElementById('prog');addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true});
 
 var C=[
- {k:'buitrago',n:'Buitrago del Lozoya',s:'Un paseo entre murallas',t:'in',free:false,lab:'Buitrago',p:'Un casco histórico rodeado de muralla junto al río Lozoya. La visita puede empezar en el puente del Arrabal y seguir por la Torre del Reloj, la iglesia de Santa María del Castillo y el tramo visitable de la muralla alta.',f:[['Muralla alta','5 € (4 € reducida)'],['Alcázar','Cerrado temporalmente'],['Gratis','Menores de 10 años y vecinos'],['Extra','Visitas teatralizadas']],b:'Muralla visitable'},
- {k:'manzanares',n:'Manzanares El Real',s:'El gran conocido',t:'closed',free:false,lab:'Manzanares',p:'El Castillo de los Mendoza, o de los duques del Infantado, es una de las fortalezas mejor conservadas de la Comunidad. Cerró al público en enero de 2025 y sus propietarios tramitan el permiso de reapertura.',f:[['Estado','Cerrado temporalmente'],['Desde','Enero de 2025'],['Mientras tanto','Exterior y alrededores'],['Dentro','Exposición permanente']],b:'Cerrado temporalmente'},
- {k:'madrid',n:'Castillo de la Alameda',s:'Entre ruinas y la corte',t:'in',free:true,lab:'La Alameda',p:'En Barajas, el único castillo medieval que se conserva dentro de la ciudad de Madrid. Sus ruinas son hoy un museo al aire libre. Por aquí pasó Margarita de Austria en 1599 y fue prisión del duque de Osuna.',f:[['Entrada','Gratuita'],['Horario (oct.-mar.)','Sáb., dom. y festivos, 10-18 h'],['Reabierto','Mayo de 2010'],['Distrito','Barajas']],b:'Visita interior · gratis'},
+ {k:'buitrago',img:'buitrago.webp',cr:'Turismo Buitrago de Lozoya',n:'Buitrago del Lozoya',s:'Un paseo entre murallas',t:'in',free:false,lab:'Buitrago',p:'Un casco histórico rodeado de muralla junto al río Lozoya. La visita puede empezar en el puente del Arrabal y seguir por la Torre del Reloj, la iglesia de Santa María del Castillo y el tramo visitable de la muralla alta.',f:[['Muralla alta','5 € (4 € reducida)'],['Alcázar','Cerrado temporalmente'],['Gratis','Menores de 10 años y vecinos'],['Extra','Visitas teatralizadas']],b:'Muralla visitable'},
+ {k:'manzanares',img:'manzanares.webp',cr:'Castillo de Manzanares El Real',n:'Manzanares El Real',s:'El gran conocido',t:'closed',free:false,lab:'Manzanares',p:'El Castillo de los Mendoza, o de los duques del Infantado, es una de las fortalezas mejor conservadas de la Comunidad. Cerró al público en enero de 2025 y sus propietarios tramitan el permiso de reapertura.',f:[['Estado','Cerrado temporalmente'],['Desde','Enero de 2025'],['Mientras tanto','Exterior y alrededores'],['Dentro','Exposición permanente']],b:'Cerrado temporalmente'},
+ {k:'madrid',img:'alameda.webp',cr:'Comunidad de Madrid',n:'Castillo de la Alameda',s:'Entre ruinas y la corte',t:'in',free:true,lab:'La Alameda',p:'En Barajas, el único castillo medieval que se conserva dentro de la ciudad de Madrid. Sus ruinas son hoy un museo al aire libre. Por aquí pasó Margarita de Austria en 1599 y fue prisión del duque de Osuna.',f:[['Entrada','Gratuita'],['Horario (oct.-mar.)','Sáb., dom. y festivos, 10-18 h'],['Reabierto','Mayo de 2010'],['Distrito','Barajas']],b:'Visita interior · gratis'},
  {k:'santorcaz',n:'Castillo de Torremocha',s:'Prisión de nobles',t:'out',free:true,lab:'Torremocha',p:'En Santorcaz, sus murallas se funden con el pueblo. En el siglo XVI fue prisión de nobles: por aquí pasaron la princesa de Éboli y el cardenal Cisneros. El espolón es un mirador natural a la Alcarria madrileña.',f:[['Visita','Exterior, acceso libre'],['Recinto','≈ 8.000 m²'],['Dentro','Iglesia de San Torcuato (BIC)'],['Vistas','Alcarria madrileña']],b:'Exterior · gratis'},
- {k:'villarejo',n:'Torre del Homenaje de Villarejo',s:'La Orden de Santiago',t:'in',free:false,lab:'Villarejo',p:'De la fortaleza de la Orden de Santiago se alza la Torre del Homenaje, con 22 metros, cuatro plantas y azotea visitables. Alberga el Museo de los Tercios Españoles. Aquí negoció Enrique IV una boda de Isabel la Católica que nunca se celebró.',f:[['Altura','22 metros'],['Horario','Sáb. y dom., 11-13 h y 17-19 h'],['Museo','Tercios Españoles'],['Entorno','Más de 20 yacimientos']],b:'Visita interior'},
- {k:'fuentiduena',n:'Fuentidueña de Tajo',s:'Ruinas con vistas al valle',t:'out',free:true,lab:'Fuentidueña',p:'Construido en época musulmana, conserva muros y torres en lo alto de un cerro. Doña Urraca permaneció allí recluida. El Mirador de Doña Urraca ofrece vistas panorámicas del pueblo y del valle del Tajo.',f:[['Visita','Exterior, libre y gratuita'],['Estado','Ruina progresiva'],['También llamado','Castillo de los Piquillos'],['Se ve desde','La autovía A-3']],b:'Exterior · gratis'},
- {k:'chinchon',n:'Castillo de Chinchón',s:'Palacio con alma de fortaleza',t:'out',free:false,lab:'Chinchón',p:'En realidad es un palacio renacentista con elementos de arquitectura militar, residencia de los condes de Chinchón durante doscientos años. Sobrevivió a guerras e incendios y fue fábrica de licores buena parte del siglo XX.',f:[['Visita','Solo exterior'],['Propiedad','Privada'],['Autorizado','1480, Reyes Católicos'],['Residencia','200 años']],b:'Solo exterior'}];
+ {k:'villarejo',img:'villarejo.webp',cr:'Villarejo de Salvanés Turismo',n:'Torre del Homenaje de Villarejo',s:'La Orden de Santiago',t:'in',free:false,lab:'Villarejo',p:'De la fortaleza de la Orden de Santiago se alza la Torre del Homenaje, con 22 metros, cuatro plantas y azotea visitables. Alberga el Museo de los Tercios Españoles. Aquí negoció Enrique IV una boda de Isabel la Católica que nunca se celebró.',f:[['Altura','22 metros'],['Horario','Sáb. y dom., 11-13 h y 17-19 h'],['Museo','Tercios Españoles'],['Entorno','Más de 20 yacimientos']],b:'Visita interior'},
+ {k:'fuentiduena',img:'fuentiduena.webp',cr:'Ayuntamiento de Fuentidueña de Tajo',n:'Fuentidueña de Tajo',s:'Ruinas con vistas al valle',t:'out',free:true,lab:'Fuentidueña',p:'Construido en época musulmana, conserva muros y torres en lo alto de un cerro. Doña Urraca permaneció allí recluida. El Mirador de Doña Urraca ofrece vistas panorámicas del pueblo y del valle del Tajo.',f:[['Visita','Exterior, libre y gratuita'],['Estado','Ruina progresiva'],['También llamado','Castillo de los Piquillos'],['Se ve desde','La autovía A-3']],b:'Exterior · gratis'},
+ {k:'chinchon',img:'chinchon.webp',cr:'El Resurgir',n:'Castillo de Chinchón',s:'Palacio con alma de fortaleza',t:'out',free:false,lab:'Chinchón',p:'En realidad es un palacio renacentista con elementos de arquitectura militar, residencia de los condes de Chinchón durante doscientos años. Sobrevivió a guerras e incendios y fue fábrica de licores buena parte del siglo XX.',f:[['Visita','Solo exterior'],['Propiedad','Privada'],['Autorizado','1480, Reyes Católicos'],['Residencia','200 años']],b:'Solo exterior'}];
 var NS='http://www.w3.org/2000/svg';
 function castleIcon(x,y,s,i,dark){var g='<g class="cast" data-i="'+i+'" transform="translate('+x+' '+y+')"><circle class="halo" r="'+(s*.9)+'" style="--hd:'+(i*.3)+'s"/><g class="ic"><path d="M'+(-s*.7)+' '+(s*.2)+' V'+(-s*.55)+' h'+(s*.28)+' v'+(s*.22)+' h'+(s*.28)+' v'+(-s*.22)+' h'+(s*.28)+' v'+(s*.22)+' h'+(s*.28)+' v'+(-s*.22)+' h'+(s*.28)+' V'+(s*.2)+' Z" fill="#e8c731" stroke="#12122c" stroke-width="2"/><circle cy="'+(-s*.12)+'" r="'+(s*.24)+'" fill="#12122c"/><text class="num" y="'+(-s*.03)+'" style="fill:#e8c731;font-size:'+(s*.32)+'px">'+(i+1)+'</text></g><text class="lab" x="'+(s*.85)+'" y="'+(s*.05)+'">'+C[i].lab+'</text></g>';return g;}
 function routeD(){var o=['buitrago','manzanares','madrid','santorcaz','villarejo','fuentiduena','chinchon'];return o.map(function(k,i){return (i?'L':'M')+P[k][0]+' '+P[k][1];}).join(' ');}
@@ -339,16 +355,17 @@ onVis(document.getElementById('mainMap'),function(){document.getElementById('r_m
 /* tarjeta */
 var card=document.getElementById('ccard'),main=document.getElementById('mainMap');
 function show(i){var c=C[i];card.classList.remove('c-anim');void card.offsetWidth;card.classList.add('c-anim');var cls=c.t==='in'?'b-in':c.t==='out'?'b-out':'b-closed';
-  card.innerHTML='<div class="top"><div class="n">0'+(i+1)+'</div><h3>'+c.n+'</h3><div class="where">'+c.s+'</div><span class="badge '+cls+'">'+c.b+'</span></div><div class="body"><p>'+c.p+'</p><div class="facts">'+c.f.map(function(x){return '<div class="fact"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>';}).join('')+'</div></div>';
+  card.innerHTML=(c.img?'<figure class="cph"><img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@7bd05d6ba8e424c31fd4e258705f8241472bed26/ruta-castillos/img/'+c.img+'" alt="'+c.n+'"><figcaption>Foto: '+c.cr+'</figcaption></figure>':'')+'<div class="top"><div class="n">0'+(i+1)+'</div><h3>'+c.n+'</h3><div class="where">'+c.s+'</div><span class="badge '+cls+'">'+c.b+'</span></div><div class="body"><p>'+c.p+'</p><div class="facts">'+c.f.map(function(x){return '<div class="fact"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>';}).join('')+'</div></div>';
   main.querySelectorAll('.cast').forEach(function(g){g.classList.toggle('sel',+g.dataset.i===i);});}
 main.querySelectorAll('.cast').forEach(function(g){g.addEventListener('click',function(){show(+g.dataset.i);});});show(1);
+var gal=document.getElementById('gal');C.forEach(function(c,i){if(!c.img)return;var f=document.createElement('figure');f.innerHTML='<img src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@7bd05d6ba8e424c31fd4e258705f8241472bed26/ruta-castillos/img/'+c.img+'" alt="'+c.n+'" loading="lazy"><figcaption>'+(i+1)+'. '+c.lab+'</figcaption>';f.onclick=function(){show(i);document.getElementById('mapa').scrollIntoView({behavior:'smooth'});};gal.appendChild(f);});
 document.querySelectorAll('#filters button').forEach(function(b){b.onclick=function(){document.querySelectorAll('#filters button').forEach(function(x){x.classList.toggle('on',x===b);});var f=b.dataset.f;main.querySelectorAll('.cast').forEach(function(g){var c=C[+g.dataset.i],ok=f==='all'||(f==='in'&&c.t==='in')||(f==='out'&&c.t!=='in')||(f==='free'&&c.free);g.classList.toggle('dim',!ok);});};});
 
 /* viaje 3D */
 (function(){var st=document.querySelector('.vj-st'),wrap=document.getElementById('ruta'),cv=document.getElementById('vjCv'),card=document.getElementById('vjCard'),dots=document.getElementById('vjDots'),head=document.getElementById('vjHead');
   var TIP=['Muralla alta: 5 €','Exterior mientras sigue cerrado','Entrada gratuita','Mirador a la Alcarria','22 m de torre visitable','Mirador de Doña Urraca','Exterior y casco histórico'];
   C.forEach(function(){dots.appendChild(document.createElement('i'));});var cur=-1,prog=0;
-  function setCard(i){var c=C[i];card.classList.remove('vj-anim');void card.offsetWidth;card.classList.add('vj-anim');card.innerHTML='<small>Parada '+(i+1)+' de 7</small><h3>'+c.n+'</h3><p>'+c.p.split('. ').slice(0,2).join('. ')+(c.p.split('. ').length>2?'.':'')+'</p><span class="tip">'+TIP[i]+'</span>';dots.querySelectorAll('i').forEach(function(d,k){d.classList.toggle('on',k===i);});}
+  function setCard(i){var c=C[i];card.classList.remove('vj-anim');void card.offsetWidth;card.classList.add('vj-anim');card.innerHTML=(c.img?'<img class="vph" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@7bd05d6ba8e424c31fd4e258705f8241472bed26/ruta-castillos/img/'+c.img+'" alt="">':'')+'<small>Parada '+(i+1)+' de 7</small><h3>'+c.n+'</h3><p>'+c.p.split('. ').slice(0,2).join('. ')+(c.p.split('. ').length>2?'.':'')+'</p><span class="tip">'+TIP[i]+'</span>';dots.querySelectorAll('i').forEach(function(d,k){d.classList.toggle('on',k===i);});}
   function upd(){var r=wrap.getBoundingClientRect(),tot=r.height-innerHeight;prog=Math.min(1,Math.max(0,-r.top/tot));var f=Math.min(6.999,prog*7),i=Math.floor(f),q=(f-i-.6)/.4,idx=Math.min(6,i+(q>.5?1:0));if(idx!==cur){cur=idx;setCard(idx);}head.style.opacity=Math.max(0,1-prog*16);}
   addEventListener('scroll',upd,{passive:true});upd();
   if(!window.THREE)return;
@@ -412,7 +429,7 @@ onVis(document.getElementById('tline'),function(el){el.classList.add('in');},.3)
 
 /* estado de visita */
 (function(){var L=document.getElementById('vlist'),T={in:'Visita interior',out:'Solo exterior',closed:'Cerrado temporalmente'};
-  L.innerHTML=C.map(function(c,i){return '<div class="vrow"><span class="k">'+(i+1)+'</span><div><b>'+c.n+'</b><small>'+c.f[0][0]+': '+c.f[0][1]+'</small></div><span class="badge '+(c.t==='in'?'b-in':c.t==='out'?'b-out':'b-closed')+'" style="margin:0">'+T[c.t]+'</span></div>';}).join('');
+  L.innerHTML=C.map(function(c,i){return '<div class="vrow">'+(c.img?'<img class="vth" src="https://cdn.jsdelivr.net/gh/Biencommunity/railclick-2026@7bd05d6ba8e424c31fd4e258705f8241472bed26/ruta-castillos/img/'+c.img+'" alt="">':'<span class="k">'+(i+1)+'</span>')+'<div><b>'+c.n+'</b><small>'+c.f[0][0]+': '+c.f[0][1]+'</small></div><span class="badge '+(c.t==='in'?'b-in':c.t==='out'?'b-out':'b-closed')+'" style="margin:0">'+T[c.t]+'</span></div>';}).join('');
   onVis(document.getElementById('donut'),function(){var tot=503,a=3/7*tot,b=3/7*tot,c=1/7*tot;var dIn=document.getElementById('dIn'),dOut=document.getElementById('dOut'),dCl=document.getElementById('dCl');dIn.setAttribute('stroke-dasharray',a+' '+tot);dOut.setAttribute('stroke-dasharray',b+' '+tot);dOut.style.strokeDashoffset=-a;dCl.setAttribute('stroke-dasharray',c+' '+tot);dCl.style.strokeDashoffset=-(a+b);},.4);})();
 })();
 </script>
